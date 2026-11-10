@@ -315,6 +315,7 @@ body:not(.sidebar-open) .sidebar .opt-card .opt-body{display:none}
 /* Option cards look like sidebar nav items: icon + dark visible label. */
 .side-cards{display:flex;flex-direction:column;gap:4px}
 .sidebar .opt-card{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important}
+.sidebar .opt-card[open]{box-shadow:none!important}
 .sidebar .opt-card>summary{display:flex;align-items:center;gap:11px;width:100%;min-height:44px;padding:9px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:#C3CEE2;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer;list-style:none}
 .sidebar .opt-card>summary::-webkit-details-marker{display:none}
 .sidebar .opt-card>summary .side-ic{flex:none;width:19px;height:19px;display:grid;place-items:center;color:var(--ic,currentColor)}
@@ -641,6 +642,7 @@ body.light .progress-wrap{background:#FBF6EC!important;border-color:#E9DFCC!impo
 body.light .track{background:#E9DFCC!important;border-color:#E9DFCC!important}
 body.light .progress-meta{color:#6E6455!important}
 body.light .opt-card{background:#FFFDF8!important;border-color:#E9DFCC!important}
+body.light .sidebar .opt-card,body.light .sidebar .opt-card[open],body.light .sidebar .opt-card:hover{background:transparent!important;border:0!important;outline:none!important;box-shadow:none!important}
 body.light .opt-card>summary b{color:#221D15!important}
 body.light .opt-card>summary span{color:#6E6455!important}
 body.light .opt-card>summary .chev{color:#6E6455}
@@ -916,6 +918,7 @@ body.paper .progress-meta{color:#71624E!important}
 body.paper .opt-card{background:#FBF7EC!important;border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px;box-shadow:0 1px 3px rgba(74,58,32,.07),0 10px 28px rgba(74,58,32,.05)}
 body.paper .opt-card:hover{border-color:#C9B892!important}
 body.paper .opt-card[open]{box-shadow:0 14px 34px rgba(74,58,32,.12)}
+body.paper .sidebar .opt-card,body.paper .sidebar .opt-card[open],body.paper .sidebar .opt-card:hover{background:transparent!important;border:0!important;outline:none!important;box-shadow:none!important}
 body.paper .opt-card>summary b{color:#2E2118!important;font-family:"Fraunces",Georgia,"Times New Roman",serif!important}
 body.paper .opt-card>summary span{color:#71624E!important}
 body.paper .opt-card>summary .chev{color:#71624E}
