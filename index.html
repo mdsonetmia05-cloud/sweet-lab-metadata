@@ -307,6 +307,32 @@ body:not(.sidebar-open) .sidebar .nav-sub{display:none}
 body:not(.sidebar-open) .sidebar .dash-credit{display:none}
 body:not(.sidebar-open) .sidebar .side-btn span{display:none}
 body:not(.sidebar-open) .sidebar .side-btn{justify-content:center}
+body:not(.sidebar-open) .sidebar .side-cards{display:none}
+/* Option cards live in the sidebar now (narrow, single column). */
+.side-cards{display:flex;flex-direction:column;gap:10px}
+.sidebar .opt-card{border-radius:12px!important}
+.sidebar .opt-card>summary{padding:11px 12px;gap:10px}
+.sidebar .opt-card>summary .opt-ic{width:32px;height:32px;border-radius:8px}
+.sidebar .opt-card>summary .opt-ic svg{width:18px;height:18px}
+.sidebar .opt-card>summary b{font-size:13px!important}
+.sidebar .opt-card>summary span{font-size:11px!important}
+.sidebar .opt-body{padding:4px 12px 12px}
+.sidebar .opt-body .grid2,.sidebar .opt-body .grid3{grid-template-columns:1fr!important}
+.sidebar .opt-body .action-row{flex-wrap:wrap}
+/* The sidebar stays dark in every theme, so its cards stay dark too. */
+body.light .sidebar .opt-card{background:#0F1930!important;border-color:#1C2A47!important}
+body.light .sidebar .opt-card>summary b{color:#F2F6FD!important}
+body.light .sidebar .opt-card>summary span{color:#8B98B4!important}
+body.light .sidebar .opt-card>summary .chev{color:#8B98B4}
+body.light .sidebar .opt-card>summary .opt-ic{background:#16223C!important;color:#6EA8FF!important}
+body.light .sidebar .opt-body{border-top:1px solid #1C2A47}
+body.paper .sidebar .opt-card{background:#0F1930!important;border:1px solid #1C2A47!important;outline:none;box-shadow:none}
+body.paper .sidebar .opt-card[open]{box-shadow:none}
+body.paper .sidebar .opt-card>summary b{color:#F2F6FD!important;font-family:Inter,system-ui,sans-serif!important}
+body.paper .sidebar .opt-card>summary span{color:#8B98B4!important}
+body.paper .sidebar .opt-card>summary .chev{color:#8B98B4}
+body.paper .sidebar .opt-card>summary .opt-ic{background:#16223C!important;color:#6EA8FF!important}
+body.paper .sidebar .opt-body{border-top:1px solid #1C2A47}
 .side-backdrop{position:fixed;inset:0;z-index:55;background:rgba(3,7,14,.55);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .3s ease}
 body.sidebar-open .side-backdrop{opacity:1;pointer-events:auto}
 .dash-brand .side-close{margin-left:auto;flex:none}
@@ -1011,62 +1037,24 @@ body.paper .status-bad{color:#B91C1C!important}
     <div class="nav-label">Settings</div>
     <button type="button" class="nav-group" id="settingsToggle" aria-expanded="true" style="--ic:#94A3B8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 00-.15-1.4l2-1.5-2-3.4-2.3 1a7 7 0 00-2.4-1.4L13.7 2h-3.4l-.45 2.6a7 7 0 00-2.4 1.4l-2.3-1-2 3.4 2 1.5A7 7 0 005 12c0 .48.05.94.15 1.4l-2 1.5 2 3.4 2.3-1a7 7 0 002.4 1.4l.45 2.6h3.4l.45-2.6a7 7 0 002.4-1.4l2.3 1 2-3.4-2-1.5c.1-.46.15-.92.15-1.4z"/></svg><span data-i18n="nav-settings">Settings</span><span class="chev">▴</span></button>
     <div class="nav-sub" id="settingsSub">
-      <button type="button" class="nav-item" data-open="card-ai" style="--ic:#38BDF8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg><span data-i18n="nav-ai">AI &amp; API</span></button>
-      <button type="button" class="nav-item" data-open="card-advanced" style="--ic:#F472B6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19L15.5 8.5"/><path d="M17 4l.9 2.1L20 7l-2.1.9L17 10l-.9-2.1L14 7l2.1-.9L17 4z"/><path d="M20.5 13.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6z"/></svg><span data-i18n="nav-generation">Generation</span></button>
       <button type="button" class="nav-item" data-open="results" style="--ic:#2DD4BF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0-11L8 7m4-4l4 4"/><path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/></svg><span data-i18n="nav-export">Export &amp; Format</span></button>
       <button type="button" class="nav-item" data-action="appearance" style="--ic:#FB923C"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.7-1-2.7 0-1.2 1-2 2.2-2H17a4 4 0 004-4c0-4.2-4-7.5-9-7.5z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></svg><span data-i18n="nav-appearance">Appearance</span></button>
       <button type="button" class="nav-item" data-action="language" style="--ic:#818CF8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg><span data-i18n="nav-language">Language</span></button>
     </div>
-  </nav>
-  <div class="dash-side-foot">
-    <div class="dash-credit">Created by <a href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">Md Sonet Mia</a> · <a href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">Facebook</a> · <a href="https://wa.me/8801797953059" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
-    <a class="side-btn buy" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">💎 <span data-i18n="buy">Buy Subscription</span></a>
-    <a class="side-btn support" href="https://www.supportkori.com/sonet" target="_blank" rel="noopener noreferrer">☕ <span>সাপোর্ট করুন</span></a>
-  </div>
-</aside>
-<div class="side-backdrop" id="sideBackdrop"></div>
-<main class="main">
-  <div class="topbar">
-    <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-    <div class="ws-menu">
-      <button type="button" class="ws-btn" id="wsBtn" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg><span id="wsName">All Files</span><span class="chev">▾</span></button>
-      <div class="ws-drop" id="wsDrop" hidden>
-        <button type="button" class="ws-item active" data-ws="all">All Files<span class="ws-item-count" data-count="all">0</span></button>
-        <button type="button" class="ws-item" data-ws="jpg">JPG<span class="ws-item-count" data-count="jpg">0</span></button>
-        <button type="button" class="ws-item" data-ws="png">PNG<span class="ws-item-count" data-count="png">0</span></button>
-        <button type="button" class="ws-item" data-ws="webp">WEBP<span class="ws-item-count" data-count="webp">0</span></button>
-        <button type="button" class="ws-item" data-ws="gif">GIF<span class="ws-item-count" data-count="gif">0</span></button>
-        <button type="button" class="ws-item" data-ws="svg">SVG<span class="ws-item-count" data-count="svg">0</span></button>
-        <button type="button" class="ws-item" data-ws="eps">EPS<span class="ws-item-count" data-count="eps">0</span></button>
-        <button type="button" class="ws-item" data-ws="ai">AI<span class="ws-item-count" data-count="ai">0</span></button>
-        <button type="button" class="ws-item" data-ws="video">Video<span class="ws-item-count" data-count="video">0</span></button>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 10-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9"/><path d="M10 20a2.2 2.2 0 004 0"/></svg><span class="dot"></span></button>
-      <button type="button" class="icon-btn" id="helpBtn" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 015 .8c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg></button>
-      <a class="avatar-btn" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer" aria-label="Md Sonet Mia">S</a>
-    </div>
-  </div>
-  <div class="work">
-    <div class="page-head" id="createHead">
-      <h2 data-i18n="page-title">Sweet Metadata lab.</h2>
-      <p class="type-line"><span id="typeText"></span><span class="type-caret" aria-hidden="true"></span></p>
-      <p class="journey-line" id="journeyLine">Microstock Journey With Sonet</p>
-    </div>
-    <div class="opt-grid">
-      <details class="opt-card" id="card-content">
+    <div class="nav-label">Options</div>
+    <div class="side-cards">
+      <details class="opt-card side-card" id="card-content">
         <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 18l4.5-4.5 3.5 3.5L16 13l4 4"/></svg></span><span><b data-i18n="card-content">Content &amp; Marketplace</b><span data-i18n="card-content-sub">Marketplace, Type &amp; Category</span></span><span class="chev">▾</span></summary>
         <div class="opt-body"><div class="field"><div class="label"><span>Marketplace</span><span class="hint">Optimization preset</span></div><select id="marketplace"></select></div><div class="field"><div class="label"><span>Content Type</span><span class="hint">Auto supported</span></div><select id="contentType"><option value="auto">Auto Detect</option><option value="photo">Photo</option><option value="illustration">Illustration</option><option value="vector">Vector</option><option value="video">Video</option></select></div><div class="field"><div class="label"><span>Category / Niche</span><span class="hint">Optional</span></div><select id="category" class="input"><option value="">Auto detect — AI chooses</option><option value="1">1 — Animals</option><option value="2">2 — Buildings and Architecture</option><option value="3">3 — Business</option><option value="4">4 — Drinks</option><option value="5">5 — The Environment</option><option value="6">6 — States of Mind</option><option value="7">7 — Food</option><option value="8">8 — Graphic Resources</option><option value="9">9 — Hobbies and Leisure</option><option value="10">10 — Industry</option><option value="11">11 — Landscapes</option><option value="12">12 — Lifestyle</option><option value="13">13 — People</option><option value="14">14 — Plants and Flowers</option><option value="15">15 — Culture and Religion</option><option value="16">16 — Science</option><option value="17">17 — Social Issues</option><option value="18">18 — Sports</option><option value="19">19 — Technology</option><option value="20">20 — Transport</option><option value="21">21 — Travel</option></select></div>
 <button id="adobePerfect" class="btn full" type="button">✦ Adobe Perfect Setup</button>
 <div class="footer-note">Accepted: JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV.</div></div>
       </details>
-      <details class="opt-card" id="card-ai">
+      <details class="opt-card side-card" id="card-ai">
         <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg></span><span><b data-i18n="card-ai">AI Settings</b><span data-i18n="card-ai-sub">API Key, Model &amp; Instructions</span></span><span class="chev">▾</span></summary>
         <div class="opt-body"><div class="field"><div class="label"><span>Gemini API Key</span><span class="hint">Browser only</span></div><input id="apiKey" class="input" type="password" placeholder="Paste your Google AI Studio API key"></div><a class="btn full" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">🔑 Get Google AI Studio API Key</a><div class="grid3" style="margin-top:8px"><button id="testKey" class="btn">Test</button><button id="saveKey" class="btn success">Save</button><button id="clearKey" class="btn danger">Clear</button></div><div class="field" style="margin-top:12px"><div class="label"><span>Model</span><span class="hint">Vision</span></div><select id="model"></select></div><div class="field" style="margin-top:12px"><div class="label"><span>Extra instruction</span><span class="hint">Optional</span></div><textarea id="extra" placeholder="Extra instruction..."></textarea></div>
 <div id="apiStatus" class="inline-note">Paste your API key and click <b>Test</b>.</div></div>
       </details>
-      <details class="opt-card" id="card-output">
+      <details class="opt-card side-card" id="card-output">
         <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span><span><b data-i18n="card-output">Metadata Rules</b><span data-i18n="card-output-sub">Title, Keywords, Description</span></span><span class="chev">▾</span></summary>
         <div class="opt-body"><div class="panel"><h2>Title</h2><div class="grid2"><div class="field"><div class="label"><span>Title Characters</span><span class="hint">Min</span></div><input id="titleMin" class="input" type="number" value="40" min="1" max="200"></div><div class="field"><div class="label"><span>Title Characters</span><span class="hint">Max</span></div><input id="titleMax" class="input" type="number" value="70" min="10" max="200"></div></div><div class="field"><div class="label"><span>Title Style</span><span class="hint">AI strategy</span></div><select id="titleStyle"><option value="balanced">Balanced / Natural</option><option value="seo">SEO Optimized</option><option value="short">Short & Clean</option><option value="detailed">Detailed</option><option value="marketplace">Marketplace Safe</option></select></div><div class="field"><div class="label"><span>Title Prefix</span><span class="hint">Optional</span></div><input id="prefix" class="input" type="text" placeholder="Optional prefix"></div><div class="field"><div class="label"><span>Title Suffix</span><span class="hint">Optional</span></div><input id="suffix" class="input" type="text" placeholder="Optional suffix"></div></div><div class="panel"><h2>Keywords</h2><div class="grid2"><div class="field"><div class="label"><span>Keywords</span><span class="hint">Min</span></div><input id="keywordMin" class="input" type="number" value="40" min="5" max="100"></div><div class="field"><div class="label"><span>Keywords</span><span class="hint">Max</span></div><input id="keywordMax" class="input" type="number" value="49" min="5" max="100"></div></div><div class="field" style="margin-top:12px"><div class="label"><span>Primary Keywords</span><span class="hint">Comma separated</span></div><input id="primaryKeywords" class="input" type="text" placeholder="e.g. halloween, pumpkin, vector"></div><div class="field"><div class="label"><span>Forbidden Words</span><span class="hint">Never use</span></div><input id="forbiddenWords" class="input" type="text" value="ai generated, mockup" placeholder="e.g. ai generated, mockup, brand name"></div><div class="adobe-note"><b>Adobe rules, checked:</b> title max 200 characters (about 70 recommended — this edition targets 40–70), no commas in the title, up to <b>49 keywords</b> with the <b>first 10 carrying the most search weight</b>. CSV must be exactly Filename, Title, Keywords, Category, Releases.</div>
 <ul class="adobe-rules">
@@ -1111,10 +1099,47 @@ body.paper .status-bad{color:#B91C1C!important}
 
 <div class="inline-note">Chips add phrases to Primary Keywords. Perfect Setup selects Adobe Stock, title 40–70, keywords 40–49, SEO title style and all safety switches on.</div></div><div class="panel"><h2>Description</h2><div class="grid2"><div class="field"><div class="label"><span>Description Words</span><span class="hint">Min</span></div><input id="descMin" class="input" type="number" value="30" min="5" max="300"></div><div class="field"><div class="label"><span>Description Words</span><span class="hint">Max</span></div><input id="descMax" class="input" type="number" value="80" min="10" max="300"></div></div></div></div>
       </details>
-      <details class="opt-card" id="card-advanced">
+      <details class="opt-card side-card" id="card-advanced">
         <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span><b data-i18n="card-advanced">Quality &amp; Safety</b><span data-i18n="card-advanced-sub">Quality, Safety &amp; Analysis</span></span><span class="chev">▾</span></summary>
         <div class="opt-body"><div class="panel"><h2>Quality</h2><div class="switchrow"><span>SEO keyword ordering</span><input id="seo" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Single-word bias when useful</span><input id="singleWord" class="switch" type="checkbox"></div><div class="switchrow"><span>Remove duplicates</span><input id="dedupe" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Batch title diversity</span><input id="batchDiversity" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Keyword quality control</span><input id="qualityCheck" class="switch" type="checkbox" checked></div></div><div class="panel"><h2>Safety</h2><div class="switchrow"><span>Commercial-safe wording</span><input id="commercial" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Strict No-Hallucination</span><input id="strictMode" class="switch" type="checkbox" checked></div></div><div class="panel"><h2>Analysis</h2><div class="switchrow"><span>Detect Visible Text / Typography</span><input id="detectText" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Auto classify asset type</span><input id="autoClassify" class="switch" type="checkbox" checked></div><div class="advanced-note">Smart analysis now asks Gemini to identify the real subject, asset type, visible lettering, style, colors and background before final metadata. Per-card quality score, field regenerate, Smart Fix and Undo are available after generation.</div></div></div>
       </details>
+    </div>
+  </nav>
+  <div class="dash-side-foot">
+    <div class="dash-credit">Created by <a href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">Md Sonet Mia</a> · <a href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">Facebook</a> · <a href="https://wa.me/8801797953059" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+    <a class="side-btn buy" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">💎 <span data-i18n="buy">Buy Subscription</span></a>
+    <a class="side-btn support" href="https://www.supportkori.com/sonet" target="_blank" rel="noopener noreferrer">☕ <span>সাপোর্ট করুন</span></a>
+  </div>
+</aside>
+<div class="side-backdrop" id="sideBackdrop"></div>
+<main class="main">
+  <div class="topbar">
+    <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="ws-menu">
+      <button type="button" class="ws-btn" id="wsBtn" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg><span id="wsName">All Files</span><span class="chev">▾</span></button>
+      <div class="ws-drop" id="wsDrop" hidden>
+        <button type="button" class="ws-item active" data-ws="all">All Files<span class="ws-item-count" data-count="all">0</span></button>
+        <button type="button" class="ws-item" data-ws="jpg">JPG<span class="ws-item-count" data-count="jpg">0</span></button>
+        <button type="button" class="ws-item" data-ws="png">PNG<span class="ws-item-count" data-count="png">0</span></button>
+        <button type="button" class="ws-item" data-ws="webp">WEBP<span class="ws-item-count" data-count="webp">0</span></button>
+        <button type="button" class="ws-item" data-ws="gif">GIF<span class="ws-item-count" data-count="gif">0</span></button>
+        <button type="button" class="ws-item" data-ws="svg">SVG<span class="ws-item-count" data-count="svg">0</span></button>
+        <button type="button" class="ws-item" data-ws="eps">EPS<span class="ws-item-count" data-count="eps">0</span></button>
+        <button type="button" class="ws-item" data-ws="ai">AI<span class="ws-item-count" data-count="ai">0</span></button>
+        <button type="button" class="ws-item" data-ws="video">Video<span class="ws-item-count" data-count="video">0</span></button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 10-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9"/><path d="M10 20a2.2 2.2 0 004 0"/></svg><span class="dot"></span></button>
+      <button type="button" class="icon-btn" id="helpBtn" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 015 .8c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg></button>
+      <a class="avatar-btn" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer" aria-label="Md Sonet Mia">S</a>
+    </div>
+  </div>
+  <div class="work">
+    <div class="page-head" id="createHead">
+      <h2 data-i18n="page-title">Sweet Metadata lab.</h2>
+      <p class="type-line"><span id="typeText"></span><span class="type-caret" aria-hidden="true"></span></p>
+      <p class="journey-line" id="journeyLine">Microstock Journey With Sonet</p>
     </div>
     <section class="upload-shell"><div class="upload-inner">
       <div id="drop" class="drop"><input id="files" type="file" multiple accept="image/*,image/svg+xml,.svg,.eps,.ai,application/postscript,application/illustrator,video/mp4,video/webm,video/quicktime,.mov"><div><div class="drop-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 18l4.5-4.5 3.5 3.5L16 13l4 4"/></svg><span class="plus-badge">+</span></div><b>Upload your image or vector</b><small>Drag &amp; drop files here or click to upload</small><div class="btn primary browse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg><span data-i18n="upload-btn">Upload File</span></div></div></div><div class="supports"><b data-i18n="supports-label">Supports:</b> <span data-i18n="supports-list">JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV</span></div>
@@ -1716,10 +1741,12 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
   function scrollToEl(el) { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   function openCard(id) {
-    if (id === 'results') openWorkspace();
+    if (id === 'results') { openWorkspace(); scrollToEl(document.getElementById('results')); return; }
     var c = document.getElementById(id);
-    if (c && c.tagName === 'DETAILS') { c.open = true; scrollToEl(c); }
-    else scrollToEl(c);
+    if (!c) return;
+    openSidebar(); /* the 4 option cards live in the sidebar now */
+    if (c.tagName === 'DETAILS') c.open = true;
+    scrollToEl(c);
   }
   function flashEl(el) {
     if (!el) return;
@@ -1809,12 +1836,12 @@ document.addEventListener('DOMContentLoaded', function () {
   syncWsCount();
   document.querySelectorAll('[data-nav]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      closeSidebar();
       document.querySelectorAll('.dash-nav .nav-item').forEach(function (n) { n.classList.remove('active'); });
       btn.classList.add('active');
       var k = btn.getAttribute('data-nav');
-      if (k === 'create') scrollToEl(document.getElementById('createHead'));
+      if (k === 'create') { closeSidebar(); scrollToEl(document.getElementById('createHead')); }
       if (k === 'generations') {
+        closeSidebar();
         openWorkspace();
         scrollToEl(document.getElementById('results'));
         var total = document.getElementById('totalStat');
@@ -1858,7 +1885,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 500);
   });
   document.querySelectorAll('[data-open]').forEach(function (btn) {
-    btn.addEventListener('click', function () { closeSidebar(); openCard(btn.getAttribute('data-open')); });
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-open');
+      if (id === 'results') closeSidebar();
+      openCard(id);
+    });
   });
   document.querySelectorAll('[data-tool]').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -2034,8 +2065,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var typeText = document.getElementById('typeText');
   var journeyLine = document.getElementById('journeyLine');
   var TYPE_TEXTS = {
-    en: 'Generate professional titles, keywords and descriptions for stock content for Microstock Sites.',
-    bn: 'মাইক্রোস্টক সাইটগুলোর স্টক কনটেন্টের জন্য পেশাদার টাইটেল, কিওয়ার্ড ও বিবরণ তৈরি করুন।'
+    en: 'Generate professional titles, keywords and descriptions for All Microstock Sites.',
+    bn: 'সব মাইক্রোস্টক সাইটের স্টক কনটেন্টের জন্য পেশাদার টাইটেল, কিওয়ার্ড ও বিবরণ তৈরি করুন।'
   };
   var typeTimer = null;
   function startTyping() {
