@@ -1647,15 +1647,59 @@ document.addEventListener('DOMContentLoaded', function () {
     if (c && c.tagName === 'DETAILS') { c.open = true; scrollToEl(c); }
     else scrollToEl(c);
   }
+  function flashEl(el) {
+    if (!el) return;
+    var prev = el.style.boxShadow;
+    el.style.boxShadow = '0 0 0 3px rgba(37,99,235,.55)';
+    setTimeout(function () { el.style.boxShadow = prev; }, 1800);
+  }
   document.querySelectorAll('[data-nav]').forEach(function (btn) {
     btn.addEventListener('click', function () {
       document.querySelectorAll('.dash-nav .nav-item').forEach(function (n) { n.classList.remove('active'); });
       btn.classList.add('active');
       var k = btn.getAttribute('data-nav');
       if (k === 'create') scrollToEl(document.getElementById('createHead'));
-      if (k === 'generations') scrollToEl(document.getElementById('results'));
-      if (k === 'templates') openCard('card-output');
+      if (k === 'generations') {
+        scrollToEl(document.getElementById('results'));
+        var total = document.getElementById('totalStat');
+        var done = document.getElementById('doneStat');
+        if (typeof toast === 'function') toast('My Generations: ' + (total ? total.textContent : '0 Files') + ' • ' + (done ? done.textContent : '0 Success') + '.');
+        flashEl(document.getElementById('results'));
+      }
+      if (k === 'templates') {
+        openCard('card-output');
+        if (typeof toast === 'function') toast('Templates live in Metadata Rules — title styles and Adobe buyer-search phrases.');
+        flashEl(document.getElementById('card-output'));
+      }
     });
+  });
+  /* Generate without a key used to only show a toast while the AI Settings
+     card (holding the key field) stayed closed, so the user could not see
+     where to paste the key. Open that card and focus the key field. */
+  var genBtn = document.getElementById('generate');
+  if (genBtn) genBtn.addEventListener('click', function () {
+    var k = document.getElementById('apiKey');
+    if (k && !k.value.trim()) {
+      openCard('card-ai');
+      setTimeout(function () { k.focus(); }, 350);
+    }
+  });
+  /* A successful Test did not save the key — the user had to remember to
+     click Save separately, or the key was lost on reload. Auto-save the
+     key in this browser once the test reports success. */
+  var testBtn = document.getElementById('testKey');
+  if (testBtn) testBtn.addEventListener('click', function () {
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries++;
+      var st = document.getElementById('apiStatus');
+      var k = document.getElementById('apiKey');
+      if (st && st.textContent.indexOf('API Key Ready') !== -1 && k && k.value.trim()) {
+        clearInterval(timer);
+        try { localStorage.setItem('metadata_studio_gemini_key', k.value.trim()); } catch (e) {}
+        if (typeof toast === 'function') toast('API key saved in this browser.');
+      } else if (tries >= 24) { clearInterval(timer); }
+    }, 500);
   });
   document.querySelectorAll('[data-open]').forEach(function (btn) {
     btn.addEventListener('click', function () { openCard(btn.getAttribute('data-open')); });
