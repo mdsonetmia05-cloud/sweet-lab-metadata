@@ -288,6 +288,10 @@ textarea{line-height:1.6!important}
    (dark theme only — the cream hero is a soft plain gradient). */
 body{font-size:14px!important;line-height:1.55!important;background:#070D1A!important;background-image:none!important;color:#EAF0FA}
 h1,.upload-heading h2,.support-dialog h3{font-family:Inter,system-ui,sans-serif!important}
+/* SolaimanLipi (SIL OFL) for Bangla: self-hosted next to index.html.
+   Used only when the language is Bangla (body.lang-bn). */
+@font-face{font-family:'SolaimanLipi';src:url('SolaimanLipi.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+body.lang-bn,body.lang-bn *{font-family:'SolaimanLipi','Hind Siliguri',system-ui,sans-serif!important}
 a{color:#6EA8FF}
 :focus-visible{outline:2px solid #2563EB;outline-offset:2px;border-radius:6px}
 .app{grid-template-columns:minmax(0,1fr)!important;min-height:100vh}
@@ -915,8 +919,6 @@ body.paper .progress-wrap{background:#F7F1DF!important;border-color:#D9CBAE!impo
 body.paper .track{background:#D9CBAE!important;border-color:#D9CBAE!important}
 body.paper .bar{background:#6B4423!important}
 body.paper .progress-meta{color:#71624E!important}
-body.paper .opt-card{background:#FBF7EC!important;border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px;box-shadow:0 1px 3px rgba(74,58,32,.07),0 10px 28px rgba(74,58,32,.05)}
-body.paper .opt-card:hover{border-color:#C9B892!important}
 body.paper .opt-card[open]{box-shadow:0 14px 34px rgba(74,58,32,.12)}
 body.paper .sidebar .opt-card,body.paper .sidebar .opt-card[open],body.paper .sidebar .opt-card:hover{background:transparent!important;border:0!important;outline:none!important;box-shadow:none!important}
 body.paper .opt-card>summary b{color:#2E2118!important;font-family:"Fraunces",Georgia,"Times New Roman",serif!important}
@@ -1924,16 +1926,14 @@ document.addEventListener('DOMContentLoaded', function () {
     settingsToggle.setAttribute('aria-expanded', String(hidden));
     settingsToggle.querySelector('.chev').textContent = hidden ? '▴' : '▾';
   });
-  /* Rail: with the sidebar collapsed to icons, the first click on any
-     sidebar item only expands the full sidebar; the action runs on the
-     next click. */
+  /* Rail: with the sidebar collapsed to icons, one click on any
+     sidebar item opens the sidebar AND runs that item's action
+     together (the click is not swallowed). */
   var sidebarEl = document.querySelector('.sidebar');
   if (sidebarEl) sidebarEl.addEventListener('click', function (e) {
     if (document.body.classList.contains('sidebar-open')) return;
     var t = e.target && e.target.closest ? e.target.closest('button, a') : null;
     if (t && !t.classList.contains('side-close')) {
-      e.preventDefault();
-      e.stopPropagation();
       openSidebar();
     }
   }, true);
@@ -2052,21 +2052,295 @@ document.addEventListener('DOMContentLoaded', function () {
     'card-advanced-sub': { en: 'Quality, Safety & Analysis', bn: 'কোয়ালিটি, সেফটি ও অ্যানালাইসিস' },
     'buy': { en: 'Buy Subscription', bn: 'সাবস্ক্রিপশন কিনুন' }
   };
+  /* Language: full-website Bangla. The [data-i18n] chrome is swapped
+     by key; every other static UI string is translated by exact match
+     (BN_TEXT) plus count patterns, with a MutationObserver so text the
+     main script renders later (asset cards, toasts) is translated too.
+     Generated metadata stays in English (it is written for Adobe Stock).
+     Choice persists in localStorage; Bangla renders in SolaimanLipi. */
   var lang = 'en';
+  try {
+    var savedLang = (typeof localStorage !== 'undefined') ? localStorage.getItem('sweetlab_lang') : null;
+    if (savedLang === 'bn' || savedLang === 'en') lang = savedLang;
+  } catch (e) {}
+  var BN_TEXT = {
+    'AI Metadata Generator': 'AI মেটাডেটা জেনারেটর',
+    'AI strategy': 'AI কৌশল',
+    'ALL Copy': 'সব কপি করুন',
+    'ALL Download CSV': 'সব CSV ডাউনলোড',
+    'ALL Download Sheet': 'সব শিট ডাউনলোড',
+    'ALL Download TXT': 'সব TXT ডাউনলোড',
+    'Accepted: JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV.': 'গৃহীত: JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV.',
+    'Adobe rules, checked:': 'অ্যাডোবির নিয়ম, যাচাই করা:',
+    'Analysis': 'বিশ্লেষণ',
+    'Asset Workspace': 'অ্যাসেট ওয়ার্কস্পেস',
+    'Auto Detect': 'অটো শনাক্ত',
+    'Auto classify asset type': 'অ্যাসেটের ধরন অটো শনাক্ত করুন',
+    'Auto detect — AI chooses': 'অটো শনাক্ত — AI বেছে নেবে',
+    'Auto supported': 'অটো সমর্থিত',
+    'Balanced / Natural': 'ভারসাম্যপূর্ণ / স্বাভাবিক',
+    'Batch title diversity': 'ব্যাচ টাইটেলের বৈচিত্র্য',
+    'Browser only': 'শুধু ব্রাউজারে',
+    'Buyers type this': 'ক্রেতারা এটা লেখেন',
+    'Category / Niche': 'ক্যাটাগরি / নিশ',
+    'Clear': 'মুছুন',
+    'Clear All': 'সব মুছুন',
+    'Close': 'বন্ধ করুন',
+    'Comma separated': 'কমা দিয়ে আলাদা করুন',
+    'Commercial-safe wording': 'বাণিজ্যিকভাবে নিরাপদ শব্দ',
+    'Composition buyers search': 'কম্পোজিশন ক্রেতারা খোঁজেন',
+    'Content Type': 'কনটেন্টের ধরন',
+    'Copy All': 'সব কপি করুন',
+    'Created by': 'তৈরি করেছেন',
+    'Description': 'বিবরণ',
+    'Description Words': 'বিবরণের শব্দ',
+    'Detailed': 'বিস্তারিত',
+    'Detect Visible Text / Typography': 'দৃশ্যমান টেক্সট / টাইপোগ্রাফি শনাক্ত করুন',
+    'Download CSV': 'CSV ডাউনলোড',
+    'Download Sheet': 'শিট ডাউনলোড',
+    'Export & Format': 'এক্সপোর্ট ও ফরম্যাট',
+    'Extra instruction': 'অতিরিক্ত নির্দেশনা',
+    'First 10 keywords:': 'প্রথম ১০টি কিওয়ার্ড:',
+    'Forbidden Words': 'নিষিদ্ধ শব্দ',
+    'Gemini API Key': 'জেমিনি API Key',
+    'Generated Results': 'তৈরি ফলাফল',
+    'Illustration': 'ইলাস্ট্রেশন',
+    'Keyword quality control': 'কিওয়ার্ড মান নিয়ন্ত্রণ',
+    'Keywords': 'কিওয়ার্ড',
+    'Latest processed items move to the top automatically. Edit metadata directly inside each card.': 'সর্বশেষ প্রসেস করা আইটেমগুলো অটো উপরে চলে আসে। প্রতিটি কার্ডের ভেতরেই মেটাডেটা এডিট করুন।',
+    'Marketplace': 'মার্কেটপ্লেস',
+    'Marketplace Safe': 'মার্কেটপ্লেস নিরাপদ',
+    'Max': 'সর্বোচ্চ',
+    'Microstock Journey With Sonet': 'সোনেতের সাথে মাইক্রোস্টক যাত্রা',
+    'Min': 'সর্বনিম্ন',
+    'Model': 'মডেল',
+    'Never use': 'কখনো ব্যবহার করবেন না',
+    'Optimization preset': 'অপটিমাইজেশন প্রিসেট',
+    'Optional': 'ঐচ্ছিক',
+    'Options': 'অপশন',
+    'Paste your API key and click the Test button.': 'আপনার API Key পেস্ট করে Test বাটনে ক্লিক করুন।',
+    'Photo': 'ছবি',
+    'Preview': 'প্রিভিউ',
+    'Primary Keywords': 'প্রধান কিওয়ার্ড',
+    'Quality': 'মান',
+    'Ready': 'প্রস্তুত',
+    'Remove duplicates': 'ডুপ্লিকেট সরান',
+    'Retry Failed': 'ব্যর্থগুলো আবার চেষ্টা করুন',
+    'SEO Optimized': 'SEO অপটিমাইজড',
+    'SEO keyword ordering': 'SEO কিওয়ার্ড সাজানো',
+    'Safety': 'নিরাপত্তা',
+    'Save': 'সংরক্ষণ করুন',
+    'Short & Clean': 'ছোট ও পরিষ্কার',
+    'Single-word bias when useful': 'প্রয়োজনে এক-শব্দের পক্ষপাত',
+    'Strict No-Hallucination': 'কঠোর নো-হ্যালুসিনেশন',
+    'Sweet Metadata Lab': 'সুইট মেটাডেটা ল্যাব',
+    'Test': 'টেস্ট',
+    'Title': 'টাইটেল',
+    'Title Characters': 'টাইটেলের অক্ষর',
+    'Title Prefix': 'টাইটেল প্রিফিক্স',
+    'Title Style': 'টাইটেল স্টাইল',
+    'Title Suffix': 'টাইটেল সাফিক্স',
+    'Upload File': 'ফাইল আপলোড',
+    'Use case': 'ব্যবহার',
+    'Vector': 'ভেক্টর',
+    'Video': 'ভিডিও',
+    'Vision': 'ভিশন',
+    'All Files': 'সব ফাইল',
+    '2026 trends:': '২০২৬-এর ট্রেন্ড:',
+    'Evergreen demand:': 'চিরন্তন চাহিদা:',
+    'Menu': 'মেনু',
+    'Facebook': 'ফেসবুক',
+    'WhatsApp': 'হোয়াটসঅ্যাপ',
+    'Chips add phrases to Primary Keywords. Perfect Setup selects Adobe Stock, title 40–70, keywords 40–49, SEO title style and all safety switches on.': 'চিপগুলো প্রধান কিওয়ার্ডে শব্দগুচ্ছ যোগ করে। পারফেক্ট সেটআপ অ্যাডোবি স্টক, টাইটেল ৪০–৭০, কিওয়ার্ড ৪০–৪৯, SEO টাইটেল স্টাইল বেছে নেয় এবং সব সেফটি সুইচ চালু করে।',
+    'Smart analysis now asks Gemini to identify the real subject, asset type, visible lettering, style, colors and background before final metadata. Per-card quality score, field regenerate, Smart Fix and Undo are available after generation.': 'স্মার্ট বিশ্লেষণ এখন চূড়ান্ত মেটাডেটার আগে জেমিনিকে আসল বিষয়, অ্যাসেটের ধরন, দৃশ্যমান লেখা, স্টাইল, রং ও ব্যাকগ্রাউন্ড শনাক্ত করতে বলে। তৈরির পর প্রতিটি কার্ডে মানের স্কোর, ফিল্ড আবার তৈরি, স্মার্ট ফিক্স ও আনডু পাওয়া যায়।',
+    'title max 200 characters (about 70 recommended — this edition targets 40–70), no commas in the title, up to': 'টাইটেল সর্বোচ্চ ২০০ অক্ষর (প্রায় ৭০ সুপারিশকৃত — এই সংস্করণে লক্ষ্য ৪০–৭০), টাইটেলে কমা নয়, সর্বোচ্চ',
+    '. CSV must be exactly Filename, Title, Keywords, Category, Releases.': '. CSV-তে ঠিক Filename, Title, Keywords, Category, Releases থাকতে হবে।',
+    'first 10 carrying the most search weight': 'প্রথম ১০টি সবচেয়ে বেশি সার্চ ওজন বহন করে',
+    'the most specific literal subject — never a generic word like “background” or “concept” in position 1.': 'সবচেয়ে নির্দিষ্ট আক্ষরিক বিষয় — ১ নম্বর স্থানে “background” বা “concept”-এর মতো সাধারণ শব্দ কখনো নয়।',
+    '✦ Adobe Perfect Setup': '✦ অ্যাডোবি পারফেক্ট সেটআপ',
+    '⚡ Generate Metadata': '⚡ মেটাডেটা তৈরি করুন',
+    '🔑 Get API Key': '🔑 API Key নিন',
+    '■ Stop': '■ থামুন',
+    'API key saved in this browser.': 'API Key এই ব্রাউজারে সংরক্ষণ করা হয়েছে।',
+    'API key test completed successfully.': 'API Key টেস্ট সফল হয়েছে।',
+    'API key test failed.': 'API Key টেস্ট ব্যর্থ হয়েছে।',
+    'API test timed out.': 'API টেস্টের সময় শেষ হয়েছে।',
+    'Add your Google AI Studio API key first.': 'আগে আপনার Google AI Studio API Key যোগ করুন।',
+    'Adobe Stock perfect setup applied.': 'অ্যাডোবি স্টক পারফেক্ট সেটআপ প্রয়োগ হয়েছে।',
+    'All metadata copied.': 'সব মেটাডেটা কপি হয়েছে।',
+    'Assets cleared.': 'অ্যাসেট মুছে ফেলা হয়েছে।',
+    'CSV downloaded.': 'CSV ডাউনলোড হয়েছে।',
+    'Copied.': 'কপি হয়েছে।',
+    'Enter an API key first.': 'আগে একটি API Key দিন।',
+    'No completed metadata to copy.': 'কপি করার মতো সম্পূর্ণ মেটাডেটা নেই।',
+    'No completed metadata to export.': 'এক্সপোর্ট করার মতো সম্পূর্ণ মেটাডেটা নেই।',
+    'No failed assets to retry.': 'আবার চেষ্টা করার মতো ব্যর্থ অ্যাসেট নেই।',
+    'No metadata history available.': 'কোনো মেটাডেটা ইতিহাস নেই।',
+    'No new notifications.': 'কোনো নতুন নোটিফিকেশন নেই।',
+    'Paste an API key first.': 'আগে একটি API Key পেস্ট করুন।',
+    'Previous metadata restored.': 'আগের মেটাডেটা ফিরিয়ে আনা হয়েছে।',
+    'Saved key cleared.': 'সংরক্ষিত Key মুছে ফেলা হয়েছে।',
+    'Sheet downloaded.': 'শিট ডাউনলোড হয়েছে।',
+    'Smart Fix completed.': 'স্মার্ট ফিক্স সম্পন্ন হয়েছে।',
+    'Stopping after current asset…': 'বর্তমান অ্যাসেটের পর থামছে…',
+    'TXT downloaded.': 'TXT ডাউনলোড হয়েছে।',
+    'Templates live in Metadata Rules — title styles and Adobe buyer-search phrases.': 'টেমপ্লেট মেটাডেটা নিয়মে আছে — টাইটেল স্টাইল ও অ্যাডোবি ক্রেতা-সার্চ শব্দগুচ্ছ।',
+    'This asset has not produced a result yet.': 'এই অ্যাসেটের এখনো কোনো ফলাফল আসেনি।',
+    'Upload at least one image, vector or video.': 'অন্তত একটি ছবি, ভেক্টর বা ভিডিও আপলোড করুন।',
+    'Light appearance on.': 'হালকা থিম চালু হয়েছে।',
+    'Dark appearance on.': 'ডার্ক থিম চালু হয়েছে।',
+    'Paper Formal theme on.': 'পেপার ফরমাল থিম চালু হয়েছে।',
+    'English language on.': 'ইংরেজি ভাষা চালু হয়েছে।'
+  };
+  var BN_DIGITS = {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'};
+  function bnDigits(s) { return String(s).replace(/[0-9]/g, function (d) { return BN_DIGITS[d]; }); }
+  function translateText(s) {
+    if (BN_TEXT.hasOwnProperty(s)) return BN_TEXT[s];
+    var m = s.match(/^(\d+)\s+(Files?|Success|Pending|Failed)$/);
+    if (m) {
+      var w = { File: 'ফাইল', Files: 'ফাইল', Success: 'সফল', Pending: 'অপেক্ষমাণ', Failed: 'ব্যর্থ' }[m[2]];
+      return bnDigits(m[1]) + ' ' + w;
+    }
+    m = s.match(/^(\d+)\s+keywords$/);
+    if (m) return bnDigits(m[1]) + ' টি কিওয়ার্ড';
+    m = s.match(/^(\d+)%$/);
+    if (m) return bnDigits(m[1]) + '%';
+    return null;
+  }
+  function walkTextNodes(root, fn) {
+    var SHOW_TEXT = (typeof NodeFilter !== 'undefined' && NodeFilter.SHOW_TEXT) || 4;
+    if (document.createTreeWalker) {
+      var w = document.createTreeWalker(root, SHOW_TEXT, null);
+      var list = [], n;
+      while ((n = w.nextNode())) list.push(n);
+      list.forEach(fn);
+    } else {
+      (function rec(node) {
+        var kids = node.childNodes || [];
+        for (var i = 0; i < kids.length; i++) {
+          var c = kids[i];
+          if (c.nodeType === 3) fn(c);
+          else if (c.nodeType === 1) rec(c);
+        }
+      })(root);
+    }
+  }
+  function translateAttrs(el) {
+    if (!el || !el.getAttribute) return;
+    [['title', '_enTitle'], ['placeholder', '_enPlaceholder']].forEach(function (pair) {
+      var attr = pair[0], slot = pair[1];
+      var v = el.getAttribute(attr);
+      if (!v) return;
+      var out = translateText(v.trim());
+      if (out === null) return;
+      if (el[slot] === undefined) el[slot] = v;
+      el.setAttribute(attr, v.replace(v.trim(), out));
+    });
+  }
+  function restoreAttrs(el) {
+    if (!el || !el.getAttribute) return;
+    if (el._enTitle !== undefined) { el.setAttribute('title', el._enTitle); delete el._enTitle; }
+    if (el._enPlaceholder !== undefined) { el.setAttribute('placeholder', el._enPlaceholder); delete el._enPlaceholder; }
+  }
+  function applyBn(root) {
+    if (!root) return;
+    walkTextNodes(root, function (node) {
+      var parent = node.parentElement || node.parentNode;
+      if (!parent || parent.nodeType !== 1) return;
+      if (parent.closest && parent.closest('[data-i18n],script,style')) return;
+      var t = node.nodeValue;
+      if (!t || !t.trim()) return;
+      var out = translateText(t.trim());
+      if (out === null) return;
+      if (node._enText === undefined) node._enText = t;
+      node.nodeValue = t.replace(t.trim(), out);
+    });
+    if (root.nodeType === 1) {
+      translateAttrs(root);
+      if (root.querySelectorAll) {
+        var els = root.querySelectorAll('[title],[placeholder]');
+        for (var i = 0; i < els.length; i++) translateAttrs(els[i]);
+      }
+    }
+  }
+  function restoreEn(root) {
+    if (!root) return;
+    walkTextNodes(root, function (node) {
+      if (node._enText !== undefined) { node.nodeValue = node._enText; delete node._enText; }
+    });
+    if (root.nodeType === 1) {
+      restoreAttrs(root);
+      if (root.querySelectorAll) {
+        var els = root.querySelectorAll('[title],[placeholder]');
+        for (var i = 0; i < els.length; i++) restoreAttrs(els[i]);
+      }
+    }
+  }
+  var bnObserver = null;
+  function startBnObserver() {
+    if (bnObserver || typeof MutationObserver !== 'function' || !document.body) return;
+    bnObserver = new MutationObserver(function (mutations) {
+      if (lang !== 'bn') return;
+      mutations.forEach(function (mu) {
+        if (mu.type === 'characterData' && mu.target && mu.target.nodeType === 3) {
+          var node = mu.target;
+          var parent = node.parentElement || node.parentNode;
+          if (!parent || parent.nodeType !== 1) return;
+          if (parent.closest && parent.closest('[data-i18n],script,style')) return;
+          var t = node.nodeValue;
+          if (!t || !t.trim()) return;
+          var out = translateText(t.trim());
+          if (out === null) return;
+          if (node._enText === undefined) node._enText = t;
+          node.nodeValue = t.replace(t.trim(), out);
+        } else {
+          for (var i = 0; i < mu.addedNodes.length; i++) {
+            var added = mu.addedNodes[i];
+            if (added.nodeType === 3) {
+              var p = added.parentElement || added.parentNode;
+              if (!p || p.nodeType !== 1) continue;
+              if (p.closest && p.closest('[data-i18n],script,style')) continue;
+              var tv = added.nodeValue;
+              if (!tv || !tv.trim()) continue;
+              var o2 = translateText(tv.trim());
+              if (o2 === null) continue;
+              if (added._enText === undefined) added._enText = tv;
+              added.nodeValue = tv.replace(tv.trim(), o2);
+            } else if (added.nodeType === 1) {
+              applyBn(added);
+            }
+          }
+        }
+      });
+    });
+    bnObserver.observe(document.body, { subtree: true, childList: true, characterData: true });
+  }
+  function setLang(next, announce) {
+    lang = next;
+    try { if (typeof localStorage !== 'undefined') localStorage.setItem('sweetlab_lang', lang); } catch (e) {}
+    if (document.documentElement) document.documentElement.setAttribute('lang', lang);
+    if (document.body) document.body.classList.toggle('lang-bn', lang === 'bn');
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var d = I18N[el.getAttribute('data-i18n')];
+      if (d) el.textContent = d[lang];
+    });
+    var up = document.querySelector('#drop b');
+    if (up) up.textContent = lang === 'bn' ? 'আপনার ছবি বা ভেক্টর আপলোড করুন' : 'Upload your image or vector';
+    var sub = document.querySelector('#drop small');
+    if (sub) sub.textContent = lang === 'bn' ? 'ফাইল এখানে টেনে ছাড়ুন অথবা ক্লিক করে আপলোড করুন' : 'Drag & drop files here or click to upload';
+    document.title = lang === 'bn' ? 'সুইট মেটাডেটা ল্যাব — মেটাডেটা তৈরি করুন' : 'Sweet Metadata Lab — Create Metadata';
+    if (lang === 'bn') {
+      startBnObserver();
+      if (document.body) applyBn(document.body);
+    } else {
+      if (document.body) restoreEn(document.body);
+    }
+    if (announce !== false && typeof toast === 'function') toast(lang === 'bn' ? 'বাংলা ভাষা চালু হয়েছে।' : 'English language on.');
+    startTyping();
+  }
   document.querySelectorAll('[data-action="language"]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      closeSidebar();
-      lang = lang === 'en' ? 'bn' : 'en';
-      document.querySelectorAll('[data-i18n]').forEach(function (el) {
-        var d = I18N[el.getAttribute('data-i18n')];
-        if (d) el.textContent = d[lang];
-      });
-      var up = document.querySelector('#drop b');
-      if (up) up.textContent = lang === 'bn' ? 'আপনার ছবি বা ভেক্টর আপলোড করুন' : 'Upload your image or vector';
-      var sub = document.querySelector('#drop small');
-      if (sub) sub.textContent = lang === 'bn' ? 'ফাইল এখানে টেনে ছাড়ুন অথবা ক্লিক করে আপলোড করুন' : 'Drag & drop files here or click to upload';
-      if (typeof toast === 'function') toast(lang === 'bn' ? 'বাংলা ভাষা চালু হয়েছে।' : 'English language on.');
-      startTyping();
+      setLang(lang === 'en' ? 'bn' : 'en');
     });
   });
   /* Page-head typewriter: the subtitle types itself, then the
@@ -2115,6 +2389,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
   }
   startTyping();
+  if (lang === 'bn') setLang('bn', false);
 });
 </script>
 
