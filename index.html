@@ -1928,11 +1928,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   /* Rail: with the sidebar collapsed to icons, one click on any
      sidebar item opens the sidebar AND runs that item's action
-     together (the click is not swallowed). */
+     together (the click is not swallowed). Summaries are included:
+     the 4 option cards are <summary> elements, not buttons. */
   var sidebarEl = document.querySelector('.sidebar');
   if (sidebarEl) sidebarEl.addEventListener('click', function (e) {
     if (document.body.classList.contains('sidebar-open')) return;
-    var t = e.target && e.target.closest ? e.target.closest('button, a') : null;
+    var t = e.target && e.target.closest ? e.target.closest('button, a, summary') : null;
     if (t && !t.classList.contains('side-close')) {
       openSidebar();
     }
@@ -2034,7 +2035,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'nav-export': { en: 'Export & Format', bn: 'এক্সপোর্ট ও ফরম্যাট' },
     'nav-appearance': { en: 'Appearance', bn: 'ডিসপ্লে' },
     'nav-language': { en: 'Language', bn: 'ভাষা' },
-    'page-title': { en: 'Sweet Metadata lab.', bn: 'Sweet Metadata lab.' },
+    'page-title': { en: 'Sweet Metadata lab.', bn: 'সুইট মেটাডেটা ল্যাব.' },
     'upload-btn': { en: 'Upload File', bn: 'ফাইল আপলোড করুন' },
     'supports-label': { en: 'Supports:', bn: 'সমর্থিত:' },
     'supports-list': { en: 'JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV', bn: 'JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV' },
@@ -2130,6 +2131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'SEO keyword ordering': 'SEO কিওয়ার্ড সাজানো',
     'Safety': 'নিরাপত্তা',
     'Save': 'সংরক্ষণ করুন',
+    'Settings': 'সেটিংস',
     'Short & Clean': 'ছোট ও পরিষ্কার',
     'Single-word bias when useful': 'প্রয়োজনে এক-শব্দের পক্ষপাত',
     'Strict No-Hallucination': 'কঠোর নো-হ্যালুসিনেশন',
@@ -2190,7 +2192,14 @@ document.addEventListener('DOMContentLoaded', function () {
     'Light appearance on.': 'হালকা থিম চালু হয়েছে।',
     'Dark appearance on.': 'ডার্ক থিম চালু হয়েছে।',
     'Paper Formal theme on.': 'পেপার ফরমাল থিম চালু হয়েছে।',
-    'English language on.': 'ইংরেজি ভাষা চালু হয়েছে।'
+    'English language on.': 'ইংরেজি ভাষা চালু হয়েছে।',
+    'Auto Stable (Recommended)': 'অটো স্টেবল (সুপারিশকৃত)',
+    'Paste your Google AI Studio API key': 'আপনার Google AI Studio API Key পেস্ট করুন',
+    'Extra instruction...': 'অতিরিক্ত নির্দেশনা...',
+    'Optional prefix': 'ঐচ্ছিক প্রিফিক্স',
+    'Optional suffix': 'ঐচ্ছিক সাফিক্স',
+    'e.g. halloween, pumpkin, vector': 'যেমন: halloween, pumpkin, vector',
+    'e.g. ai generated, mockup, brand name': 'যেমন: ai generated, mockup, brand name'
   };
   var BN_DIGITS = {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'};
   function bnDigits(s) { return String(s).replace(/[0-9]/g, function (d) { return BN_DIGITS[d]; }); }
