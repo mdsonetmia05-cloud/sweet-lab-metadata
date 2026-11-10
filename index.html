@@ -1,0 +1,1511 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Sweet Metadata Lab, Adobe Stock edition — buyer-first titles and 49 ranked keywords for stock images, vectors and videos, using your own Google AI Studio API key."><title>Sweet Metadata Lab — Create Metadata</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet"><style>:root{--bg:#070D1A;--panel:#0F1930;--panel2:#0F1930;--card:#0F1930;--line:#1C2A47;--line2:#26365A;--text:#EAF0FA;--soft:#C3CEE2;--muted:#8B98B4;--cyan:#2563EB;--cyan2:#3B82F6;--purple:#6366F1;--amber:#FBBF24;--ok:#34D399;--bad:#F87171;--warn:#2563EB;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;color:var(--text);background:radial-gradient(circle at 80% 0,rgba(92,64,255,.13),transparent 34rem),radial-gradient(circle at 15% 0,rgba(0,217,238,.08),transparent 30rem),#070a0f}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:350px minmax(0,1fr);min-height:100vh}.sidebar{height:100vh;position:sticky;top:0;overflow:auto;border-right:1px solid #202b3b;background:linear-gradient(180deg,rgba(11,16,24,.98),rgba(8,12,18,.98));scrollbar-width:thin}.brand{padding:20px;border-bottom:1px solid var(--line)}.logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#061016;background:linear-gradient(145deg,var(--cyan),#76c8ff 55%,#8d62ff);font-size:22px;font-weight:900;box-shadow:0 0 24px rgba(8,217,238,.2)}h1{font:700 23px/1.05 "Space Grotesk",Inter;margin:13px 0 6px}.brand p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.panel{margin:14px;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(17,25,39,.92),rgba(12,18,28,.92));box-shadow:inset 0 1px rgba(255,255,255,.025)}.panel h2{margin:0 0 12px;color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.field{margin-bottom:12px}.field:last-child{margin-bottom:0}.label{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;color:var(--soft);font-size:11px;font-weight:800}.hint{color:var(--muted);font-weight:500}.input,select,textarea,.edit-input{width:100%;border:1px solid var(--line2);border-radius:10px;background:#090f18;color:var(--text);outline:none}.input,select,.edit-input{height:40px;padding:0 11px}textarea{padding:11px;resize:vertical;line-height:1.5}.input:focus,select:focus,textarea:focus,.edit-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(8,217,238,.08)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.btn,.mini-btn{border:1px solid var(--line2);border-radius:10px;background:#172131;color:var(--text);font-weight:800}.btn{min-height:40px;padding:9px 12px;font-size:12px}.btn:hover,.mini-btn:hover{border-color:var(--cyan);background:#1b2939}.primary{border:0;color:#041015;background:linear-gradient(120deg,var(--cyan),var(--cyan2) 55%,var(--purple));box-shadow:0 10px 28px rgba(8,217,238,.15)}.danger{color:#ff9daf;border-color:rgba(255,85,118,.4);background:rgba(255,85,118,.08)}.success{color:var(--ok);border-color:rgba(38,230,163,.34);background:rgba(38,230,163,.07)}.full{width:100%}.switchrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line)}.switchrow:first-child{border-top:0}.switchrow span{color:var(--soft);font-size:11px;font-weight:700}.switch{appearance:none;width:38px;height:21px;border-radius:999px;background:#273248;position:relative;cursor:pointer}.switch:after{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;border-radius:50%;background:white;transition:.18s}.switch:checked{background:linear-gradient(90deg,var(--cyan),var(--purple))}.switch:checked:after{left:20px}.inline-note{margin-top:9px;color:var(--muted);font-size:10.5px;line-height:1.5}.status-ok{color:var(--ok)}.status-warn{color:#ffd56b}.status-bad{color:var(--bad)}.footer-note{padding:11px 15px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;line-height:1.5}.main{min-width:0}.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 20px;border-bottom:1px solid var(--line);background:rgba(7,10,15,.88);backdrop-filter:blur(16px)}.topbar strong{font-size:13px}.topbar span{display:block;margin-top:2px;color:var(--muted);font-size:10.5px}.stats{display:flex;gap:7px;flex-wrap:wrap}.stat-pill{display:flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--line2);border-radius:999px;background:#101722;font-size:10px;font-weight:900}.stat-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px currentColor}.stat-pill.done{color:var(--ok)}.stat-pill.error{color:var(--bad)}.stat-pill.pending{color:#7fc6ff}.work{width:min(1320px,100%);margin:auto;padding:22px}.upload-shell{position:relative;border:1px solid transparent;border-radius:24px;background:linear-gradient(#0e151d,#0e151d) padding-box,linear-gradient(110deg,var(--cyan),rgba(8,217,238,.14) 44%,var(--purple)) border-box;box-shadow:0 20px 54px rgba(0,0,0,.28),0 0 36px rgba(8,217,238,.07);overflow:hidden}.upload-shell:before{content:"";position:absolute;inset:-120px auto auto -120px;width:300px;height:300px;background:radial-gradient(circle,rgba(8,217,238,.1),transparent 66%);pointer-events:none}.upload-inner{padding:20px}.upload-heading{text-align:center;margin-bottom:13px}.upload-heading .eyebrow{display:inline-flex;gap:7px;align-items:center;padding:5px 9px;border:1px solid rgba(8,217,238,.22);border-radius:999px;background:rgba(8,217,238,.06);color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.upload-heading h2{margin:9px 0 5px;font:700 clamp(28px,4vw,45px)/1 "Space Grotesk",Inter}.upload-heading p{margin:0;color:var(--muted);font-size:12px}.format-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.format-tab{padding:8px 14px;border:1px solid var(--line2);border-radius:999px;background:#101823;color:var(--soft);font-size:11px;font-weight:800}.format-tab strong{color:var(--cyan);margin-right:5px}.drop{position:relative;min-height:210px;display:grid;place-items:center;text-align:center;padding:24px;border:1.5px dashed #3a495e;border-radius:18px;background:linear-gradient(180deg,rgba(8,217,238,.025),rgba(123,76,255,.02));transition:.2s}.drop.drag{border-color:var(--cyan);background:rgba(8,217,238,.06)}.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}.drop-orb{width:62px;height:62px;display:grid;place-items:center;margin:0 auto 10px;border-radius:20px;background:linear-gradient(145deg,#123246,#142230);border:1px solid #29546a;color:var(--cyan);font-size:29px;box-shadow:0 0 24px rgba(8,217,238,.13)}.drop b{display:block;font-size:18px;margin-bottom:6px}.drop small{display:block;color:var(--muted);font-size:11px;line-height:1.55}.browse-btn{display:inline-flex;margin-top:12px;min-width:160px;justify-content:center}.upload-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}.progress-wrap{flex:1;min-width:260px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#0a1018}.track{height:7px;border-radius:999px;background:#05090e;overflow:hidden;border:1px solid #1d2938}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),#5bc7ff,var(--purple));transition:width .2s}.progress-meta{display:flex;justify-content:space-between;gap:10px;margin-top:6px;color:var(--muted);font-size:10px}.action-row{display:flex;gap:8px;flex-wrap:wrap}.workspace-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 10px;padding:14px 15px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(100deg,#101725,#0d1521)}.workspace-toolbar h3{margin:0;font-size:14px}.workspace-toolbar p{margin:4px 0 0;color:var(--muted);font-size:10.5px}.download-actions{display:flex;gap:7px;flex-wrap:wrap}.workspace-list{display:grid;gap:13px}.workspace-empty{min-height:280px;display:grid;place-items:center;text-align:center;padding:30px;border:1px dashed var(--line2);border-radius:18px;background:#0c121b;color:var(--muted)}.workspace-empty>div{max-width:460px}.empty-orb{width:68px;height:68px;display:grid;place-items:center;margin:0 auto 13px;border-radius:22px;background:linear-gradient(145deg,rgba(8,217,238,.11),rgba(167,76,255,.1));border:1px solid rgba(8,217,238,.22);color:var(--cyan);font-size:28px}.workspace-empty b{display:block;color:var(--text);margin-bottom:6px}.workspace-empty span{font-size:11px;line-height:1.55}.asset-card{display:grid;grid-template-columns:190px minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#111827,#0c131e);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.18);transition:.18s}.asset-card:hover{border-color:#374a64;transform:translateY(-1px)}.asset-card.done{border-color:rgba(38,230,163,.21)}.asset-card.error{border-color:rgba(255,85,118,.26)}.asset-card.working{border-color:rgba(8,217,238,.35)}.asset-visual{position:relative;min-height:190px;border-right:1px solid var(--line);background:radial-gradient(circle at 50% 30%,#182538,#070b11 78%);display:grid;place-items:center;padding:12px;cursor:pointer}.asset-visual img,.asset-visual video{width:100%;height:100%;max-height:215px;object-fit:contain;border-radius:12px}.vector-badge{font-weight:900;letter-spacing:.1em;color:var(--cyan)}.format-chip{position:absolute;left:12px;bottom:12px;padding:5px 8px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(4,8,13,.76);backdrop-filter:blur(8px);color:#d9e4f5;font-size:9px;font-weight:900}.asset-content{padding:15px 16px}.asset-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid var(--line)}.file-heading{min-width:0}.file-name-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.file-name-line b{font-size:13px;overflow-wrap:anywhere}.file-heading small{display:block;margin-top:5px;color:var(--muted);font-size:9.5px}.status-chip{padding:4px 7px;border-radius:999px;border:1px solid var(--line2);font-size:9px;font-weight:900;letter-spacing:.04em}.status-chip.done{color:var(--ok);border-color:rgba(38,230,163,.35);background:rgba(38,230,163,.07)}.status-chip.error{color:var(--bad);border-color:rgba(255,85,118,.35);background:rgba(255,85,118,.07)}.status-chip.working{color:var(--cyan);border-color:rgba(8,217,238,.35);background:rgba(8,217,238,.07)}.status-chip.waiting{color:#9ec5ff}.card-actions{display:flex;gap:6px;flex-wrap:wrap}.mini-btn{min-height:31px;padding:5px 9px;font-size:10px}.mini-btn.retry{color:#ffb0bf}.mini-btn.regen{color:#89eaff}.metadata-grid{display:grid;gap:10px}.meta-block{min-width:0}.meta-label{display:flex;align-items:center;gap:8px;margin-bottom:6px;color:var(--amber);font-size:10.5px;font-weight:900}.meta-label em{margin-left:auto;color:var(--muted);font-style:normal;font-weight:600}.icon-copy{width:29px;height:27px;border:1px solid var(--line2);border-radius:8px;background:#131e2c;color:#cfe3f6}.meta-block textarea{min-height:63px;background:#080e17;border-color:#28364b;font-size:11px}.keyword-block textarea{min-height:88px}.meta-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pending-panel{min-height:116px;display:flex;align-items:center;gap:14px;padding:18px;border:1px dashed #2c3a4d;border-radius:13px;background:#0a1018}.pending-panel b{display:block;font-size:12px;margin-bottom:5px}.pending-panel span{color:var(--muted);font-size:10.5px;line-height:1.5}.pending-lines{display:flex;gap:4px;align-items:flex-end;height:34px}.pending-lines i{display:block;width:6px;border-radius:999px;background:linear-gradient(var(--cyan),var(--purple));animation:pulsebar 1s ease-in-out infinite}.pending-lines i:nth-child(1){height:18px}.pending-lines i:nth-child(2){height:30px;animation-delay:.16s}.pending-lines i:nth-child(3){height:22px;animation-delay:.32s}@keyframes pulsebar{50%{opacity:.3;transform:scaleY(.55)}}.asset-card.waiting .pending-lines i{animation:none;opacity:.35}.error-panel{display:grid;gap:8px;padding:14px;border:1px solid rgba(255,85,118,.28);border-radius:12px;background:rgba(255,85,118,.06)}.error-panel b{color:#ff9eb0;font-size:11px}.error-panel span{color:#ffd7de;font-size:10.5px;line-height:1.5}.retry-wide{justify-self:start;min-height:34px}.toast{position:fixed;right:18px;bottom:18px;z-index:99;max-width:min(440px,calc(100vw - 36px));padding:11px 13px;border:1px solid rgba(8,217,238,.26);border-radius:12px;background:rgba(15,20,32,.97);box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.18s;font-size:12px;font-weight:800}.toast.show{opacity:1;transform:none}.preview-modal{position:fixed;inset:0;z-index:120;display:none;background:rgba(4,7,12,.88);backdrop-filter:blur(10px);padding:28px}.preview-modal.show{display:grid;place-items:center}.preview-dialog{width:min(1050px,100%);max-height:92vh;padding:14px;border:1px solid var(--line);border-radius:18px;background:#0c121b}.preview-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.preview-toolbar b{font-size:12px}.preview-body{display:grid;place-items:center;min-height:320px;max-height:calc(92vh - 72px);overflow:auto;border:1px solid var(--line);border-radius:14px;background:#05070a;padding:12px}.preview-body img,.preview-body video{max-width:100%;max-height:calc(92vh - 120px)}
+@media(max-width:1060px){.app{grid-template-columns:1fr}.sidebar{height:auto;position:relative;border-right:0;border-bottom:1px solid var(--line)}.asset-card{grid-template-columns:155px minmax(0,1fr)}}@media(max-width:760px){.work{padding:13px}.topbar{align-items:flex-start;flex-direction:column}.upload-inner{padding:14px}.upload-actions,.workspace-toolbar{align-items:stretch;flex-direction:column}.action-row,.download-actions{justify-content:flex-start}.asset-card{grid-template-columns:1fr}.asset-visual{border-right:0;border-bottom:1px solid var(--line);min-height:220px}.meta-pair,.grid2,.grid3{grid-template-columns:1fr}.asset-header{flex-direction:column}.card-actions{justify-content:flex-start}}
+
+/* === LWS BRANDING UI FIX v6.7 === */
+.lws-brand{padding:18px 20px 19px!important;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(10,15,23,.98),rgba(8,12,18,.98));}
+.lws-profile{width:52px;height:52px;display:block;object-fit:cover;border-radius:14px;border:1px solid rgba(8,217,238,.35);box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 3px rgba(8,217,238,.04);margin:0 0 14px;}
+.lws-brand h1{margin:0 0 6px!important;font:800 24px/1.08 "Space Grotesk",Inter,sans-serif;letter-spacing:-.02em;color:var(--text);}
+.lws-credit{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin:0 0 10px;color:#f3f7ff;font-size:16px;font-weight:800;line-height:1.35;}
+.lws-credit a,.lws-credit a:visited{color:#17dff2!important;text-decoration:none!important;font-weight:900;}
+.lws-credit a:hover{color:#7beeff!important;text-decoration:none!important;}
+.lws-socials{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 13px;}
+.lws-social-btn,.lws-social-btn:visited{height:43px;min-width:126px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:11px;text-decoration:none!important;color:#fff!important;font-size:14px;font-weight:900;line-height:1;box-shadow:0 8px 20px rgba(0,0,0,.20);transition:transform .16s ease,filter .16s ease,box-shadow .16s ease;}
+.lws-social-btn:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 11px 24px rgba(0,0,0,.28);}
+.lws-social-btn.facebook{background:linear-gradient(135deg,#1677f2,#0866ff);border:1px solid rgba(110,177,255,.48);}
+.lws-social-btn.youtube{background:linear-gradient(135deg,#ff2638,#ff0000);border:1px solid rgba(255,105,115,.48);}
+.lws-social-btn .soc-icon{display:inline-grid;place-items:center;width:18px;height:18px;font-size:16px;font-weight:1000;color:#fff;}
+.lws-brand-copy{margin:0!important;color:var(--muted)!important;font-size:12px!important;line-height:1.55!important;max-width:285px;}
+
+.topbar{min-height:76px!important;padding:12px 20px!important;align-items:center!important;}
+.topbar-main{min-width:230px;}
+.topbar-main strong{display:block;color:var(--text);font-size:13px;font-weight:900;}
+.topbar-main span{display:block;margin-top:3px;color:var(--muted);font-size:10.5px;}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;}
+.buy-subscription,.buy-subscription:visited{position:static!important;transform:none!important;margin:0!important;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:1px solid rgba(88,195,255,.75);border-radius:11px;background:linear-gradient(135deg,#1677ff 0%,#16b9f2 55%,#8656ff 100%);color:#fff!important;text-decoration:none!important;font-size:14px;font-weight:900;line-height:1;white-space:nowrap;box-shadow:0 10px 24px rgba(22,119,255,.22),inset 0 1px rgba(255,255,255,.18);transition:transform .16s ease,filter .16s ease,box-shadow .16s ease;}
+.buy-subscription:hover{transform:translateY(-1px)!important;filter:brightness(1.07);box-shadow:0 12px 28px rgba(22,119,255,.30),inset 0 1px rgba(255,255,255,.2);}
+.topbar-actions .stats{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end;}
+
+@media(max-width:1180px){.topbar-actions{gap:8px}.buy-subscription{min-height:40px;padding:0 15px;font-size:12px}.stat-pill{padding:6px 8px}}
+@media(max-width:900px){.topbar{align-items:stretch!important;flex-direction:column!important}.topbar-actions{width:100%;margin-left:0;justify-content:space-between}.topbar-actions .stats{justify-content:flex-start}.buy-subscription{order:0}}
+@media(max-width:520px){.lws-social-btn{flex:1;min-width:112px}.topbar-actions{align-items:flex-start;flex-direction:column}.buy-subscription{width:100%}.topbar-actions .stats{width:100%}}
+
+/* v7.0 Advanced Metadata UI */
+.advanced-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.advanced-note{margin-top:9px;padding:9px 10px;border:1px solid rgba(8,217,238,.18);border-radius:10px;background:rgba(8,217,238,.045);color:var(--muted);font-size:9.5px;line-height:1.5}.quality-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}.quality-score{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line2);border-radius:999px;background:#0b1420;font-size:9px;font-weight:900}.quality-score.good{color:var(--ok);border-color:rgba(38,230,163,.35)}.quality-score.mid{color:#ffd56b;border-color:rgba(255,213,107,.32)}.quality-score.low{color:var(--bad);border-color:rgba(255,85,118,.32)}.quality-score:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}.analysis-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.analysis-chip{padding:4px 7px;border-radius:999px;border:1px solid #2c3d54;background:#0b1420;color:#afbdd1;font-size:8.5px;font-weight:800}.analysis-chip strong{color:#eaf2ff}.field-actions{display:flex;gap:5px;margin-left:auto}.field-action{min-height:25px;padding:3px 7px;border:1px solid var(--line2);border-radius:7px;background:#131e2c;color:#9eefff;font-size:8.5px;font-weight:900}.field-action:hover{border-color:var(--cyan);background:#16283a}.smart-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.smart-actions .mini-btn{min-height:29px}.warning-list{display:grid;gap:4px;margin:5px 0 10px}.warning-item{padding:6px 8px;border-radius:8px;border:1px solid rgba(255,189,41,.18);background:rgba(255,189,41,.05);color:#e8cf91;font-size:8.8px;line-height:1.4}.warning-item.ok{border-color:rgba(38,230,163,.16);background:rgba(38,230,163,.04);color:#9de8cc}.advanced-status{color:#82dcff}.mini-btn.undo{color:#ffd56b}.mini-btn.fix{color:#9ff5d7}.mini-btn.fieldregen{color:#9eefff}.advanced-badge{display:inline-flex;align-items:center;gap:5px;margin-left:6px;padding:3px 7px;border-radius:999px;border:1px solid rgba(167,76,255,.28);background:rgba(167,76,255,.08);color:#c9a5ff;font-size:8px;font-weight:900;letter-spacing:.03em}.scorebar{height:4px;min-width:75px;max-width:105px;flex:1;border-radius:999px;background:#09101a;overflow:hidden;border:1px solid #1c2a3b}.scorebar>i{display:block;height:100%;background:linear-gradient(90deg,var(--bad),var(--amber),var(--ok))}.advanced-controls-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.advanced-controls-header span{font-size:9px;color:var(--muted)}
+@media(max-width:760px){.advanced-grid{grid-template-columns:1fr}.field-actions{width:auto}.analysis-chips{margin-top:4px}}
+
+
+/* === Support Kori CTA + Completion Popup === */
+.support-btn,.support-btn:visited{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:1px solid rgba(38,230,163,.55);border-radius:11px;background:linear-gradient(135deg,#17c98b 0%,#08d9ee 52%,#7357ff 100%);color:#061016!important;text-decoration:none!important;font-size:14px;font-weight:900;line-height:1;white-space:nowrap;box-shadow:0 10px 26px rgba(8,217,238,.16),inset 0 1px rgba(255,255,255,.28);transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}.support-btn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 12px 30px rgba(8,217,238,.24),inset 0 1px rgba(255,255,255,.3)}
+.topbar-support{margin-left:auto}.topbar-actions{margin-left:0!important}
+.support-modal{position:fixed;inset:0;z-index:180;display:none;place-items:center;padding:22px;background:rgba(3,7,12,.80);backdrop-filter:blur(12px)}.support-modal.show{display:grid}.support-dialog{position:relative;width:min(520px,100%);padding:28px;border:1px solid transparent;border-radius:22px;background:linear-gradient(#0f1722,#0f1722) padding-box,linear-gradient(135deg,var(--cyan),rgba(8,217,238,.15) 44%,var(--purple)) border-box;box-shadow:0 28px 80px rgba(0,0,0,.5),0 0 42px rgba(8,217,238,.09);text-align:center}.support-close{position:absolute;right:12px;top:12px;width:36px;height:36px;border:1px solid var(--line2);border-radius:10px;background:#131c29;color:var(--text);font-size:18px;font-weight:800}.support-icon{width:72px;height:72px;display:grid;place-items:center;margin:0 auto 16px;border-radius:22px;background:linear-gradient(145deg,rgba(38,230,163,.15),rgba(8,217,238,.11),rgba(167,76,255,.13));border:1px solid rgba(8,217,238,.25);font-size:32px}.support-dialog h3{margin:0 36px 10px;font:800 29px/1.08 "Space Grotesk",Inter,sans-serif}.support-dialog p{margin:0 auto 18px;max-width:430px;color:var(--soft);font-size:13px;line-height:1.7}.support-dialog p strong{color:#fff}.support-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.support-actions .support-btn{min-width:185px}.support-later{min-width:120px}
+@media(max-width:900px){.topbar-support{margin-left:0}.topbar-actions{width:100%}.support-btn{min-height:40px;padding:0 15px;font-size:12px}}
+@media(max-width:520px){.topbar-support{width:100%}.topbar-support .support-btn{width:100%}.support-dialog{padding:24px 18px}.support-dialog h3{font-size:25px}.support-actions{flex-direction:column}.support-actions .support-btn,.support-later{width:100%}}
+
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
+<style id="v71-readability-fonts">
+/* v7.1 Readability pass — metadata/result cards only. Existing functionality unchanged. */
+.asset-content{padding:17px 18px}
+.file-name-line b{font-size:14.5px;line-height:1.35}
+.file-heading small{font-size:10.5px;line-height:1.45}
+.status-chip{font-size:9.8px;padding:4px 8px}
+.advanced-badge{font-size:9.6px;padding:4px 8px;line-height:1.2}
+.quality-score{font-size:10.5px;padding:6px 10px}
+.analysis-chips{gap:7px;margin-bottom:12px}
+.analysis-chip{font-size:10.2px;line-height:1.4;padding:5px 9px}
+.analysis-chip strong{font-size:10.4px}
+.warning-item{font-size:10.5px;line-height:1.5;padding:7px 9px}
+.meta-label{font-size:12.5px;line-height:1.35;margin-bottom:8px}
+.meta-label em{font-size:11px}
+.meta-block textarea{font-size:13.2px;line-height:1.58;padding:12px 13px;min-height:72px}
+.keyword-block textarea{min-height:102px}
+.edit-input{font-size:13.5px;height:43px}
+.field-action{font-size:10px;min-height:29px;padding:4px 9px}
+.icon-copy{width:31px;height:29px;font-size:13px}
+.smart-actions .mini-btn{font-size:10.5px;min-height:32px;padding:6px 10px}
+.pending-panel b{font-size:13px}.pending-panel span{font-size:11.5px}
+.error-panel b{font-size:12.5px}.error-panel span{font-size:11.5px}
+@media(max-width:760px){
+  .asset-content{padding:15px}
+  .file-name-line b{font-size:14px}
+  .analysis-chip{font-size:9.8px}
+  .meta-label{font-size:12px}
+  .meta-block textarea{font-size:12.8px}
+  .edit-input{font-size:13px}
+}
+</style>
+<style id="adobe-stock">
+/* ===== Sweet Metadata Lab — Adobe Stock Edition =====
+   Warm paper white, ink black, one refined Adobe red accent.
+   Premium minimal: flat surfaces, hairline borders, generous spacing.
+   Primary action is ink black; red is used only for small accents. */
+body{font-size:14px;line-height:1.6;background:#FAFAF7!important;background-image:none!important;color:#161513}
+h1,.upload-heading h2,.support-dialog h3{font-family:Inter,system-ui,sans-serif!important}
+a{color:#B42318}
+:focus-visible{outline:2px solid #D92D20;outline-offset:2px;border-radius:6px}
+.app{grid-template-columns:300px minmax(0,1fr)}
+
+/* --- Sidebar / brand --- */
+.sidebar{background:#FFFFFF!important;border-right:1px solid #E7E5E0}
+.brand,.lws-brand{padding:24px 20px!important;border-bottom:1px solid #E7E5E0;background:#FFFFFF!important}
+.lws-profile{width:52px;height:52px;border-radius:12px;border:1px solid #E7E5E0!important;box-shadow:none!important}
+.lws-brand h1,.brand h1{font-size:22px!important;font-weight:800!important;letter-spacing:-.02em;color:#161513!important}
+.lws-credit{color:#161513!important;font-size:15px}
+.lws-credit a,.lws-credit a:visited{color:#B42318!important}
+.lws-brand-copy{color:#78716C!important;font-size:12.5px!important;line-height:1.6!important;max-width:260px}
+.lws-social-btn,.lws-social-btn:visited{background:#FFFFFF!important;color:#161513!important;border:1px solid #D6D3CC!important;box-shadow:none!important;font-weight:600!important}
+.lws-social-btn:hover{border-color:#161513!important;background:#FAFAF7!important;transform:none!important;filter:none!important;box-shadow:none!important}
+.lws-social-btn.facebook .soc-icon{color:#1877F2}
+.lws-social-btn.whatsapp .soc-icon{color:#067647}
+
+/* --- Panels: collapsible, calm --- */
+.panel{margin:12px;padding:18px;border:1px solid #E7E5E0;border-radius:12px;background:#FFFFFF!important;box-shadow:none}
+.panel h2{display:flex;align-items:center;gap:8px;margin:0 0 14px!important;color:#161513!important;font-size:11.5px!important;font-weight:700!important;letter-spacing:.08em!important;text-transform:uppercase;cursor:pointer}
+.panel h2::after{content:"▾";margin-left:auto;color:#78716C;font-size:11px}
+.panel.collapsed h2::after{content:"▸"}
+.panel.collapsed>*:not(h2):not(.advanced-controls-header){display:none!important}
+.panel.collapsed>.advanced-controls-header{margin-bottom:0!important}
+.panel.collapsed>.advanced-controls-header h2{margin-bottom:0!important}
+.advanced-controls-header h2{cursor:pointer}
+.advanced-controls-header span{color:#78716C;font-size:11px}
+.field{margin-bottom:14px}
+.label{color:#44403A!important;font-size:13px!important;font-weight:600!important}
+.hint{color:#78716C!important;font-weight:400!important}
+.inline-note{color:#78716C!important;font-size:12px!important;line-height:1.55}
+.advanced-note{border:1px solid #E7E5E0!important;background:#FAFAF7!important;color:#44403A!important;font-size:12px!important;line-height:1.6}
+.footer-note{color:#78716C!important;font-size:11.5px;border-top:1px solid #E7E5E0}
+
+/* --- Adobe buyer panel --- */
+.adobe-note{border:1px solid #FECDCA!important;background:#FEF3F2!important;color:#44403A!important;font-size:12px!important;line-height:1.6;border-radius:10px;padding:11px 12px;margin-bottom:12px}
+.adobe-note b{color:#161513}
+.adobe-rules{margin:0 0 12px;padding-left:17px;color:#44403A;font-size:12px;line-height:1.65}
+.adobe-rules li{margin-bottom:4px}
+.adobe-rules b{color:#161513}
+.buyer-group{margin-bottom:12px}
+.buyer-group h4{margin:0 0 7px;color:#161513;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.buyer-chips{display:flex;flex-wrap:wrap;gap:6px}
+.buyer-chip{min-height:32px;padding:5px 10px;border:1px solid #D6D3CC;border-radius:999px;background:#FFFFFF;color:#44403A;font-size:11.5px;font-weight:600;cursor:pointer}
+.buyer-chip:hover{border-color:#161513;color:#161513}
+.buyer-chip.selected{background:#161513!important;border-color:#161513!important;color:#FFFFFF!important}
+
+/* --- Inputs --- */
+.input,select,textarea,.edit-input{border:1px solid #D6D3CC!important;background:#FFFFFF!important;color:#161513!important;font-size:14px!important}
+.input,select,.edit-input{height:42px!important}
+textarea{line-height:1.6!important}
+.input:focus,select:focus,textarea:focus,.edit-input:focus{border-color:#D92D20!important;box-shadow:0 0 0 3px rgba(217,45,32,.14)!important}
+.input::placeholder,textarea::placeholder{color:#A8A29E}
+.switch{background:#D6D3CC!important}
+.switch:checked{background:#161513!important}
+.switchrow span{color:#44403A!important;font-size:13px!important;font-weight:500}
+.switchrow{border-top:1px solid #E7E5E0}
+
+/* --- Buttons: one primary only, ink black --- */
+.btn,.mini-btn{border:1px solid #D6D3CC!important;border-radius:10px!important;background:#FFFFFF!important;color:#161513!important;font-weight:600!important;box-shadow:none!important}
+.btn{min-height:42px!important;font-size:13px!important}
+.btn:hover,.mini-btn:hover{border-color:#161513!important;background:#FAFAF7!important}
+.btn.primary{border-color:#161513!important;background:#161513!important;color:#FFFFFF!important}
+.btn.primary:hover{background:#000000!important;border-color:#000000!important}
+.btn.danger{color:#B42318!important;border-color:#FECDCA!important;background:#FEF3F2!important}
+.btn.danger:hover{border-color:#B42318!important;background:#FEF3F2!important}
+.btn.success{color:#067647!important;border-color:#A6F4C5!important;background:#ECFDF3!important}
+.btn.success:hover{border-color:#067647!important;background:#ECFDF3!important}
+.mini-btn{min-height:36px!important;font-size:12px!important;padding:6px 10px!important}
+.mini-btn.retry{color:#B42318!important}.mini-btn.regen{color:#B42318!important}
+.mini-btn.undo{color:#B54708!important}.mini-btn.fix{color:#067647!important}.mini-btn.fieldregen{color:#B42318!important}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* --- Topbar / stats --- */
+.topbar{min-height:64px!important;padding:12px 20px!important;background:#FFFFFF!important;border-bottom:1px solid #E7E5E0;backdrop-filter:none}
+.topbar-main strong{color:#161513!important;font-size:14px!important}
+.topbar-main span{color:#78716C!important;font-size:12px!important}
+.stat-pill{background:#FAFAF7!important;border:1px solid #E7E5E0!important;color:#44403A!important;font-size:11.5px!important;font-weight:700!important}
+.stat-pill:before{background:#D92D20!important;box-shadow:none!important}
+.stat-pill.done{color:#067647!important}.stat-pill.done:before{background:#067647!important}
+.stat-pill.error{color:#B42318!important}.stat-pill.error:before{background:#B42318!important}
+.stat-pill.pending{color:#B42318!important}.stat-pill.pending:before{background:#B42318!important}
+.buy-subscription,.buy-subscription:visited,.support-btn,.support-btn:visited{position:static!important;transform:none!important;margin:0!important;min-height:42px!important;padding:0 18px!important;border:1px solid #D6D3CC!important;border-radius:10px!important;background:#FFFFFF!important;color:#161513!important;font-size:13px!important;font-weight:600!important;box-shadow:none!important}
+.buy-subscription:hover,.support-btn:hover{transform:none!important;filter:none!important;border-color:#161513!important;background:#FAFAF7!important;box-shadow:none!important}
+.topbar-support{margin-left:auto}
+
+/* --- Upload --- */
+.work{width:min(1280px,100%);padding:28px}
+.upload-shell{border:1px solid #E7E5E0!important;border-radius:16px!important;background:#FFFFFF!important;box-shadow:0 1px 2px rgba(22,21,19,.05),0 6px 20px rgba(22,21,19,.05)!important}
+.upload-shell:before{display:none!important}
+.upload-inner{padding:32px 28px}
+.upload-heading .eyebrow{border:1px solid #FECDCA!important;background:#FEF3F2!important;color:#B42318!important;font-size:11px!important;letter-spacing:.08em!important}
+.upload-heading h2{margin:14px 0 6px!important;font-size:32px!important;font-weight:800!important;letter-spacing:-.02em;color:#161513!important}
+.upload-heading p{color:#78716C!important;font-size:13.5px!important}
+.format-tab{border:1px solid #E7E5E0!important;background:#FAFAF7!important;color:#44403A!important;font-size:12px!important}
+.format-tab strong{color:#B42318!important}
+.drop{min-height:200px!important;border:1.5px dashed #D6D3CC!important;border-radius:14px!important;background:#FAFAF7!important}
+.drop.drag{border-color:#D92D20!important;background:#FEF3F2!important}
+.drop-orb{width:60px;height:60px;border-radius:14px;background:#FFFFFF!important;border:1px solid #E7E5E0!important;color:#B42318!important;font-size:28px;box-shadow:none!important}
+.drop b{color:#161513!important;font-size:16px}
+.drop small{color:#78716C!important;font-size:12px!important}
+.progress-wrap{border:1px solid #E7E5E0!important;border-radius:12px!important;background:#FFFFFF!important}
+.track{background:#E7E5E0!important;border:1px solid #E7E5E0!important}
+.bar{background:#161513!important}
+.progress-meta{color:#78716C!important;font-size:11.5px!important}
+
+/* --- Workspace / asset cards --- */
+.workspace-toolbar{border:1px solid #E7E5E0!important;border-radius:14px!important;background:#FFFFFF!important}
+.workspace-toolbar h3{color:#161513!important;font-size:15px!important}
+.workspace-toolbar p{color:#78716C!important;font-size:12.5px!important}
+.workspace-empty{border:1px dashed #D6D3CC!important;border-radius:14px!important;background:#FFFFFF!important;color:#78716C!important}
+.empty-orb{background:#FEF3F2!important;border:1px solid #FECDCA!important;color:#B42318!important}
+.workspace-empty b{color:#161513!important;font-size:14px}
+.workspace-empty span{font-size:12.5px!important;line-height:1.6}
+.asset-card{grid-template-columns:190px minmax(0,1fr);border:1px solid #E7E5E0!important;border-radius:14px!important;background:#FFFFFF!important;box-shadow:0 1px 2px rgba(22,21,19,.05)!important}
+.asset-card:hover{border-color:#D6D3CC!important;transform:none!important}
+.asset-card.done{border-color:#A6F4C5!important}
+.asset-card.error{border-color:#FECDCA!important}
+.asset-card.working{border-color:#FECDCA!important}
+.asset-visual{background:#FAFAF7!important;border-right:1px solid #E7E5E0}
+.vector-badge{color:#B42318!important}
+.format-chip{background:#FFFFFF!important;border:1px solid #E7E5E0!important;color:#44403A!important;font-size:11px!important}
+.asset-content{padding:18px!important}
+.file-name-line b{font-size:14.5px!important;color:#161513!important}
+.file-heading small{color:#78716C!important;font-size:11.5px!important}
+.status-chip{font-size:11px!important;font-weight:700!important}
+.status-chip.done{color:#067647!important;border-color:#A6F4C5!important;background:#ECFDF3!important}
+.status-chip.error{color:#B42318!important;border-color:#FECDCA!important;background:#FEF3F2!important}
+.status-chip.working{color:#B42318!important;border-color:#FECDCA!important;background:#FEF3F2!important}
+.status-chip.waiting{color:#44403A!important;border-color:#E7E5E0!important;background:#FAFAF7!important}
+.asset-header{border-bottom:1px solid #E7E5E0}
+.meta-label{color:#161513!important;font-size:13px!important;font-weight:700!important}
+.meta-label em{color:#78716C!important;font-size:12px!important}
+.meta-block textarea{background:#FFFFFF!important;border:1px solid #D6D3CC!important;font-size:14px!important;line-height:1.6!important;min-height:72px}
+.icon-copy{border:1px solid #D6D3CC!important;background:#FFFFFF!important;color:#44403A!important}
+.icon-copy:hover{border-color:#B42318!important;color:#B42318!important}
+.field-action{border:1px solid #D6D3CC!important;background:#FFFFFF!important;color:#B42318!important;font-size:11px!important;font-weight:700!important;min-height:30px!important}
+.field-action:hover{border-color:#B42318!important;background:#FEF3F2!important}
+.quality-score{font-size:11.5px!important;border:1px solid #E7E5E0!important;background:#FAFAF7!important;color:#44403A!important}
+.quality-score.good{color:#067647!important;border-color:#A6F4C5!important;background:#ECFDF3!important}
+.quality-score.mid{color:#B54708!important;border-color:#FEDF89!important;background:#FFFAEB!important}
+.quality-score.low{color:#B42318!important;border-color:#FECDCA!important;background:#FEF3F2!important}
+.quality-score:before{box-shadow:none!important}
+.analysis-chip{border:1px solid #E7E5E0!important;background:#FAFAF7!important;color:#44403A!important;font-size:11.5px!important}
+.analysis-chip strong{color:#161513!important}
+.advanced-badge{border:1px solid #FECDCA!important;background:#FEF3F2!important;color:#B42318!important;font-size:10.5px!important}
+.scorebar{background:#E7E5E0!important;border:1px solid #E7E5E0!important}
+.scorebar>i{background:#161513!important}
+.warning-item{border:1px solid #FEDF89!important;background:#FFFAEB!important;color:#B54708!important;font-size:12px!important;line-height:1.55}
+.warning-item.ok{border-color:#A6F4C5!important;background:#ECFDF3!important;color:#067647!important}
+.advanced-status{color:#B42318!important}
+.advanced-note{font-size:12px!important}
+.pending-panel{border:1px dashed #D6D3CC!important;background:#FAFAF7!important}
+.pending-panel b{color:#161513!important;font-size:13px}
+.pending-panel span{color:#78716C!important;font-size:12px!important}
+.pending-lines i{background:#161513!important}
+.error-panel{border:1px solid #FECDCA!important;background:#FEF3F2!important}
+.error-panel b{color:#B42318!important;font-size:12.5px}
+.error-panel span{color:#7A271A!important;font-size:12px!important}
+.smart-actions{border-top:1px solid #E7E5E0}
+
+/* --- Modals / toast --- */
+.toast{border:1px solid #E7E5E0!important;background:#161513!important;color:#FFFFFF!important;box-shadow:0 8px 24px rgba(22,21,19,.2)!important;font-size:13px!important}
+.preview-modal,.support-modal{background:rgba(22,21,19,.55)!important}
+.preview-dialog{background:#FFFFFF!important;border:1px solid #E7E5E0!important}
+.preview-toolbar b{color:#161513!important;font-size:13px}
+.preview-body{background:#FAFAF7!important;border:1px solid #E7E5E0!important}
+.support-dialog{border:1px solid #E7E5E0!important;border-radius:16px!important;background:#FFFFFF!important;box-shadow:0 16px 48px rgba(22,21,19,.18)!important}
+.support-close{border:1px solid #D6D3CC!important;background:#FFFFFF!important;color:#44403A!important}
+.support-icon{background:#FEF3F2!important;border:1px solid #FECDCA!important;color:#B42318!important}
+.support-dialog h3{color:#161513!important;font-size:26px!important}
+.support-dialog p{color:#44403A!important;font-size:14px!important;line-height:1.7}
+.support-dialog p strong{color:#161513!important}
+.support-actions .support-btn{background:#161513!important;border-color:#161513!important;color:#FFFFFF!important}
+.support-actions .support-btn:hover{background:#000000!important;border-color:#000000!important}
+
+/* --- Status text --- */
+.status-ok{color:#067647!important}.status-warn{color:#B54708!important}.status-bad{color:#B42318!important}
+
+/* --- Responsive (same breakpoints as original) --- */
+@media(max-width:1060px){.app{grid-template-columns:1fr}.sidebar{height:auto;position:relative;border-right:0;border-bottom:1px solid #E7E5E0}}
+@media(max-width:760px){
+  .work{padding:16px}
+  .upload-inner{padding:24px 16px}
+  .upload-heading h2{font-size:26px!important}
+  .asset-card{grid-template-columns:1fr}
+  .asset-visual{border-right:0;border-bottom:1px solid #E7E5E0;min-height:220px}
+  .asset-content{padding:16px!important}
+  .topbar{flex-direction:column;align-items:stretch!important}
+  .topbar-actions{width:100%;justify-content:space-between}
+  .buy-subscription,.support-btn{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<style id="dash-dark">
+/* ===== Sweet Metadata Lab — Dashboard (from mockup) =====
+   DEFAULT theme is warm cream white (body.light): page #FAF5EC,
+   panels #FFFDF8, ink #221D15, muted #6E6455, hairline #E9DFCC.
+   The deep-navy dark theme (#070D1A / #0F1930 / #EAF0FA) is the
+   optional theme, switched on from Settings > Appearance.
+   Blue accent #2563EB in both themes. Inter throughout.
+   Flat surfaces; the upload hero alone carries the starry wave artwork
+   (dark theme only — the cream hero is a soft plain gradient). */
+body{font-size:14px!important;line-height:1.55!important;background:#070D1A!important;background-image:none!important;color:#EAF0FA}
+h1,.upload-heading h2,.support-dialog h3{font-family:Inter,system-ui,sans-serif!important}
+a{color:#6EA8FF}
+:focus-visible{outline:2px solid #2563EB;outline-offset:2px;border-radius:6px}
+.app{grid-template-columns:264px minmax(0,1fr)!important;min-height:100vh}
+
+/* --- Sidebar --- */
+.sidebar{background:#0A1120!important;border-right:1px solid #16223C;height:100vh!important;position:sticky!important;top:0!important;overflow:auto!important;display:flex;flex-direction:column}
+.dash-brand{display:flex;align-items:center;gap:11px;padding:20px 18px 16px}
+.dash-brand .logo-mark{flex:none;width:38px;height:38px}
+.dash-brand b{display:block;color:#F2F6FD!important;font-size:16.5px!important;font-weight:800!important;letter-spacing:-.01em;line-height:1.2}
+.dash-brand span{display:block;color:#8B98B4!important;font-size:11.5px!important;margin-top:2px}
+.dash-nav{padding:6px 12px;display:flex;flex-direction:column;gap:4px}
+.nav-item,.nav-group{display:flex;align-items:center;gap:11px;width:100%;min-height:44px;padding:9px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:#C3CEE2;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer}
+.nav-item svg,.nav-group svg{flex:none;width:19px;height:19px}
+.nav-item:hover,.nav-group:hover{background:#111C33!important;color:#F2F6FD!important}
+.nav-item.active{background:#1B4A9B!important;background:linear-gradient(90deg,#1D4ED8,#2563EB)!important;color:#FFFFFF!important}
+.nav-group .chev{margin-left:auto;color:#8B98B4;font-size:11px}
+.nav-sub{display:flex;flex-direction:column;gap:2px;padding:2px 0 4px 12px}
+.nav-sub .nav-item{min-height:38px;font-size:13px;padding:7px 12px 7px 38px;color:#A9B6CF}
+.nav-sub .nav-item svg{width:16px;height:16px;margin-left:-27px}
+.nav-sub[hidden]{display:none}
+.dash-side-foot{margin-top:auto;padding:14px 14px 16px;border-top:1px solid #16223C;display:flex;flex-direction:column;gap:8px}
+.dash-credit{color:#8B98B4!important;font-size:11.5px!important;line-height:1.5;text-align:center}
+.dash-credit a{color:#6EA8FF!important;text-decoration:none}
+.dash-credit a:hover{text-decoration:underline}
+.side-btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none}
+.side-btn.buy{background:#2563EB!important;color:#FFFFFF!important;border:1px solid #2563EB!important}
+.side-btn.buy:hover{background:#1D4ED8!important}
+.side-btn.support{background:transparent!important;color:#C3CEE2!important;border:1px solid #26365A!important}
+.side-btn.support:hover{border-color:#2563EB!important;color:#FFFFFF!important}
+
+/* --- Topbar --- */
+.main{min-width:0;background:#070D1A!important}
+.topbar{min-height:64px!important;padding:10px 28px!important;background:#070D1A!important;border-bottom:1px solid #16223C;backdrop-filter:none;display:flex!important;align-items:center!important;gap:14px}
+.ws-btn{display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:8px 14px;border:1px solid #1C2A47;border-radius:10px;background:#0F1930;color:#EAF0FA;font-size:13.5px;font-weight:700;cursor:pointer}
+.ws-btn:hover{border-color:#2563EB}
+.ws-btn svg{width:17px;height:17px;color:#6EA8FF}
+.ws-btn .chev{margin-left:2px;color:#8B98B4;font-size:11px}
+.ws-menu{position:relative}
+.ws-drop{position:absolute;left:0;top:calc(100% + 8px);z-index:60;min-width:230px;padding:6px;border:1px solid #1C2A47;border-radius:12px;background:#0F1930;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.ws-drop[hidden]{display:none}
+.ws-drop button{display:flex;flex-direction:column;gap:2px;width:100%;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:#EAF0FA;font-size:13px;font-weight:700;text-align:left;cursor:pointer}
+.ws-drop button small{color:#8B98B4;font-weight:500}
+.ws-drop button:hover{background:#16223C}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.icon-btn{position:relative;width:40px;height:40px;display:grid;place-items:center;border:1px solid transparent;border-radius:10px;background:transparent;color:#C3CEE2;cursor:pointer}
+.icon-btn:hover{background:#111C33;color:#FFFFFF}
+.icon-btn svg{width:20px;height:20px}
+.icon-btn .dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:#EF4444;border:2px solid #070D1A}
+.avatar-btn{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#3B5BDB;color:#FFFFFF;font-size:14px;font-weight:800;text-decoration:none;border:2px solid #26365A}
+.avatar-btn:hover{border-color:#2563EB}
+
+/* --- Main / page head --- */
+.work{width:100%!important;max-width:1240px!important;margin:0 auto!important;padding:26px 28px 40px!important}
+.page-head{border-left:4px solid #2563EB;padding:2px 0 2px 16px;margin:2px 0 22px}
+.page-head h2{margin:0!important;font-size:28px!important;font-weight:800!important;letter-spacing:-.02em!important;color:#F2F6FD!important;font-family:Inter,system-ui,sans-serif!important}
+.page-head p{margin:6px 0 0!important;color:#8B98B4!important;font-size:13.5px!important}
+
+/* --- Upload hero --- */
+.upload-shell{border:1px solid #1C2A47!important;border-radius:20px!important;background:#0B1426!important;box-shadow:none!important;overflow:hidden}
+.upload-shell:before{display:none!important}
+.upload-inner{padding:0!important}
+.drop{position:relative;min-height:300px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:40px 24px 34px!important;border:0!important;border-radius:20px!important;background:
+  radial-gradient(1px 1px at 12% 22%,rgba(255,255,255,.7),transparent),
+  radial-gradient(1px 1px at 28% 68%,rgba(255,255,255,.5),transparent),
+  radial-gradient(1.5px 1.5px at 44% 18%,rgba(255,255,255,.6),transparent),
+  radial-gradient(1px 1px at 62% 78%,rgba(255,255,255,.45),transparent),
+  radial-gradient(1px 1px at 78% 26%,rgba(255,255,255,.6),transparent),
+  radial-gradient(1.5px 1.5px at 88% 62%,rgba(255,255,255,.5),transparent),
+  radial-gradient(1px 1px at 95% 12%,rgba(255,255,255,.55),transparent),
+  radial-gradient(1px 1px at 5% 85%,rgba(255,255,255,.4),transparent),
+  linear-gradient(180deg,#0A1322,#0B1426 60%,#0D1830)!important}
+.drop:after{content:"";position:absolute;inset:auto 0 0 0;height:150px;pointer-events:none;background:
+  radial-gradient(120% 130% at 8% 118%,rgba(46,124,246,.20),transparent 55%),
+  radial-gradient(120% 140% at 92% 122%,rgba(46,124,246,.16),transparent 55%),
+  radial-gradient(90% 120% at 50% 128%,rgba(124,58,237,.14),transparent 60%)}
+.drop.drag{border:2px dashed #2563EB!important;background:#0D1B36!important}
+.drop>*{position:relative;z-index:1}
+.drop-orb{position:relative;width:92px;height:92px;display:grid;place-items:center;margin:0 auto 18px;border-radius:22px;background:rgba(46,124,246,.12)!important;border:1.5px solid rgba(110,168,255,.55)!important;color:#6EA8FF!important;box-shadow:0 0 0 10px rgba(46,124,246,.06)!important}
+.drop-orb svg{width:46px;height:46px}
+.drop-orb .plus-badge{position:absolute;right:-9px;bottom:-9px;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#2563EB;color:#FFFFFF;font-size:19px;font-weight:800;border:3px solid #0B1426}
+.drop b{display:block;font-size:21px!important;color:#F2F6FD!important;margin-bottom:7px}
+.drop small{display:block;color:#A9B6CF!important;font-size:13.5px!important;line-height:1.5}
+.browse-btn{display:inline-flex!important;align-items:center;gap:9px;margin-top:20px!important;min-height:48px!important;padding:0 28px!important;border-radius:999px!important;border:0!important;background:#2563EB!important;color:#FFFFFF!important;font-size:14.5px!important;font-weight:700!important;box-shadow:0 10px 28px rgba(46,124,246,.35)!important;cursor:pointer}
+.browse-btn:hover{background:#1D4ED8!important}
+.browse-btn svg{width:18px;height:18px}
+.supports{margin-top:18px;color:#8B98B4!important;font-size:12.5px!important}
+.supports b{color:#C3CEE2!important;font-size:12.5px!important;margin:0}
+.upload-actions{display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:wrap!important;margin:0!important;padding:16px 20px!important;border-top:1px solid #1C2A47!important;background:#0B1426!important}
+.progress-wrap{flex:1!important;min-width:240px!important;padding:10px 12px!important;border:1px solid #1C2A47!important;border-radius:12px!important;background:#0A1120!important}
+.track{height:7px!important;background:#16223C!important;border:1px solid #16223C!important}
+.bar{background:#2563EB!important}
+.progress-meta{color:#8B98B4!important;font-size:11px!important}
+.action-row{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
+
+/* --- Buttons --- */
+.btn,.mini-btn{border:1px solid #26365A!important;border-radius:10px!important;background:#111C33!important;color:#EAF0FA!important;font-weight:600!important;box-shadow:none!important}
+.btn{min-height:42px!important;font-size:13px!important}
+.btn:hover,.mini-btn:hover{border-color:#2563EB!important;background:#16223C!important}
+.btn.primary{border-color:#2563EB!important;background:#2563EB!important;color:#FFFFFF!important}
+.btn.primary:hover{background:#1D4ED8!important;border-color:#1D4ED8!important}
+.btn.danger{color:#FCA5A5!important;border-color:#3F1D1D!important;background:#1D1214!important}
+.btn.danger:hover{border-color:#F87171!important}
+.btn.success{color:#6EE7B7!important;border-color:#123B2A!important;background:#0C1F16!important}
+.btn.success:hover{border-color:#34D399!important}
+.mini-btn{min-height:36px!important;font-size:12px!important;padding:6px 10px!important}
+.mini-btn.retry{color:#FCA5A5!important}.mini-btn.regen{color:#6EA8FF!important}
+.mini-btn.undo{color:#FCD34D!important}.mini-btn.fix{color:#6EE7B7!important}.mini-btn.fieldregen{color:#6EA8FF!important}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* --- Option cards --- */
+.opt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0 22px}
+.opt-card{border:1px solid #1C2A47!important;border-radius:14px!important;background:#0F1930!important;box-shadow:none;overflow:hidden}
+.opt-card>summary{display:flex;align-items:center;gap:12px;padding:15px 16px;cursor:pointer;list-style:none}
+.opt-card>summary::-webkit-details-marker{display:none}
+.opt-card>summary .opt-ic{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:#16223C;color:#6EA8FF}
+.opt-card>summary .opt-ic svg{width:20px;height:20px}
+.opt-card>summary b{display:block;color:#F2F6FD!important;font-size:13.5px!important;font-weight:700!important}
+.opt-card>summary span{display:block;color:#8B98B4!important;font-size:11.5px!important;margin-top:2px}
+.opt-card>summary .chev{margin-left:auto;color:#8B98B4;font-size:11px}
+.opt-card[open ]>summary .chev{transform:rotate(180deg)}
+.opt-body{padding:4px 16px 16px;border-top:1px solid #1C2A47}
+.opt-body .field{margin-bottom:13px}
+.opt-body .panel-note{margin:0 0 12px}
+
+/* --- Panels inside option cards (fields keep working) --- */
+.panel{margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none}
+.panel+.panel{margin-top:16px!important;padding-top:16px!important;border-top:1px solid #1C2A47!important}
+.panel h2{color:#F2F6FD!important;font-size:11.5px!important;cursor:default}
+.panel h2::after{display:none}
+.label{color:#C3CEE2!important;font-size:13px!important;font-weight:600!important}
+.hint{color:#8B98B4!important;font-weight:400!important}
+.inline-note{color:#8B98B4!important;font-size:12px!important;line-height:1.55}
+.advanced-note{border:1px solid #1C2A47!important;background:#111C33!important;color:#A9B6CF!important;font-size:12px!important;line-height:1.6}
+.footer-note{color:#8B98B4!important;font-size:11.5px;border-top:1px solid #1C2A47}
+.input,select,textarea,.edit-input{border:1px solid #26365A!important;background:#0A1120!important;color:#EAF0FA!important;font-size:14px!important}
+.input,select,.edit-input{height:42px!important}
+textarea{line-height:1.6!important}
+.input:focus,select:focus,textarea:focus,.edit-input:focus{border-color:#2563EB!important;box-shadow:0 0 0 3px rgba(46,124,246,.22)!important}
+.input::placeholder,textarea::placeholder{color:#5B6B8C}
+.switch{background:#26365A!important}
+.switch:checked{background:#2563EB!important}
+.switchrow span{color:#C3CEE2!important;font-size:13px!important;font-weight:500}
+.switchrow{border-top:1px solid #1C2A47}
+.adobe-note{border:1px solid #1C2A47!important;background:#111C33!important;color:#A9B6CF!important}
+.adobe-note b{color:#F2F6FD}
+.adobe-rules{color:#A9B6CF}
+.adobe-rules b{color:#F2F6FD}
+.buyer-group h4{color:#F2F6FD}
+.buyer-chip{border:1px solid #26365A!important;background:#0A1120!important;color:#C3CEE2!important}
+.buyer-chip:hover{border-color:#2563EB!important;color:#FFFFFF!important}
+.buyer-chip.selected{background:#2563EB!important;border-color:#2563EB!important;color:#FFFFFF!important}
+
+/* --- Generated Results --- */
+.results{border:1px solid #1C2A47!important;border-radius:16px!important;background:#0F1930!important;padding:18px 18px 20px}
+.results-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.results-head h3{margin:0!important;color:#F2F6FD!important;font-size:16px!important;font-weight:800!important;display:flex;align-items:center;gap:9px}
+.results-head h3 svg{width:19px;height:19px;color:#6EA8FF}
+.results-head .stats{margin-left:auto}
+.stat-pill{background:#0A1120!important;border:1px solid #1C2A47!important;color:#C3CEE2!important;font-size:11.5px!important;font-weight:700!important}
+.stat-pill:before{background:#2563EB!important;box-shadow:none!important}
+.stat-pill.done{color:#6EE7B7!important}.stat-pill.done:before{background:#34D399!important}
+.stat-pill.error{color:#FCA5A5!important}.stat-pill.error:before{background:#F87171!important}
+.stat-pill.pending{color:#6EA8FF!important}.stat-pill.pending:before{background:#6EA8FF!important}
+.workspace-toolbar{border:1px solid #1C2A47!important;border-radius:12px!important;background:#0A1120!important;margin:0 0 14px!important}
+.workspace-toolbar h3{color:#F2F6FD!important;font-size:14px!important}
+.workspace-toolbar p{color:#8B98B4!important;font-size:12px!important}
+.workspace-empty{border:1px dashed #26365A!important;border-radius:12px!important;background:#0A1120!important;color:#8B98B4!important}
+.empty-orb{background:#111C33!important;border:1px solid #26365A!important;color:#6EA8FF!important}
+.workspace-empty b{color:#F2F6FD!important;font-size:14px}
+.workspace-empty span{font-size:12.5px!important;line-height:1.6}
+.asset-card{grid-template-columns:190px minmax(0,1fr);border:1px solid #1C2A47!important;border-radius:14px!important;background:#0A1120!important;box-shadow:none!important}
+.asset-card:hover{border-color:#26365A!important;transform:none!important}
+.asset-card.done{border-color:#123B2A!important}
+.asset-card.error{border-color:#3F1D1D!important}
+.asset-card.working{border-color:#1D4ED8!important}
+.asset-visual{background:#070D1A!important;border-right:1px solid #1C2A47}
+.vector-badge{color:#6EA8FF!important}
+.format-chip{background:#0A1120!important;border:1px solid #26365A!important;color:#C3CEE2!important;font-size:11px!important}
+.asset-content{padding:18px!important}
+.file-name-line b{font-size:14.5px!important;color:#F2F6FD!important}
+.file-heading small{color:#8B98B4!important;font-size:11.5px!important}
+.status-chip{font-size:11px!important;font-weight:700!important}
+.status-chip.done{color:#6EE7B7!important;border-color:#123B2A!important;background:#0C1F16!important}
+.status-chip.error{color:#FCA5A5!important;border-color:#3F1D1D!important;background:#1D1214!important}
+.status-chip.working{color:#6EA8FF!important;border-color:#1D4ED8!important;background:#0E1E42!important}
+.status-chip.waiting{color:#C3CEE2!important;border-color:#1C2A47!important;background:#111C33!important}
+.asset-header{border-bottom:1px solid #1C2A47}
+.meta-label{color:#F2F6FD!important;font-size:13px!important;font-weight:700!important}
+.meta-label em{color:#8B98B4!important;font-size:12px!important}
+.meta-block textarea{background:#070D1A!important;border:1px solid #26365A!important;font-size:14px!important;line-height:1.6!important;min-height:72px}
+.icon-copy{border:1px solid #26365A!important;background:#111C33!important;color:#C3CEE2!important}
+.icon-copy:hover{border-color:#2563EB!important;color:#6EA8FF!important}
+.field-action{border:1px solid #26365A!important;background:#111C33!important;color:#6EA8FF!important;font-size:11px!important;font-weight:700!important;min-height:30px!important}
+.field-action:hover{border-color:#2563EB!important;background:#16223C!important}
+.quality-score{font-size:11.5px!important;border:1px solid #1C2A47!important;background:#111C33!important;color:#C3CEE2!important}
+.quality-score.good{color:#6EE7B7!important;border-color:#123B2A!important;background:#0C1F16!important}
+.quality-score.mid{color:#FCD34D!important;border-color:#3A2E10!important;background:#1D1708!important}
+.quality-score.low{color:#FCA5A5!important;border-color:#3F1D1D!important;background:#1D1214!important}
+.quality-score:before{box-shadow:none!important}
+.analysis-chip{border:1px solid #1C2A47!important;background:#111C33!important;color:#C3CEE2!important;font-size:11.5px!important}
+.analysis-chip strong{color:#F2F6FD!important}
+.advanced-badge{border:1px solid #1D4ED8!important;background:#0E1E42!important;color:#6EA8FF!important;font-size:10.5px!important}
+.scorebar{background:#16223C!important;border:1px solid #16223C!important}
+.scorebar>i{background:#2563EB!important}
+.warning-item{border:1px solid #3A2E10!important;background:#1D1708!important;color:#FCD34D!important;font-size:12px!important;line-height:1.55}
+.warning-item.ok{border-color:#123B2A!important;background:#0C1F16!important;color:#6EE7B7!important}
+.advanced-status{color:#6EA8FF!important}
+.pending-panel{border:1px dashed #26365A!important;background:#0A1120!important}
+.pending-panel b{color:#F2F6FD!important;font-size:13px}
+.pending-panel span{color:#8B98B4!important;font-size:12px!important}
+.pending-lines i{background:#2563EB!important}
+.error-panel{border:1px solid #3F1D1D!important;background:#1D1214!important}
+.error-panel b{color:#FCA5A5!important;font-size:12.5px}
+.error-panel span{color:#FECACA!important;font-size:12px!important}
+.smart-actions{border-top:1px solid #1C2A47}
+
+/* --- Modals / toast --- */
+.toast{border:1px solid #26365A!important;background:#111C33!important;color:#F2F6FD!important;box-shadow:0 12px 32px rgba(0,0,0,.55)!important;font-size:13px!important}
+.preview-modal,.support-modal{background:rgba(3,7,18,.72)!important}
+.preview-dialog{background:#0F1930!important;border:1px solid #1C2A47!important}
+.preview-toolbar b{color:#F2F6FD!important;font-size:13px}
+.preview-body{background:#070D1A!important;border:1px solid #1C2A47!important}
+.support-dialog{border:1px solid #1C2A47!important;border-radius:16px!important;background:#0F1930!important;box-shadow:0 20px 56px rgba(0,0,0,.6)!important}
+.support-close{border:1px solid #26365A!important;background:#111C33!important;color:#C3CEE2!important}
+.support-icon{background:#111C33!important;border:1px solid #26365A!important;color:#6EA8FF!important}
+.support-dialog h3{color:#F2F6FD!important;font-size:26px!important}
+.support-dialog p{color:#C3CEE2!important;font-size:14px!important;line-height:1.7}
+.support-dialog p strong{color:#F2F6FD!important}
+.support-actions .support-btn{background:#2563EB!important;border-color:#2563EB!important;color:#FFFFFF!important}
+.support-actions .support-btn:hover{background:#1D4ED8!important;border-color:#1D4ED8!important}
+.status-ok{color:#6EE7B7!important}.status-warn{color:#FCD34D!important}.status-bad{color:#FCA5A5!important}
+
+/* --- Cream appearance (DEFAULT — Settings > Appearance switches to dark) ---
+   Warm cream white: page #FAF5EC, panels #FFFDF8, inset #FBF6EC,
+   ink #221D15, soft #4A4234, muted #6E6455, hairline #E9DFCC.
+   Blue accent #2563EB is kept, so the brand stays the same in both themes. */
+body.light{background:#FAF5EC!important;color:#221D15}
+body.light .sidebar{background:#FFFDF8!important;border-right:1px solid #E9DFCC}
+body.light .dash-brand b{color:#221D15!important}
+body.light .dash-brand span{color:#6E6455!important}
+body.light .nav-item,body.light .nav-group{color:#4A4234}
+body.light .nav-item:hover,body.light .nav-group:hover{background:#F5EDDC!important;color:#221D15!important}
+body.light .nav-item.active{background:linear-gradient(90deg,#1D4ED8,#2563EB)!important;color:#FFFFFF!important}
+body.light .nav-sub .nav-item{color:#6E6455}
+body.light .nav-group .chev{color:#6E6455}
+body.light .dash-side-foot{border-top:1px solid #E9DFCC}
+body.light .dash-credit{color:#6E6455!important}
+body.light .dash-credit a{color:#2563EB!important}
+body.light .side-btn.support{color:#4A4234!important;border-color:#D8CBB2!important}
+body.light .side-btn.support:hover{border-color:#2563EB!important;color:#221D15!important}
+body.light .main{background:#FAF5EC!important}
+body.light .topbar{background:#FFFDF8!important;border-bottom:1px solid #E9DFCC}
+body.light .ws-btn{background:#FFFDF8!important;border-color:#D8CBB2!important;color:#221D15!important}
+body.light .ws-btn svg{color:#2563EB}
+body.light .ws-btn .chev{color:#6E6455}
+body.light .ws-drop{background:#FFFDF8!important;border-color:#E9DFCC!important;box-shadow:0 16px 40px rgba(60,45,20,.18)}
+body.light .ws-drop button{color:#221D15!important}
+body.light .ws-drop button small{color:#6E6455}
+body.light .ws-drop button:hover{background:#F5EDDC}
+body.light .icon-btn{color:#4A4234}
+body.light .icon-btn:hover{background:#F5EDDC;color:#221D15}
+body.light .icon-btn .dot{border-color:#FFFDF8}
+body.light .page-head h2{color:#221D15!important}
+body.light .page-head p{color:#6E6455!important}
+body.light .upload-shell{background:#FFFDF8!important;border-color:#E9DFCC!important}
+body.light .drop{background:linear-gradient(180deg,#FFFDF8,#FBF6EC)!important}
+body.light .drop:after{display:none}
+body.light .drop.drag{border-color:#2563EB!important;background:#EFF4FF!important}
+body.light .drop b{color:#221D15!important}
+body.light .drop small{color:#6E6455!important}
+body.light .drop-orb{background:#DCE5F7!important;border-color:#DCE5F7!important;color:#315CBA!important;box-shadow:none!important}
+body.light .drop-orb .plus-badge{border-color:#FFFDF8}
+body.light .supports{color:#6E6455!important}
+body.light .supports b{color:#4A4234!important}
+body.light .upload-actions{background:#FFFDF8!important;border-top:1px solid #E9DFCC!important}
+body.light .progress-wrap{background:#FBF6EC!important;border-color:#E9DFCC!important}
+body.light .track{background:#E9DFCC!important;border-color:#E9DFCC!important}
+body.light .progress-meta{color:#6E6455!important}
+body.light .opt-card{background:#FFFDF8!important;border-color:#E9DFCC!important}
+body.light .opt-card>summary b{color:#221D15!important}
+body.light .opt-card>summary span{color:#6E6455!important}
+body.light .opt-card>summary .chev{color:#6E6455}
+body.light .opt-card>summary .opt-ic{background:#DCE5F7!important;color:#315CBA!important}
+body.light .opt-body{border-top:1px solid #E9DFCC}
+body.light .panel h2{color:#221D15!important}
+body.light .panel+.panel{border-top:1px solid #E9DFCC!important}
+body.light .label{color:#4A4234!important}
+body.light .hint,body.light .inline-note{color:#6E6455!important}
+body.light .footer-note{color:#6E6455!important;border-top:1px solid #E9DFCC}
+body.light .input,body.light select,body.light textarea,body.light .edit-input{background:#FFFFFF!important;border-color:#D8CBB2!important;color:#221D15!important}
+body.light .input::placeholder,body.light textarea::placeholder{color:#A89B83}
+body.light .switch{background:#D8CBB2!important}
+body.light .switchrow span{color:#4A4234!important}
+body.light .switchrow{border-top:1px solid #E9DFCC}
+body.light .advanced-note,body.light .adobe-note{border-color:#E9DFCC!important;background:#FBF6EC!important;color:#4A4234!important}
+body.light .advanced-note b,body.light .adobe-note b,body.light .adobe-rules b{color:#221D15}
+body.light .adobe-rules{color:#4A4234}
+body.light .buyer-group h4{color:#221D15}
+body.light .buyer-chip{border-color:#D8CBB2!important;background:#FFFFFF!important;color:#4A4234!important}
+body.light .buyer-chip:hover{border-color:#2563EB!important;color:#221D15!important}
+body.light .results{background:#FFFDF8!important;border-color:#E9DFCC!important}
+body.light .results-head h3{color:#221D15!important}
+body.light .results-head h3 svg{color:#2563EB}
+body.light .stat-pill{background:#FBF6EC!important;border-color:#E9DFCC!important;color:#4A4234!important}
+body.light .workspace-toolbar{background:#FBF6EC!important;border-color:#E9DFCC!important}
+body.light .workspace-toolbar h3{color:#221D15!important}
+body.light .workspace-toolbar p{color:#6E6455!important}
+body.light .workspace-empty{background:#FFFDF8!important;border-color:#D8CBB2!important;color:#6E6455!important}
+body.light .workspace-empty b{color:#221D15!important}
+body.light .empty-orb{background:#F5EDDC!important;border-color:#E9DFCC!important;color:#2563EB!important}
+body.light .asset-card{background:#FFFDF8!important;border-color:#E9DFCC!important}
+body.light .asset-card.done{border-color:#A7D8B5!important}
+body.light .asset-card.error{border-color:#F0B4B4!important}
+body.light .asset-card.working{border-color:#2563EB!important}
+body.light .asset-visual{background:#FBF6EC!important;border-right:1px solid #E9DFCC}
+body.light .vector-badge{color:#2563EB!important}
+body.light .format-chip{background:#FBF6EC!important;border-color:#E9DFCC!important;color:#4A4234!important}
+body.light .file-name-line b{color:#221D15!important}
+body.light .file-heading small{color:#6E6455!important}
+body.light .status-chip.done{color:#15803D!important;border-color:#A7D8B5!important;background:#DCFCE7!important}
+body.light .status-chip.error{color:#B91C1C!important;border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.light .status-chip.working{color:#1D4ED8!important;border-color:#93C5FD!important;background:#DBEAFE!important}
+body.light .status-chip.waiting{color:#4A4234!important;border-color:#E9DFCC!important;background:#F5EDDC!important}
+body.light .asset-header{border-bottom:1px solid #E9DFCC}
+body.light .meta-label{color:#221D15!important}
+body.light .meta-label em{color:#6E6455!important}
+body.light .meta-block textarea{background:#FFFFFF!important;border-color:#D8CBB2!important}
+body.light .icon-copy{border-color:#D8CBB2!important;background:#FBF6EC!important;color:#4A4234!important}
+body.light .icon-copy:hover{border-color:#2563EB!important;color:#2563EB!important}
+body.light .field-action{border-color:#D8CBB2!important;background:#FBF6EC!important;color:#2563EB!important}
+body.light .quality-score{border-color:#E9DFCC!important;background:#FBF6EC!important;color:#4A4234!important}
+body.light .quality-score.good{color:#15803D!important;border-color:#A7D8B5!important;background:#DCFCE7!important}
+body.light .quality-score.mid{color:#B45309!important;border-color:#FCD34D!important;background:#FEF3C7!important}
+body.light .quality-score.low{color:#B91C1C!important;border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.light .analysis-chip{border-color:#E9DFCC!important;background:#FBF6EC!important;color:#4A4234!important}
+body.light .analysis-chip strong{color:#221D15!important}
+body.light .advanced-badge{border-color:#93C5FD!important;background:#DBEAFE!important;color:#1D4ED8!important}
+body.light .scorebar{background:#E9DFCC!important;border-color:#E9DFCC!important}
+body.light .warning-item{border-color:#FCD34D!important;background:#FEF3C7!important;color:#92400E!important}
+body.light .warning-item.ok{border-color:#A7D8B5!important;background:#DCFCE7!important;color:#15803D!important}
+body.light .advanced-status{color:#2563EB!important}
+body.light .pending-panel{border-color:#D8CBB2!important;background:#FBF6EC!important}
+body.light .pending-panel b{color:#221D15!important}
+body.light .pending-panel span{color:#6E6455!important}
+body.light .error-panel{border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.light .error-panel b{color:#B91C1C!important}
+body.light .error-panel span{color:#7F1D1D!important}
+body.light .smart-actions{border-top:1px solid #E9DFCC}
+body.light .btn,body.light .mini-btn{background:#FFFDF8!important;border-color:#D8CBB2!important;color:#221D15!important}
+body.light .btn:hover,body.light .mini-btn:hover{border-color:#2563EB!important;background:#F5EDDC!important}
+body.light .btn.primary{background:#2563EB!important;border-color:#2563EB!important;color:#FFFFFF!important}
+body.light .btn.primary:hover{background:#1D4ED8!important}
+body.light .btn.danger{color:#B91C1C!important;border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.light .btn.success{color:#15803D!important;border-color:#A7D8B5!important;background:#DCFCE7!important}
+body.light .mini-btn.retry{color:#B91C1C!important}
+body.light .mini-btn.regen,body.light .mini-btn.fieldregen{color:#2563EB!important}
+body.light .mini-btn.undo{color:#B45309!important}
+body.light .mini-btn.fix{color:#15803D!important}
+body.light .toast{background:#221D15!important;color:#FFFDF8!important;border-color:#221D15!important}
+body.light .preview-modal,body.light .support-modal{background:rgba(34,29,21,.55)!important}
+body.light .preview-dialog{background:#FFFDF8!important;border-color:#E9DFCC!important}
+body.light .preview-toolbar b{color:#221D15!important}
+body.light .preview-body{background:#FBF6EC!important;border-color:#E9DFCC!important}
+body.light .support-dialog{border-color:#E9DFCC!important;background:#FFFDF8!important}
+body.light .support-close{border-color:#D8CBB2!important;background:#FBF6EC!important;color:#4A4234!important}
+body.light .support-icon{background:#F5EDDC!important;border-color:#E9DFCC!important;color:#2563EB!important}
+body.light .support-dialog h3{color:#221D15!important}
+body.light .support-dialog p{color:#4A4234!important}
+body.light .support-dialog p strong{color:#221D15!important}
+body.light .status-ok{color:#15803D!important}
+body.light .status-warn{color:#B45309!important}
+body.light .status-bad{color:#B91C1C!important}
+
+/* --- Responsive --- */
+@media(max-width:1180px){.opt-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1060px){
+  .app{grid-template-columns:1fr!important}
+  .sidebar{height:auto!important;position:relative!important;border-right:0!important;border-bottom:1px solid #16223C}
+  .dash-side-foot{margin-top:12px}
+  .topbar{padding:10px 16px!important}
+  .work{padding:20px 16px 32px!important}
+}
+@media(max-width:760px){
+  .opt-grid{grid-template-columns:1fr}
+  .asset-card{grid-template-columns:1fr}
+  .asset-visual{border-right:0;border-bottom:1px solid #1C2A47;min-height:220px}
+  .asset-content{padding:16px!important}
+  .page-head h2{font-size:24px!important}
+  .drop b{font-size:18px!important}
+  .topbar{flex-wrap:wrap}
+  .topbar-right{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head><body class="light"><div class="app">
+<aside class="sidebar">
+  <div class="dash-brand"><svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0" stop-color="#A855F7"/><stop offset=".55" stop-color="#6366F1"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs><path d="M20 4l14 6-14 6L6 10l14-6z" fill="url(#lg)"/><path d="M6 17l14 6 14-6v5l-14 6L6 22v-5z" fill="url(#lg)" opacity=".85"/><path d="M6 25l14 6 14-6v5l-14 6L6 30v-5z" fill="url(#lg)" opacity=".7"/></svg><div><b>Sweet Metadata Lab</b><span>AI Metadata Generator</span></div></div>
+  <nav class="dash-nav" aria-label="Main">
+    <button type="button" class="nav-item active" data-nav="create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span data-i18n="nav-create">Create Metadata</span></button>
+    <button type="button" class="nav-item" data-nav="generations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg><span data-i18n="nav-generations">My Generations</span></button>
+    <button type="button" class="nav-item" data-nav="templates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span data-i18n="nav-templates">Templates</span></button>
+    <button type="button" class="nav-group" id="toolsToggle" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg><span data-i18n="nav-tools">Tools</span><span class="chev">▾</span></button>
+    <div class="nav-sub" id="toolsSub" hidden>
+      <button type="button" class="nav-item" data-tool="copyAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span>Copy All</span></button>
+      <button type="button" class="nav-item" data-tool="downloadCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg><span>Download CSV</span></button>
+      <button type="button" class="nav-item" data-tool="downloadSheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg><span>Download Sheet</span></button>
+    </div>
+    <button type="button" class="nav-group" id="settingsToggle" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 00-.15-1.4l2-1.5-2-3.4-2.3 1a7 7 0 00-2.4-1.4L13.7 2h-3.4l-.45 2.6a7 7 0 00-2.4 1.4l-2.3-1-2 3.4 2 1.5A7 7 0 005 12c0 .48.05.94.15 1.4l-2 1.5 2 3.4 2.3-1a7 7 0 002.4 1.4l.45 2.6h3.4l.45-2.6a7 7 0 002.4-1.4l2.3 1 2-3.4-2-1.5c.1-.46.15-.92.15-1.4z"/></svg><span data-i18n="nav-settings">Settings</span><span class="chev">▴</span></button>
+    <div class="nav-sub" id="settingsSub">
+      <button type="button" class="nav-item" data-open="card-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12h6M12 9v6"/></svg><span data-i18n="nav-ai">AI &amp; API</span></button>
+      <button type="button" class="nav-item" data-open="card-output"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="19" cy="17" r="2.5"/></svg><span data-i18n="nav-generation">Generation</span></button>
+      <button type="button" class="nav-item" data-open="results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg><span data-i18n="nav-export">Export &amp; Format</span></button>
+      <button type="button" class="nav-item" data-action="appearance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18z" fill="currentColor" stroke="none"/></svg><span data-i18n="nav-appearance">Appearance</span></button>
+      <button type="button" class="nav-item" data-action="language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg><span data-i18n="nav-language">Language</span></button>
+    </div>
+  </nav>
+  <div class="dash-side-foot">
+    <div class="dash-credit">Created by <a href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">Md Sonet Mia</a> · <a href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">Facebook</a> · <a href="https://wa.me/8801797953059" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+    <a class="side-btn buy" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer">💎 <span data-i18n="buy">Buy Subscription</span></a>
+    <a class="side-btn support" href="https://www.supportkori.com/sonet" target="_blank" rel="noopener noreferrer">☕ <span>সাপোর্ট করুন</span></a>
+  </div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div class="ws-menu">
+      <button type="button" class="ws-btn" id="wsBtn" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg><span>My Workspace</span><span class="chev">▾</span></button>
+      <div class="ws-drop" id="wsDrop" hidden>
+        <button type="button" id="wsCurrent">My Workspace<small>Current workspace · Sweet Metadata Lab</small></button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 10-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9"/><path d="M10 20a2.2 2.2 0 004 0"/></svg><span class="dot"></span></button>
+      <button type="button" class="icon-btn" id="helpBtn" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 015 .8c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg></button>
+      <a class="avatar-btn" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer" aria-label="Md Sonet Mia">S</a>
+    </div>
+  </div>
+  <div class="work">
+    <div class="page-head" id="createHead">
+      <h2 data-i18n="page-title">Create Metadata</h2>
+      <p data-i18n="page-sub">Generate professional titles, keywords and descriptions for stock content using AI.</p>
+    </div>
+    <div class="opt-grid">
+      <details class="opt-card" id="card-content">
+        <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 18l4.5-4.5 3.5 3.5L16 13l4 4"/></svg></span><span><b data-i18n="card-content">Content Type</b><span data-i18n="card-content-sub">Image, Vector or Video</span></span><span class="chev">▾</span></summary>
+        <div class="opt-body"><div class="field"><div class="label"><span>Marketplace</span><span class="hint">Optimization preset</span></div><select id="marketplace"></select></div><div class="field"><div class="label"><span>Content Type</span><span class="hint">Auto supported</span></div><select id="contentType"><option value="auto">Auto Detect</option><option value="photo">Photo</option><option value="illustration">Illustration</option><option value="vector">Vector</option><option value="video">Video</option></select></div><div class="field"><div class="label"><span>Category / Niche</span><span class="hint">Optional</span></div><input id="category" class="input" type="text" placeholder="e.g. Business, Nature, Abstract"></div></div>
+      </details>
+      <details class="opt-card" id="card-ai">
+        <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg></span><span><b data-i18n="card-ai">AI Settings</b><span data-i18n="card-ai-sub">Model &amp; Creativity</span></span><span class="chev">▾</span></summary>
+        <div class="opt-body"><div class="field"><div class="label"><span>Gemini API Key</span><span class="hint">Browser only</span></div><input id="apiKey" class="input" type="password" placeholder="Paste your Google AI Studio API key"></div><a class="btn full" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">🔑 Get Google AI Studio API Key</a><div class="grid3" style="margin-top:8px"><button id="testKey" class="btn">Test</button><button id="saveKey" class="btn success">Save</button><button id="clearKey" class="btn danger">Clear</button></div><div class="field" style="margin-top:12px"><div class="label"><span>Model</span><span class="hint">Vision</span></div><select id="model"></select></div><div id="apiStatus" class="inline-note">Paste your API key and click <b>Test</b>.</div></div>
+      </details>
+      <details class="opt-card" id="card-output">
+        <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg></span><span><b data-i18n="card-output">Output Options</b><span data-i18n="card-output-sub">Title, Keywords, Description</span></span><span class="chev">▾</span></summary>
+        <div class="opt-body"><div class="grid2"><div class="field"><div class="label"><span>Title Characters</span><span class="hint">Min</span></div><input id="titleMin" class="input" type="number" value="60" min="1" max="200"></div><div class="field"><div class="label"><span>&nbsp;</span><span class="hint">Max</span></div><input id="titleMax" class="input" type="number" value="120" min="10" max="200"></div></div><div class="grid2"><div class="field"><div class="label"><span>Keywords</span><span class="hint">Min</span></div><input id="keywordMin" class="input" type="number" value="40" min="5" max="100"></div><div class="field"><div class="label"><span>&nbsp;</span><span class="hint">Max</span></div><input id="keywordMax" class="input" type="number" value="49" min="5" max="100"></div></div><div class="grid2"><div class="field"><div class="label"><span>Description Words</span><span class="hint">Min</span></div><input id="descMin" class="input" type="number" value="30" min="5" max="300"></div><div class="field"><div class="label"><span>&nbsp;</span><span class="hint">Max</span></div><input id="descMax" class="input" type="number" value="80" min="10" max="300"></div></div><div class="field"><div class="label"><span>Title Prefix</span><span class="hint">Optional</span></div><input id="prefix" class="input" type="text" placeholder="Optional prefix"></div><div class="field"><div class="label"><span>Title Suffix</span><span class="hint">Optional</span></div><input id="suffix" class="input" type="text" placeholder="Optional suffix"></div></div>
+      </details>
+      <details class="opt-card" id="card-advanced">
+        <summary><span class="opt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span><b data-i18n="card-advanced">Advanced</b><span data-i18n="card-advanced-sub">Industry &amp; Style</span></span><span class="chev">▾</span></summary>
+        <div class="opt-body">
+          <div class="panel"><h2>Generation Options</h2><div class="switchrow"><span>SEO keyword ordering</span><input id="seo" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Single-word bias when useful</span><input id="singleWord" class="switch" type="checkbox"></div><div class="switchrow"><span>Remove duplicates</span><input id="dedupe" class="switch" type="checkbox" checked></div><div class="switchrow"><span>Commercial-safe wording</span><input id="commercial" class="switch" type="checkbox" checked></div><div class="field" style="margin-top:12px"><div class="label"><span>Extra instruction</span><span class="hint">Optional</span></div><textarea id="extra" placeholder="Extra instruction..."></textarea></div></div>
+          <div class="panel"><h2>Advanced Metadata AI</h2><div class="field"><div class="label"><span>Title Style</span><span class="hint">AI strategy</span></div><select id="titleStyle"><option value="balanced">Balanced / Natural</option><option value="seo">SEO Optimized</option><option value="short">Short & Clean</option><option value="detailed">Detailed</option><option value="marketplace">Marketplace Safe</option></select></div>
+    <div class="switchrow"><span>Strict No-Hallucination</span><input id="strictMode" class="switch" type="checkbox" checked></div>
+    <div class="switchrow"><span>Detect Visible Text / Typography</span><input id="detectText" class="switch" type="checkbox" checked></div>
+    <div class="switchrow"><span>Auto classify asset type</span><input id="autoClassify" class="switch" type="checkbox" checked></div>
+    <div class="switchrow"><span>Batch title diversity</span><input id="batchDiversity" class="switch" type="checkbox" checked></div>
+    <div class="switchrow"><span>Keyword quality control</span><input id="qualityCheck" class="switch" type="checkbox" checked></div>
+    <div class="field" style="margin-top:12px"><div class="label"><span>Primary Keywords</span><span class="hint">Comma separated</span></div><input id="primaryKeywords" class="input" type="text" placeholder="e.g. halloween, pumpkin, vector"></div>
+    <div class="field"><div class="label"><span>Forbidden Words</span><span class="hint">Never use</span></div><input id="forbiddenWords" class="input" type="text" value="ai generated, mockup" placeholder="e.g. ai generated, mockup, brand name"></div>
+    <div class="advanced-note">Smart analysis now asks Gemini to identify the real subject, asset type, visible lettering, style, colors and background before final metadata. Per-card quality score, field regenerate, Smart Fix and Undo are available after generation.</div></div>
+          <div class="panel"><h2>Adobe Stock Buyer Searches</h2><div class="adobe-note"><b>Adobe rules, checked:</b> title max 200 characters (about 70 recommended — this edition targets 60–120), no commas in the title, up to <b>49 keywords</b> with the <b>first 10 carrying the most search weight</b>. CSV must be exactly Filename, Title, Keywords, Category, Releases.</div>
+<ul class="adobe-rules">
+<li><b>First 10 keywords:</b> the most specific literal subject — never a generic word like “background” or “concept” in position 1.</li>
+<li><b>Evergreen demand:</b> food, families, health &amp; wellness, nature &amp; wildlife, business teamwork and digital transformation. Real people in real scenes sell.</li>
+<li><b>2026 trends:</b> authentic diverse workplaces, mental health &amp; wellness, AI concepts, sustainability and remote work.</li>
+</ul>
+<div class="buyer-group"><h4>Buyers type this</h4><div class="buyer-chips">
+<button type="button" class="buyer-chip" data-kw="business team meeting">business team meeting</button>
+<button type="button" class="buyer-chip" data-kw="diverse team collaboration">diverse team collaboration</button>
+<button type="button" class="buyer-chip" data-kw="happy family together">happy family together</button>
+<button type="button" class="buyer-chip" data-kw="healthy lifestyle">healthy lifestyle</button>
+<button type="button" class="buyer-chip" data-kw="remote work home office">remote work home office</button>
+<button type="button" class="buyer-chip" data-kw="artificial intelligence concept">artificial intelligence concept</button>
+<button type="button" class="buyer-chip" data-kw="sustainable energy">sustainable energy</button>
+<button type="button" class="buyer-chip" data-kw="fitness workout">fitness workout</button>
+<button type="button" class="buyer-chip" data-kw="travel destination">travel destination</button>
+<button type="button" class="buyer-chip" data-kw="food photography">food photography</button>
+<button type="button" class="buyer-chip" data-kw="nature landscape">nature landscape</button>
+<button type="button" class="buyer-chip" data-kw="abstract background">abstract background</button>
+</div></div>
+<div class="buyer-group"><h4>Composition buyers search</h4><div class="buyer-chips">
+<button type="button" class="buyer-chip" data-kw="copy space">copy space</button>
+<button type="button" class="buyer-chip" data-kw="isolated on white background">isolated on white background</button>
+<button type="button" class="buyer-chip" data-kw="isolated on black background">isolated on black background</button>
+<button type="button" class="buyer-chip" data-kw="top view">top view</button>
+<button type="button" class="buyer-chip" data-kw="flat lay">flat lay</button>
+<button type="button" class="buyer-chip" data-kw="close up">close up</button>
+<button type="button" class="buyer-chip" data-kw="aerial view">aerial view</button>
+<button type="button" class="buyer-chip" data-kw="minimal background">minimal background</button>
+<button type="button" class="buyer-chip" data-kw="bokeh background">bokeh background</button>
+</div></div>
+<div class="buyer-group"><h4>Use case</h4><div class="buyer-chips">
+<button type="button" class="buyer-chip" data-kw="website banner">website banner</button>
+<button type="button" class="buyer-chip" data-kw="social media">social media</button>
+<button type="button" class="buyer-chip" data-kw="marketing">marketing</button>
+<button type="button" class="buyer-chip" data-kw="presentation">presentation</button>
+<button type="button" class="buyer-chip" data-kw="advertising">advertising</button>
+<button type="button" class="buyer-chip" data-kw="business concept">business concept</button>
+<button type="button" class="buyer-chip" data-kw="technology concept">technology concept</button>
+</div></div>
+<button id="adobePerfect" class="btn full" type="button">✦ Adobe Perfect Setup</button>
+<div class="inline-note">Chips add phrases to Primary Keywords. Perfect Setup selects Adobe Stock, title 60–120, keywords 40–49, SEO title style and all safety switches on.</div></div>
+        </div>
+      </details>
+    </div>
+    <section class="upload-shell"><div class="upload-inner">
+      <div id="drop" class="drop"><input id="files" type="file" multiple accept="image/*,image/svg+xml,.svg,.eps,.ai,application/postscript,application/illustrator,video/mp4,video/webm,video/quicktime,.mov"><div><div class="drop-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 18l4.5-4.5 3.5 3.5L16 13l4 4"/></svg><span class="plus-badge">+</span></div><b>Upload your image or vector</b><small>Drag &amp; drop files here or click to upload</small><div class="btn primary browse-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg><span data-i18n="upload-btn">Upload File</span></div></div></div><div class="supports"><b data-i18n="supports-label">Supports:</b> <span data-i18n="supports-list">JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV</span></div>
+      <div class="upload-actions"><div class="progress-wrap"><div class="track"><div id="bar" class="bar"></div></div><div class="progress-meta"><span id="progressText">Ready</span><span id="progressPct">0%</span></div></div><div class="action-row"><button id="generate" class="btn primary">⚡ Generate Metadata</button><button id="stop" class="btn" disabled>■ Stop</button><button id="clear" class="btn danger">Clear All</button></div></div>
+    </div></section>
+    <section class="results" id="results">
+      <div class="results-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span data-i18n="results-title">Generated Results</span></h3><div class="stats">
+        <div id="totalStat" class="stat-pill">0 Files</div><div id="doneStat" class="stat-pill done">0 Success</div><div id="pendingStat" class="stat-pill pending">0 Pending</div><div id="errorStat" class="stat-pill error">0 Failed</div>
+      </div></div>
+      <section class="workspace-toolbar"><div><h3>Asset Workspace</h3><p>Latest processed items move to the top automatically. Edit metadata directly inside each card.</p></div><div class="download-actions"><button id="copyAll" class="btn">ALL Copy</button><button id="downloadCsv" class="btn">ALL Download CSV</button><button id="downloadTxt" class="btn">ALL Download TXT</button><button id="downloadSheet" class="btn">ALL Download Sheet</button><button id="retryFailed" class="btn">Retry Failed</button></div></section>
+      <section id="workspaceList" class="workspace-list"><div class="workspace-empty"><div><div class="empty-orb">❤️</div><b data-i18n="empty-title">No metadata generated yet.</b><span data-i18n="empty-sub">Upload an image and click &ldquo;Generate Metadata&rdquo; to see results here.</span></div></div></section>
+    </section>
+  </div>
+</main>
+</div>
+<div id="previewModal" class="preview-modal" aria-hidden="true"><div class="preview-dialog"><div class="preview-toolbar"><b id="previewTitle">Preview</b><button id="closePreview" class="btn">Close</button></div><div id="previewBody" class="preview-body"></div></div></div>
+<div id="supportModal" class="support-modal" aria-hidden="true"><div class="support-dialog" role="dialog" aria-modal="true" aria-labelledby="supportTitle"><button id="supportClose" class="support-close" type="button" aria-label="Close">×</button><div class="support-icon"></div>🤝<h3 id="supportTitle">সাপোর্ট করুন</h3><p>এই ফ্রি টুলটি আপনার কাজে লাগলে আমাকে সাপোর্ট করতে পারেন। <strong>আপনাদের সাপোর্ট পেলে আরও চমৎকার, প্রফেশনাল ও দরকারি টুলস সম্পূর্ণ ফ্রি</strong> আপনাদের জন্য তৈরি করে দিতে পারবো।</p><div class="support-actions"><a class="support-btn" href="https://www.supportkori.com/sonet" target="_blank" rel="noopener noreferrer">❤ এখন সাপোর্ট করুন</a><button id="supportLater" class="btn support-later" type="button">পরে করবো</button></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const el={
+  apiKey:$("apiKey"),testKey:$("testKey"),saveKey:$("saveKey"),clearKey:$("clearKey"),model:$("model"),apiStatus:$("apiStatus"),
+  marketplace:$("marketplace"),contentType:$("contentType"),category:$("category"),titleMin:$("titleMin"),titleMax:$("titleMax"),keywordMin:$("keywordMin"),keywordMax:$("keywordMax"),descMin:$("descMin"),descMax:$("descMax"),prefix:$("prefix"),suffix:$("suffix"),seo:$("seo"),singleWord:$("singleWord"),dedupe:$("dedupe"),commercial:$("commercial"),extra:$("extra"),
+  titleStyle:$("titleStyle"),strictMode:$("strictMode"),detectText:$("detectText"),autoClassify:$("autoClassify"),batchDiversity:$("batchDiversity"),qualityCheck:$("qualityCheck"),primaryKeywords:$("primaryKeywords"),forbiddenWords:$("forbiddenWords"),
+  drop:$("drop"),files:$("files"),generate:$("generate"),stop:$("stop"),clear:$("clear"),workspaceList:$("workspaceList"),bar:$("bar"),progressText:$("progressText"),progressPct:$("progressPct"),totalStat:$("totalStat"),doneStat:$("doneStat"),errorStat:$("errorStat"),pendingStat:$("pendingStat"),copyAll:$("copyAll"),downloadCsv:$("downloadCsv"),downloadTxt:$("downloadTxt"),downloadSheet:$("downloadSheet"),retryFailed:$("retryFailed"),toast:$("toast"),
+  previewModal:$("previewModal"),previewTitle:$("previewTitle"),previewBody:$("previewBody"),closePreview:$("closePreview"),supportModal:$("supportModal"),supportClose:$("supportClose"),supportLater:$("supportLater")
+};
+const MARKETPLACES={
+  general:{label:'General / Universal',title:'Natural, detailed, professional stock title matching visible subject, setting and concept.',description:'Clear descriptive stock summary focused on what is visually supported.',keywords:'Use strong relevant search keywords and useful phrases.',csv:['Filename','Title','Description','Keywords','Category','Content Type']},
+  adobe:{label:'Adobe Stock',title:'One clear sentence, no commas, 60-120 characters: main subject first, then action, setting and concept — written the way a buyer would search.',description:'Short factual description for other marketplaces; Adobe Stock itself does not use a separate description field.',keywords:'Exactly 49 unique keywords. Positions 1-10: the most specific literal subject terms a buyer would type. Then attributes, style, colours, composition, use case, mood and broader concepts. No generic filler in the first 10, no duplicates, no hashtags, no brand names, no camera specs, no artist names.',csv:['Filename','Title','Keywords','Category','Releases']},
+  shutterstock:{label:'Shutterstock',title:'Natural commercial stock title based on visible subject, action, setting and concept.',description:'Short useful description suitable for stock discovery.',keywords:'Relevant comma-separated keywords with the strongest literal terms first.',csv:['Filename','Description','Keywords','Category 1','Category 2','Editorial','Title']},
+  freepik:{label:'Freepik',title:'Concise asset-focused title describing style and subject.',description:'Brief visual description useful for design-resource discovery.',keywords:'Include subject, style, technique, color, concept and intended design usage.',csv:['Filename','Title','Keywords','Description','Prompt','Model']},
+  vecteezy:{label:'Vecteezy',title:'Readable descriptive stock title.',description:'Straightforward description of the image/vector/video.',keywords:'Relevant comma-separated discovery terms; no duplicates.',csv:['Filename','Title','Description','Keywords']},
+  pond5:{label:'Pond5',title:'Footage-friendly title naming subject, action, setting and shot type when visible.',description:'Describe scene, movement, camera behavior, setting and concept where supported.',keywords:'Include subject, action, location type, motion, mood and production style.',csv:['Filename','Title','Description','Keywords','Category','Content Type']},
+  istock:{label:'iStock / Getty',title:'Specific factual title with clear visual subject and context.',description:'Accurate contextual description; avoid unsupported claims.',keywords:'Use specific searchable concepts and relevant contextual terms.',csv:['Filename','Title','Description','Keywords','Country','Category']},
+  canva:{label:'Canva',title:'Simple creator-friendly title understandable at a glance.',description:'Short clear description of the visual resource.',keywords:'Use practical design-search terms, subject, style, theme, color and use case.',csv:['Filename','Title','Keywords','Artist','Locale','Description']},
+  envato:{label:'Envato',title:'Marketable but factual item title without exaggerated claims.',description:'Explain the asset, style and practical use in clear language.',keywords:'Use asset type, style, theme, visual attributes and intended use tags.',csv:['Filename','Title','Tags','Description','Category']}
+};
+Object.entries(MARKETPLACES).forEach(([v,m])=>{const o=document.createElement('option');o.value=v;o.textContent=m.label;el.marketplace.appendChild(o)});
+
+const state={files:[],results:[],running:false,abort:false,availableModels:[],selectedId:null,previewUrls:new Map()};
+const PREFERRED_MODELS=['gemini-3.5-flash-lite','gemini-3.8-flash','gemini-3.7-flash','gemini-3.6-flash','gemini-flash-latest','gemini-flash-lite-latest','gemini-2.5-flash-lite','gemini-2.5-flash'];
+function usableModelName(name){return /^gemini-/i.test(name)&&!/(live|tts|image-generation|embedding|aqa|robotics|computer-use)/i.test(name)}
+function preferredAvailableModels(){const avail=state.availableModels.filter(usableModelName);const ordered=[];for(const p of PREFERRED_MODELS)if(avail.includes(p))ordered.push(p);for(const m of avail)if(!ordered.includes(m)&&/(flash|pro)/i.test(m))ordered.push(m);return ordered}
+function toast(msg){el.toast.textContent=msg;el.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.toast.classList.remove('show'),2600)}
+function openSupportModal(){if(!el.supportModal)return;el.supportModal.classList.add('show');el.supportModal.setAttribute('aria-hidden','false')}
+function closeSupportModal(){if(!el.supportModal)return;el.supportModal.classList.remove('show');el.supportModal.setAttribute('aria-hidden','true')}
+function bytes(n){if(n<1024)return n+' B';if(n<1048576)return(n/1024).toFixed(1)+' KB';return(n/1048576).toFixed(1)+' MB'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function idFor(f,i){return `${i}-${f.name}-${f.size}-${f.lastModified}`}
+function isVideo(f){return /^video\//.test(f.type)||/\.(mp4|mov|webm|m4v)$/i.test(f.name)}
+function isSvg(f){return /\.svg$/i.test(f.name)||/svg/i.test(f.type||'')}
+function isAiEps(f){return /\.(ai|eps)$/i.test(f.name)||/(postscript|illustrator)/i.test(f.type||'')}
+function isRegularImage(f){return /^image\//.test(f.type) && !isSvg(f)}
+function isAcceptedFile(f){return isRegularImage(f)||isSvg(f)||isAiEps(f)||isVideo(f)}
+function getAssetKind(f){if(isVideo(f)) return 'video'; if(isAiEps(f)) return 'vector'; if(isSvg(f)) return 'vector'; return 'image'}
+function safeNum(node,def){const n=Number(node.value);return Number.isFinite(n)?n:def}
+function clampRules(){let a=safeNum(el.titleMin,8),b=safeNum(el.titleMax,190);a=Math.max(1,Math.min(190,a));b=Math.max(10,Math.min(300,b));if(a>b)[a,b]=[b,a];let k1=safeNum(el.keywordMin,25),k2=safeNum(el.keywordMax,49);if(k1>k2)[k1,k2]=[k2,k1];let d1=safeNum(el.descMin,30),d2=safeNum(el.descMax,80);if(d1>d2)[d1,d2]=[d2,d1];return{a,b,k1,k2,d1,d2}}
+function updateStats(){const done=state.results.filter(x=>x.status==='done').length,errors=state.results.filter(x=>x.status==='error').length,working=state.results.filter(x=>x.status==='working').length,pending=Math.max(0,state.files.length-done-errors-working);el.totalStat.textContent=`${state.files.length} Files`;el.doneStat.textContent=`${done} Success`;el.errorStat.textContent=`${errors} Failed`;el.pendingStat.textContent=`${pending+working} Pending`}
+function progress(done,total,text){const pct=total?Math.round(done/total*100):0;el.bar.style.width=pct+'%';el.progressPct.textContent=pct+'%';el.progressText.textContent=text||'Ready'}
+function now(){return Date.now()}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function stripExt(name){return String(name||'').replace(/\.[^.]+$/,'')}
+function filenameHint(name){return stripExt(name).replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim()}
+function getResultById(id){return state.results.find(x=>x.id===id)}
+function setApiStatus(msg,mode=''){el.apiStatus.innerHTML=msg;el.apiStatus.className='inline-note';if(mode==='ok')el.apiStatus.classList.add('status-ok');if(mode==='warn')el.apiStatus.classList.add('status-warn');if(mode==='bad')el.apiStatus.classList.add('status-bad')}
+function normalizeTitleCase(t){return String(t||'').replace(/\s+/g,' ').trim()}
+function escapeRegExp(s){return String(s||'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function stripConfiguredAffixes(base,prefix,suffix){
+  let title=normalizeTitleCase(base);
+  const p=normalizeTitleCase(prefix),s=normalizeTitleCase(suffix);
+  if(p){
+    const re=new RegExp('^(?:'+escapeRegExp(p)+'(?:\\s+|\\s*[-–—:|,]\\s*))+','i');
+    title=title.replace(re,'').trim();
+    while(title.toLowerCase()===p.toLowerCase()||title.toLowerCase().startsWith((p+' ').toLowerCase())){
+      if(title.toLowerCase()===p.toLowerCase()){title='';break}
+      title=title.slice(p.length).replace(/^\s*[-–—:|,]?\s*/,'').trim();
+    }
+  }
+  if(s){
+    const lowS=s.toLowerCase();
+    let guard=0;
+    while(title && guard++<6){
+      const low=title.toLowerCase();
+      if(low===lowS){title='';break}
+      if(low.endsWith((' '+lowS))){title=title.slice(0,title.length-s.length).trim().replace(/[\s,;:|\-–—]+$/,'').trim();continue}
+      break
+    }
+  }
+  return title;
+}
+function affixBudget(maxChars,prefix,suffix){
+  const p=normalizeTitleCase(prefix),s=normalizeTitleCase(suffix);
+  const fixed=(p?p.length+1:0)+(s?s.length+1:0);
+  return Math.max(1,maxChars-fixed);
+}
+function applyTitleAffixes(base,maxChars){
+  const prefix=normalizeTitleCase(el.prefix.value),suffix=normalizeTitleCase(el.suffix.value);
+  let core=stripConfiguredAffixes(base,prefix,suffix);
+  const budget=affixBudget(maxChars,prefix,suffix);
+  if(core.length>budget) core=core.slice(0,budget).replace(/[ ,;:\-–—|]+$/,'').trim();
+  let parts=[]; if(prefix)parts.push(prefix); if(core)parts.push(core); if(suffix)parts.push(suffix);
+  let title=parts.join(' ').replace(/\s+/g,' ').trim();
+  if(title.length>maxChars){
+    // Preserve prefix and suffix exactly; only shrink the generated core.
+    const fixed=(prefix?prefix.length+1:0)+(suffix?suffix.length+1:0);
+    const coreMax=Math.max(0,maxChars-fixed);
+    core=core.slice(0,coreMax).replace(/[ ,;:\-–—|]+$/,'').trim();
+    parts=[]; if(prefix)parts.push(prefix); if(core)parts.push(core); if(suffix)parts.push(suffix);
+    title=parts.join(' ').replace(/\s+/g,' ').trim();
+  }
+  return title;
+}
+function dedupeKeywords(arr){const seen=new Set();return arr.filter(k=>{const n=String(k).toLowerCase().trim();if(!n||seen.has(n))return false;seen.add(n);return true})}
+function needsMetadataRepair(title,kws,r){const len=String(title||'').trim().length;const count=(Array.isArray(kws)?kws:[]).filter(Boolean).length;return len<Math.max(r.a,Math.round(r.b*0.68))||count<r.k2}
+function fileSig(file){return `${file.name}__${file.size}__${file.lastModified}`}
+function cachePreview(file,url){if(url)state.previewUrls.set(fileSig(file),url)}
+function getCachedPreview(file){return state.previewUrls.get(fileSig(file))||''}
+function getAssetPreviewHTML(file, controls=false){const kind=getAssetKind(file); const cached=getCachedPreview(file); if(cached && (isAiEps(file)||isSvg(file))) return `<img src="${cached}" alt="">`; if(isVideo(file)){const src=URL.createObjectURL(file);return controls?`<video src="${src}" controls muted></video>`:`<video src="${src}" muted preload="metadata"></video>`;} if(isRegularImage(file)||isSvg(file)){const src=URL.createObjectURL(file);return `<img src="${src}" alt="">`; } return `<div class="vector-badge">${/\.ai$/i.test(file.name)?'AI FILE':/\.eps$/i.test(file.name)?'EPS FILE':'VECTOR FILE'}</div>`;}
+function markResultUpdated(rec,status){rec.status=status;rec.updatedAt=now();if(status==='done'||status==='error')rec.completedAt=rec.updatedAt;}
+function sortedResults(){return [...state.results].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))}
+function sortedQueueItems(){return state.files.map((f,i)=>{const id=idFor(f,i);const r=getResultById(id);return {file:f,id,index:i,status:r?.status||'waiting',updatedAt:r?.updatedAt||0,error:r?.error||'',data:r?.data||null};}).sort((a,b)=>{const aDone = a.status==='done'||a.status==='error'||a.status==='working'; const bDone = b.status==='done'||b.status==='error'||b.status==='working'; if(aDone!==bDone) return bDone-aDone; if((b.updatedAt||0)!==(a.updatedAt||0)) return (b.updatedAt||0)-(a.updatedAt||0); return b.index-a.index;});}
+function jumpToResult(id){const node=document.querySelector(`.result[data-id="${CSS.escape(id)}"]`); state.selectedId=id; renderWorkspace(); if(!node){toast('This asset has not produced a result yet.');return;} node.scrollIntoView({behavior:'smooth',block:'center'}); node.classList.add('highlight'); setTimeout(()=>node.classList.remove('highlight'),1500)}
+function openPreviewForId(id){const rec=getResultById(id); const item = rec || sortedQueueItems().find(x=>x.id===id); if(!item) return; const file=item.file||item; el.previewTitle.textContent=file.name; el.previewBody.innerHTML=getAssetPreviewHTML(file,true); el.previewModal.classList.add('show'); el.previewModal.setAttribute('aria-hidden','false');}
+function closePreview(){el.previewModal.classList.remove('show');el.previewModal.setAttribute('aria-hidden','true');el.previewBody.innerHTML=''}
+
+async function fileToDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
+async function imagePart(file){const data=await fileToDataURL(file);return {inline_data:{mime_type:file.type||'image/jpeg',data:String(data).split(',')[1]}}}
+async function svgToJpegPart(file){const svgText=await file.text();const blob=new Blob([svgText],{type:'image/svg+xml'});const url=URL.createObjectURL(blob);try{const img=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('Could not render SVG preview.'));im.src=url});const canvas=document.createElement('canvas');const maxW=1200,ratio=Math.min(1,maxW/(img.width||maxW));canvas.width=Math.max(1,Math.round((img.width||800)*ratio));canvas.height=Math.max(1,Math.round((img.height||800)*ratio));const ctx=canvas.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);const dataUrl=canvas.toDataURL('image/jpeg',0.9);cachePreview(file,dataUrl);return {inline_data:{mime_type:'image/jpeg',data:dataUrl.split(',')[1]}}}finally{URL.revokeObjectURL(url)}}
+function dataUrlToImagePart(dataUrl){return {inline_data:{mime_type:'image/jpeg',data:String(dataUrl).split(',')[1]}}}
+function getVectorCachedPart(file){const cached=getCachedPreview(file);return cached?dataUrlToImagePart(cached):null}
+async function renderPdfCompatibleAiPart(file){
+  if(!(window.pdfjsLib&&pdfjsLib.getDocument)) throw new Error('PDF.js could not load. Check your internet connection, then reload this page.');
+  const buf=await file.arrayBuffer();
+  const bytes=new Uint8Array(buf);
+  const firstKB=new TextDecoder('latin1').decode(bytes.slice(0,4096));
+  if(!firstKB.includes('%PDF')) throw new Error('This AI file is not PDF-compatible. Re-save it from Illustrator with Create PDF Compatible File enabled.');
+  try{
+    if(pdfjsLib.GlobalWorkerOptions) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf=await pdfjsLib.getDocument({data:bytes,disableWorker:true}).promise;
+    const page=await pdf.getPage(1);
+    const base=page.getViewport({scale:1});
+    const maxSide=1800;
+    const scale=Math.min(2,Math.max(0.5,maxSide/Math.max(base.width,base.height)));
+    const viewport=page.getViewport({scale});
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.ceil(viewport.width));canvas.height=Math.max(1,Math.ceil(viewport.height));
+    const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
+    await page.render({canvasContext:ctx,viewport}).promise;
+    const dataUrl=canvas.toDataURL('image/jpeg',0.94);cachePreview(file,dataUrl);return dataUrlToImagePart(dataUrl)
+  }catch(e){throw new Error('Could not render the PDF-compatible AI preview: '+(e?.message||e))}
+}
+function epsBinaryPreviewInfo(bytes){
+  if(bytes.length<30)return null;
+  const dv=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+  if(dv.getUint32(0,true)!==0xC6D3D0C5)return null;
+  const tiffOffset=dv.getUint32(20,true),tiffLength=dv.getUint32(24,true);
+  if(!tiffOffset||!tiffLength||tiffOffset+tiffLength>bytes.length)return null;
+  return {tiffOffset,tiffLength}
+}
+function decodeIllustratorEpsTiffPreview(tiffBytes){
+  const b=tiffBytes instanceof Uint8Array?tiffBytes:new Uint8Array(tiffBytes);
+  if(b.length<16)throw new Error('TIFF preview is too small');
+  const le=b[0]===0x49&&b[1]===0x49,be=b[0]===0x4d&&b[1]===0x4d;
+  if(!le&&!be)throw new Error('Invalid TIFF byte order');
+  const dv=new DataView(b.buffer,b.byteOffset,b.byteLength);
+  const u16=o=>dv.getUint16(o,le),u32=o=>dv.getUint32(o,le);
+  if(u16(2)!==42)throw new Error('Invalid TIFF signature');
+  const typeSize={1:1,2:1,3:2,4:4,5:8};
+  const ifd=u32(4);if(ifd+2>b.length)throw new Error('Invalid TIFF directory');
+  const n=u16(ifd),tags=new Map();
+  for(let i=0;i<n;i++){
+    const o=ifd+2+i*12;if(o+12>b.length)break;
+    tags.set(u16(o),{type:u16(o+2),count:u32(o+4),value:u32(o+8),field:o+8});
+  }
+  function vals(tag){
+    const e=tags.get(tag);if(!e)return [];
+    const sz=typeSize[e.type]||1,total=e.count*sz,base=total<=4?e.field:e.value;
+    if(base<0||base+total>b.length)throw new Error(`TIFF tag ${tag} points outside preview data`);
+    const a=[];
+    for(let i=0;i<e.count;i++){
+      const o=base+i*sz;
+      if(e.type===1||e.type===2)a.push(b[o]);
+      else if(e.type===3)a.push(u16(o));
+      else if(e.type===4)a.push(u32(o));
+      else throw new Error(`Unsupported TIFF field type ${e.type}`);
+    }
+    return a;
+  }
+  const one=(tag,def=0)=>{const a=vals(tag);return a.length?a[0]:def};
+  const w=one(256),h=one(257),compression=one(259,1),photo=one(262,2),spp=one(277,1),planar=one(284,1);
+  const bits=vals(258);const stripOffsets=vals(273),stripCounts=vals(279);
+  if(!w||!h)throw new Error('Invalid TIFF dimensions');
+  if(compression!==1)throw new Error(`Illustrator EPS TIFF uses compression ${compression}; using compatibility decoder instead`);
+  if(planar!==1)throw new Error('Planar TIFF preview is not supported by the fast EPS decoder');
+  if(bits.length && bits.some(x=>x!==8))throw new Error('Fast EPS decoder currently requires 8-bit TIFF samples');
+  if(!stripOffsets.length||!stripCounts.length)throw new Error('TIFF strip data is missing');
+  let total=0;for(const c of stripCounts)total+=c;
+  const raw=new Uint8Array(total);let p=0;
+  for(let i=0;i<stripOffsets.length;i++){
+    const off=stripOffsets[i],len=stripCounts[Math.min(i,stripCounts.length-1)];
+    if(off+len>b.length)throw new Error('TIFF strip extends outside preview data');
+    raw.set(b.subarray(off,off+len),p);p+=len;
+  }
+  const need=w*h*spp;if(raw.length<need)throw new Error(`TIFF pixel data is incomplete (${raw.length}/${need} bytes)`);
+  const rgba=new Uint8ClampedArray(w*h*4);
+  let cmap=null;
+  if(photo===3){
+    const cm=vals(320);if(cm.length<768)throw new Error('Palette TIFF has no complete color map');
+    const count=Math.floor(cm.length/3);cmap={r:cm.slice(0,count),g:cm.slice(count,count*2),b:cm.slice(count*2,count*3)};
+  }
+  const to8=v=>v>255?Math.round(v/257):v;
+  for(let i=0;i<w*h;i++){
+    const q=i*spp,o=i*4;let r=255,g=255,bl=255,a=255;
+    if(photo===3){
+      const idx=raw[q];r=to8(cmap.r[idx]??0);g=to8(cmap.g[idx]??0);bl=to8(cmap.b[idx]??0);if(spp>=2)a=raw[q+1];
+    }else if(photo===2){
+      r=raw[q]??0;g=raw[q+1]??r;bl=raw[q+2]??r;if(spp>=4)a=raw[q+3];
+    }else if(photo===0||photo===1){
+      let v=raw[q]??0;if(photo===0)v=255-v;r=g=bl=v;if(spp>=2)a=raw[q+1];
+    }else throw new Error(`Unsupported TIFF photometric mode ${photo}`);
+    rgba[o]=r;rgba[o+1]=g;rgba[o+2]=bl;rgba[o+3]=a;
+  }
+  return {width:w,height:h,rgba};
+}
+async function renderEmbeddedEpsTiffPart(file){
+  const buf=await file.arrayBuffer();const bytes=new Uint8Array(buf);const info=epsBinaryPreviewInfo(bytes);
+  if(!info) throw new Error('No embedded TIFF preview was found in this EPS file. Re-save the EPS from Illustrator with a TIFF preview enabled.');
+  const tiff=bytes.slice(info.tiffOffset,info.tiffOffset+info.tiffLength);
+  let decoded=null,fastErr=null;
+  try{decoded=decodeIllustratorEpsTiffPreview(tiff)}catch(e){fastErr=e}
+  if(!decoded){
+    if(!window.UTIF)throw new Error('EPS TIFF fast decoder could not read this preview and the compatibility TIFF decoder did not load. '+(fastErr?.message||''));
+    try{
+      const ab=tiff.buffer.slice(tiff.byteOffset,tiff.byteOffset+tiff.byteLength);
+      const ifds=UTIF.decode(ab);if(!ifds?.length)throw new Error('No TIFF frame found');
+      UTIF.decodeImage(ab,ifds[0]);const rgba=UTIF.toRGBA8(ifds[0]);
+      const w=ifds[0].width||ifds[0].t256?.[0],h=ifds[0].height||ifds[0].t257?.[0];
+      if(!w||!h)throw new Error('Invalid TIFF dimensions');decoded={width:w,height:h,rgba:new Uint8ClampedArray(rgba)};
+    }catch(e){throw new Error('Embedded EPS TIFF preview could not be decoded. Fast decoder: '+(fastErr?.message||'unknown')+'. Compatibility decoder: '+(e?.message||e))}
+  }
+  const {width:w,height:h,rgba}=decoded;
+  const src=document.createElement('canvas');src.width=w;src.height=h;const sctx=src.getContext('2d');
+  sctx.putImageData(new ImageData(rgba,w,h),0,0);
+  const maxSide=1800,scale=Math.min(1,maxSide/Math.max(w,h));const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d',{alpha:false});
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(src,0,0,canvas.width,canvas.height);
+  const dataUrl=canvas.toDataURL('image/jpeg',0.96);cachePreview(file,dataUrl);return dataUrlToImagePart(dataUrl)
+}
+async function renderAiEpsVectorPart(file){
+  const cached=getVectorCachedPart(file);if(cached)return cached;
+  if(/\.ai$/i.test(file.name))return await renderPdfCompatibleAiPart(file);
+  if(/\.eps$/i.test(file.name)){
+    try{return await renderEmbeddedEpsTiffPart(file)}catch(tiffErr){
+      try{return await renderPdfCompatibleAiPart(file)}catch(pdfErr){throw new Error(`${tiffErr.message} ${pdfErr.message}`)}
+    }
+  }
+  return await renderPdfCompatibleAiPart(file)
+}
+async function warmVectorPreview(file){if(!isAiEps(file)||getCachedPreview(file))return;try{await renderAiEpsVectorPart(file);renderWorkspace()}catch(e){console.warn('Vector preview unavailable:',file.name,e)}}
+async function sampleVideoFrames(file,count=8){const url=URL.createObjectURL(file);const v=document.createElement('video');v.preload='metadata';v.muted=true;v.playsInline=true;v.src=url;await new Promise((res,rej)=>{v.onloadedmetadata=res;v.onerror=()=>rej(new Error('Could not read video metadata.'))});const duration=Math.max(.1,v.duration||1);const canvas=document.createElement('canvas');const ctx=canvas.getContext('2d');const baseRatios=[0.03,0.12,0.22,0.34,0.48,0.62,0.78,0.92].slice(0,count);const times=[...new Set(baseRatios.map(r=>Number(Math.min(Math.max(duration-0.05,0),Math.max(0,duration*r)).toFixed(2))))];const parts=[];for(let i=0;i<times.length;i++){const t=times[i];await new Promise((res,rej)=>{const onSeek=()=>{v.removeEventListener('seeked',onSeek);res()};v.addEventListener('seeked',onSeek);v.currentTime=t;setTimeout(()=>rej(new Error('Video frame sampling timed out.')),7000)});const maxW=960,ratio=Math.min(1,maxW/(v.videoWidth||maxW));canvas.width=Math.max(1,Math.round((v.videoWidth||640)*ratio));canvas.height=Math.max(1,Math.round((v.videoHeight||360)*ratio));ctx.drawImage(v,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.82).split(',')[1];parts.push({text:`Video frame ${i+1} of ${times.length}, sampled at ${t.toFixed(2)} seconds.`});parts.push({inline_data:{mime_type:'image/jpeg',data}})}URL.revokeObjectURL(url);return{parts,duration,width:v.videoWidth,height:v.videoHeight,frameCount:times.length,frameTimes:times}}
+async function extractVectorHints(file,maxBytes=1800000){
+  try{
+    const buf=await file.arrayBuffer();
+    const view=new Uint8Array(buf.slice(0,Math.min(buf.byteLength,maxBytes)));
+    const raw=new TextDecoder('latin1').decode(view).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]+/g,' ');
+    const stop=new Set('adobe illustrator creator boundingbox pages page length procset cmyk rgb cmy color image begin end save restore gsave grestore moveto lineto curveto closepath clip eoclip fill eofill stroke setgray setrgbcolor setcmykcolor concat scale rotate translate font findfont scalefont setfont stringwidth currentfile readstring pop exch def dup index roll bind readonly execute forall ifelse repeat for array dict beginresource endresource currentdict currentpoint matrix pathbbox charpath show xshow yshow xyshow true false null metadata pdf type subtype obj stream endstream catalog resources filter decode flate xobject form group colorpace pattern shading graphics state pagecontent pagecontents'.split(/\s+/));
+    const phraseMatches=[...(raw.matchAll(/\(([A-Za-z0-9&'’+\-., ]{2,80})\)/g))]
+      .map(m=>m[1].replace(/[()]/g,'').replace(/\s+/g,' ').trim())
+      .filter(s=>s.length>1);
+    const upperMatches=[...(raw.matchAll(/\b[A-Z][A-Z0-9&'’+\-]{1,}\b(?:\s+\b[A-Z][A-Z0-9&'’+\-]{1,}\b){0,3}/g))]
+      .map(m=>m[0].trim());
+    const tokens=(raw.match(/[A-Za-z][A-Za-z0-9&'’+\-]{1,}/g)||[]).map(s=>s.trim());
+    const cleanTokens=tokens.filter(w=>{const n=w.toLowerCase();return n.length>1&&!stop.has(n)&&!/^[a-f0-9]{6,}$/i.test(w)&&!/^(m|l|c|cm|gs|gr|q|Q)$/.test(w)});
+    const freq=new Map();
+    for(const w of cleanTokens){const key=w.toLowerCase();freq.set(key,(freq.get(key)||0)+1)}
+    const topWords=[...freq.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,20).map(([w])=>w);
+    const phrases=[];
+    for(const arr of [upperMatches,phraseMatches]) for(const s of arr){
+      const c=s.replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim();
+      if(c && c.length<80 && !phrases.some(x=>x.toLowerCase()===c.toLowerCase())) phrases.push(c)
+    }
+    const looksLikeLogo = phrases.some(p=>p.split(/\s+/).length<=4) || topWords.length<=8;
+    return {phrases:phrases.slice(0,8),topWords,looksLikeLogo}
+  }catch(e){
+    return {phrases:[],topWords:[],looksLikeLogo:false,error:String(e?.message||e)}
+  }
+}
+async function buildVisualInput(file){if(isVideo(file)){const sampled=await sampleVideoFrames(file,8);return {parts:sampled.parts,videoInfo:sampled,mode:'video',vectorHints:null}} if(isSvg(file)){return {parts:[await svgToJpegPart(file)],videoInfo:null,mode:'svg',vectorHints:null}} if(isRegularImage(file)){return {parts:[await imagePart(file)],videoInfo:null,mode:'image',vectorHints:null}} if(isAiEps(file)){const hints=await extractVectorHints(file);try{const part=await renderAiEpsVectorPart(file);return {parts:[part],videoInfo:null,mode:'vector-preview',vectorHints:hints}}catch(e){return {parts:[],videoInfo:{vectorPreviewError:e.message||String(e)},mode:'vector-source',vectorHints:hints}}} return {parts:[],videoInfo:null,mode:'vector-source',vectorHints:null} }
+function csvTerms(value){return String(value||'').split(',').map(x=>x.trim()).filter(Boolean)}
+function forbiddenTerms(){return csvTerms(el.forbiddenWords?.value).map(x=>x.toLowerCase())}
+function primaryTerms(){return dedupeKeywords(csvTerms(el.primaryKeywords?.value))}
+function titleStyleInstruction(){const v=el.titleStyle?.value||'balanced';return v==='seo'?'SEO optimized but natural: put the strongest literal subject and asset type early, without keyword stuffing.':v==='short'?'Short and clean: use only the most important visible subject, style and context.':v==='detailed'?'Detailed but readable: include subject, action/composition, style, season/context and background when clearly visible.':v==='marketplace'?'Marketplace-safe: factual, concise, commercial, and conservative with no unsupported concepts.':'Balanced and natural: specific, readable, factual, and useful for stock search.'}
+function batchDiversityContext(file){if(!el.batchDiversity?.checked)return'none';const titles=state.results.filter(r=>r.status==='done'&&r.file!==file&&r.data?.title).slice(-10).map(r=>r.data.title);return titles.length?titles.join(' || '):'none'}
+function cloneData(d){return JSON.parse(JSON.stringify(d||{}))}
+function pushHistory(rec){if(!rec||!rec.data)return;rec.history=Array.isArray(rec.history)?rec.history:[];rec.history.push(cloneData(rec.data));if(rec.history.length>6)rec.history.shift()}
+function hasForbidden(text){const low=String(text||'').toLowerCase();return forbiddenTerms().filter(t=>t&&low.includes(t))}
+function normalizeKeywordForNearDup(k){return String(k||'').toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\b(vector|illustration|graphic|design|image|art|asset)\b/g,' ').replace(/\s+/g,' ').trim()}
+function metadataQuality(data){
+  const r=clampRules(),warn=[];let score=100;
+  const title=String(data?.title||''),desc=String(data?.description||''),kws=Array.isArray(data?.keywords)?data.keywords:[];
+  if(title.length<r.a||title.length>r.b){score-=18;warn.push(`Title length ${title.length} is outside ${r.a}-${r.b}.`)}
+  const dw=desc.trim()?desc.trim().split(/\s+/).length:0;if(dw<r.d1||dw>r.d2){score-=14;warn.push(`Description has ${dw} words; target is ${r.d1}-${r.d2}.`)}
+  if(kws.length<r.k1){score-=18;warn.push(`Only ${kws.length} keywords; minimum is ${r.k1}.`)}
+  const exact=new Set(),near=new Set();let exactDup=0,nearDup=0;for(const k of kws){const x=k.toLowerCase().trim();if(exact.has(x))exactDup++;exact.add(x);const n=normalizeKeywordForNearDup(k);if(n&&near.has(n))nearDup++;if(n)near.add(n)}
+  if(exactDup){score-=12;warn.push(`${exactDup} exact duplicate keyword(s) detected.`)}
+  if(nearDup){score-=Math.min(12,nearDup*3);warn.push(`${nearDup} near-duplicate keyword(s) may reduce keyword diversity.`)}
+  const forbidden=[...new Set([...hasForbidden(title),...hasForbidden(desc),...kws.flatMap(hasForbidden)])];if(forbidden.length){score-=20;warn.push(`Forbidden term(s): ${forbidden.join(', ')}.`)}
+  const prim=primaryTerms();const missing=prim.filter(p=>!kws.some(k=>k.toLowerCase()===p.toLowerCase()));if(missing.length){score-=Math.min(12,missing.length*4);warn.push(`Missing primary keyword(s): ${missing.join(', ')}.`)}
+  if(!data?.category){score-=6;warn.push('Category is empty.')}
+  if(!data?.content_type){score-=6;warn.push('Content type is empty.')}
+  score=Math.max(0,Math.min(100,Math.round(score)));return{score,warnings:warn}
+}
+function scoreClass(n){return n>=85?'good':n>=65?'mid':'low'}
+function cleanForbiddenFromText(text){let out=String(text||'');for(const term of forbiddenTerms()){if(!term)continue;out=out.replace(new RegExp(escapeRegExp(term),'ig'),' ').replace(/\s+/g,' ').trim()}return out}
+function sanitizeAnalysis(raw){const a=raw&&typeof raw==='object'?raw:{};return{subject:String(a.subject||'').trim(),asset_type:String(a.asset_type||'').trim(),visible_text:Array.isArray(a.visible_text)?a.visible_text.map(x=>String(x).trim()).filter(Boolean).slice(0,8):csvTerms(a.visible_text),style:String(a.style||'').trim(),colors:Array.isArray(a.colors)?a.colors.map(String).slice(0,6):csvTerms(a.colors).slice(0,6),background:String(a.background||'').trim(),confidence:String(a.confidence||'').trim()}}
+function advancedPromptBlock(file){return `\nADVANCED ANALYSIS:\n- First internally identify the main visible subject and composition before writing metadata.\n- TITLE STYLE: ${titleStyleInstruction()}\n- STRICT NO-HALLUCINATION: ${el.strictMode?.checked?'ON. Do not infer objects, seasons, uses, locations, brands, emotions or concepts that are not clearly visible/supported.':'OFF, but still avoid unsupported factual claims.'}\n- VISIBLE TEXT DETECTION: ${el.detectText?.checked?'ON. Read important legible wording/typography and include it in analysis.visible_text. Use exact visible wording only when clearly legible.':'OFF. Do not focus on text extraction.'}\n- ASSET CLASSIFICATION: ${el.autoClassify?.checked?'ON. Classify specifically (logo, badge, t-shirt design, sticker, poster, icon set, seamless pattern, clipart, illustration, photo, background, footage, etc.) rather than only vector/image.':'Use the general content type.'}\n- PRIMARY KEYWORDS (must be included when relevant): ${primaryTerms().join(', ')||'none'}\n- FORBIDDEN WORDS (must never appear anywhere in final metadata): ${forbiddenTerms().join(', ')||'none'}\n- PREVIOUS TITLES IN THIS BATCH: ${batchDiversityContext(file)}\n${el.batchDiversity?.checked?'- Avoid copying the wording/order of previous batch titles. Keep facts accurate but vary phrasing naturally.':''}`}
+
+function buildInstruction(file,visualInput){
+  const {videoInfo,mode,vectorHints}=visualInput||{};
+  const r=clampRules(),mp=MARKETPLACES[el.marketplace.value];
+  const adobeRules = el.marketplace.value==='adobe' ? `\nADOBE STOCK BUYER RULES (highest priority):\n- Think like a buyer, not like the artist. A buyer types a need: 'diverse business team meeting', 'happy family cooking together', 'isolated red apple on white background'. Write the title and keywords for that search.\n- TITLE: one sentence, NO commas anywhere in the title (a comma breaks Adobe CSV upload), 60-120 characters, main subject in the first words. Never a keyword list.\n- KEYWORDS: exactly 49 when enough relevant concepts exist. Order is ranking: positions 1-10 the most specific literal subject terms; 11-25 attributes, style, colours and composition (copy space, isolated on white background, flat lay, top view, close-up, aerial view); 26-40 use case, concept and mood (website banner, social media, marketing, presentation, business concept); 41-49 broader related terms. Never put a generic word like 'background' or 'concept' in position 1.\n- BUYER SEARCH PHRASES: include the short phrases buyers actually type when they match the image (for example 'copy space', 'isolated on white background', 'business team', 'healthy lifestyle', 'remote work'). Only when visually true.\n- EVERGREEN DEMAND (Adobe): food, families, health and wellness, nature and wildlife, business teamwork and digital transformation. Real people in real scenes beat posed perfection.\n- NEVER in title or keywords: brand names, trademarks, camera specs, artist names, real people names, fictional characters, 'ai generated', hashtags, or irrelevant trend words. Irrelevant keywords count against the asset.\n- CATEGORY: Adobe Stock uses 21 fixed categories with numeric IDs in the CSV (Filename, Title, Keywords, Category, Releases). The description field is not used by Adobe Stock.` : '';
+  const prefix=el.prefix.value.trim(),suffix=el.suffix.value.trim();
+  const kind=getAssetKind(file);
+  const filenameText=filenameHint(file.name)||'none';
+  const coreTitleMax=affixBudget(r.b,prefix,suffix);
+  const coreTitleMin=Math.min(coreTitleMax,Math.max(1,r.a-((prefix?prefix.length+1:0)+(suffix?suffix.length+1:0))));
+  const targetTitleMin=Math.max(coreTitleMin,Math.min(Math.max(coreTitleMin,coreTitleMax-6),Math.round(coreTitleMax*0.8)));
+  const isVectorFallback=mode==='vector-source';
+  const hintPhrases=(vectorHints?.phrases||[]).slice(0,6);
+  const hintWords=(vectorHints?.topWords||[]).slice(0,18);
+  const vectorHintText=hintPhrases.length?hintPhrases.join(' | '):'none';
+  const vectorWordText=hintWords.length?hintWords.join(', '):'none';
+  const sourceNote = mode==='vector-preview' ? 'The uploaded AI/EPS file was successfully rasterized from its embedded PDF/TIFF preview and is being visually analyzed like a normal image.' : mode==='vector-source' ? `The uploaded file is a vector source file (AI/EPS). Direct visual preview was not available in the browser. Be conservative. Use the extracted text hints, cleaned filename, user category and format cues. ${videoInfo?.vectorPreviewError?`Preview note: ${videoInfo.vectorPreviewError}.`:''}` : mode==='svg' ? 'The uploaded file is SVG and has been rasterized in the browser for visual analysis.' : '';
+  return `You are a professional microstock metadata specialist. Analyze the supplied ${isVideo(file)?'sampled video frames in chronological order':(isVectorFallback?'vector source file guidance':'visual asset')} and return ONLY valid JSON with this exact schema: {"title":"...","description":"...","keywords":["..."],"category":"...","content_type":"...","analysis":{"subject":"...","asset_type":"...","visible_text":["..."],"style":"...","colors":["..."],"background":"...","confidence":"high|medium|low"}}.
+
+MARKETPLACE: ${mp.label}
+ORIGINAL FILENAME: ${file.name}
+CLEANED FILENAME HINT: ${filenameText}
+ASSET TYPE: ${kind}${mode==='vector-preview'?' (AI/EPS vector with rendered preview)':mode==='vector-source'?' (AI/EPS vector source without visual preview)':mode==='svg'?' (SVG vector)':''}
+USER CONTENT TYPE SETTING: ${el.contentType.value==='auto'?'Auto detect':el.contentType.value}
+USER CATEGORY/NICHE: ${el.category.value.trim()||'Auto detect'}
+TITLE: Generate ONLY the core title text. Do NOT include the configured prefix or suffix in the JSON title. The application will add them exactly once after generation. Core-title budget: ${coreTitleMin}-${coreTitleMax} characters when possible. Aim around ${targetTitleMin}-${coreTitleMax} characters whenever visually supported. Final title including prefix/suffix must remain within ${r.b} characters. ${mp.title}
+TITLE PREFIX (APP ADDS LATER — DO NOT WRITE IT IN JSON TITLE): ${prefix||'none'}
+TITLE SUFFIX (APP ADDS LATER — DO NOT WRITE IT IN JSON TITLE): ${suffix||'none'}
+DESCRIPTION: ${r.d1}-${r.d2} words. ${mp.description}
+KEYWORDS: Return EXACTLY ${r.k2} unique, relevant keywords whenever possible (never fewer than ${r.k1}). Strongest literal search terms first. ${mp.keywords}
+SEO ORDERING: ${el.seo.checked?'Put strongest and most literal search terms first.':'Natural relevance order.'}
+SINGLE-WORD MODE: ${el.singleWord.checked?'Prefer single-word keywords where semantically useful, but keep essential phrases.':'Use a natural mix of single keywords and useful phrases.'}
+DEDUPLICATION: ${el.dedupe.checked?'No duplicates, singular/plural duplicates, near-duplicate phrases, or repeated stems unless meaning differs.':'Avoid obvious duplicates.'}
+COMMERCIAL SAFETY: ${el.commercial.checked?'Do not invent brand names, trademarks, celebrity identities, exact locations, events, releases, or factual claims not clearly visible. Avoid copyrighted character names.':'Still avoid unsupported factual claims.'}
+${isVideo(file)?`VIDEO INFO: approximately ${videoInfo?.duration?.toFixed?.(1)||'?'} seconds, ${videoInfo?.width||'?'}x${videoInfo?.height||'?'}, using ${videoInfo?.frameCount||'?'} sampled frames from across the clip. Analyze the overall clip, recurring subject, and main action across all frames — do NOT rely on only the first frame.`:''}
+${(isAiEps(file)&&vectorHints)?`VECTOR TEXT HINTS: ${vectorHintText}
+VECTOR WORD HINTS: ${vectorWordText}
+LIKELY VECTOR NATURE: ${vectorHints.looksLikeLogo?'possibly a logo / wordmark / emblem graphic':'general vector artwork or illustration'}`:''}
+${sourceNote?`SOURCE NOTE: ${sourceNote}`:''}
+${advancedPromptBlock(file)}
+EXTRA USER INSTRUCTION: ${el.extra.value.trim()||'none'}
+${adobeRules}
+
+CRITICAL RULES:
+- Describe only what is visually supported, or when direct preview is unavailable, what is reasonably supported by the filename and user context.
+- For videos: all supplied frames come from one video at different times. Ignore playback controls, browser UI, editing app UI, file-manager UI, and other interface chrome. Focus on the actual content, recurring subject, and action. If frames show a logo animation, motion graphic, screen recording, slideshow, or interface tutorial, say that clearly.
+- For vectors/logos/graphics: if the asset is a logo, emblem, badge, icon, typography graphic, sticker, mascot, or t-shirt design, identify that specific design type rather than inventing a generic scene.
+- If VECTOR TEXT HINTS contain brand-like words or names, use them. Do not replace them with unrelated generic themes like atlas maps or geography unless the artwork itself clearly shows that.
+- If the AI/EPS visual preview is unavailable, stay conservative. Prefer simple factual metadata from filename plus extracted text hints and do not hallucinate detailed scenes, locations, or actions.
+- Use the original filename as a soft hint to keep metadata aligned with the uploaded asset name, but do not mechanically copy the filename as the full title.
+- No keyword stuffing and no irrelevant trend words.
+- Title must read naturally, not as a keyword list.
+- NEVER place TITLE PREFIX or TITLE SUFFIX inside the JSON title. Return only the generated core title; the application appends configured affixes exactly once.
+- Return ${r.k2} unique keywords when enough relevant concepts are supported; do not stop at 20-30 keywords when the requested maximum is higher.
+- Keywords must be plain terms without # hashtags.
+- Populate analysis with concise visual facts only. analysis.visible_text must contain only clearly legible wording from the asset.
+- Do not include any configured forbidden word in title, description, keywords, category, content_type or analysis.
+- Use English.
+`}
+function parseJSON(text){
+  let t=String(text||'').trim();
+  if(!t)throw new Error('Gemini returned no metadata.');
+  t=t.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+  try{return JSON.parse(t)}catch{}
+  let start=t.indexOf('{');
+  if(start>=0){
+    let depth=0,inString=false,escape=false;
+    for(let i=start;i<t.length;i++){
+      const ch=t[i];
+      if(inString){
+        if(escape){escape=false;continue}
+        if(ch==='\\'){escape=true;continue}
+        if(ch==='"')inString=false;
+        continue
+      }
+      if(ch==='"'){inString=true;continue}
+      if(ch==='{')depth++;
+      else if(ch==='}'){
+        depth--;
+        if(depth===0){
+          const candidate=t.slice(start,i+1);
+          try{return JSON.parse(candidate)}catch{break}
+        }
+      }
+    }
+  }
+  const m=t.match(/\{[\s\S]*\}/);
+  if(m){try{return JSON.parse(m[0])}catch{}}
+  throw new Error('Gemini response was not valid JSON.');
+}
+async function geminiRequest(parts,key,model){
+  const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+  const body={contents:[{role:'user',parts}],generationConfig:{maxOutputTokens:2200}};
+  const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify(body)});
+  const json=await res.json().catch(()=>({}));
+  if(!res.ok){const e=new Error(json?.error?.message||`HTTP ${res.status}`);e.status=res.status;e.code=json?.error?.status||'';throw e}
+  const text=json?.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('').trim();
+  if(!text)throw new Error('Gemini returned no metadata.');
+  return parseJSON(text)
+}
+function isTransientError(e){const m=String(e?.message||e);return /429|500|502|503|504|overload|unavailable|resource exhausted|rate limit|try again|temporarily|high demand/i.test(m)}
+async function requestWithRetry(parts,key,model,maxAttempts=3){let last;for(let a=1;a<=maxAttempts;a++){try{return await geminiRequest(parts,key,model)}catch(e){last=e;if(!isTransientError(e)||a===maxAttempts)throw e;await sleep((700*Math.pow(2,a-1))+Math.floor(Math.random()*450))}}throw last}
+async function repairMetadata(raw,parts,key,model,file,videoInfo,mode){const r=clampRules();const prefix=el.prefix.value.trim(),suffix=el.suffix.value.trim(),coreMax=affixBudget(r.b,prefix,suffix);const prompt={text:`Improve this stock metadata and return ONLY valid JSON with the same schema. IMPORTANT: the JSON title must contain ONLY the core title and must NOT include this configured prefix: ${JSON.stringify(prefix||'none')} or this configured suffix: ${JSON.stringify(suffix||'none')}. Keep the core title at or below ${coreMax} characters so the application can add both affixes exactly once and keep the final title within ${r.b} characters. Increase the keywords to EXACTLY ${r.k2} unique relevant keywords whenever possible. Current draft JSON: ${JSON.stringify(raw)}. Original filename: ${file.name}.`} ; return await requestWithRetry([prompt,...parts],key,model,2)}
+async function fetchAvailableModels(key){const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models',{headers:{'x-goog-api-key':key}});const j=await res.json().catch(()=>({}));if(!res.ok)throw new Error(j?.error?.message||`Model list failed (HTTP ${res.status})`);state.availableModels=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>String(m.name||'').replace(/^models\//,'')).filter(Boolean);return state.availableModels}
+function populateModelSelect(){const current=el.model.value;const models=preferredAvailableModels();el.model.innerHTML='<option value="auto">Auto Stable (Recommended)</option>'+models.map(m=>`<option value="${esc(m)}">${esc(m.replace(/^gemini-/,'Gemini ').replaceAll('-',' '))}</option>`).join('');if(current!=='auto'&&models.includes(current))el.model.value=current;else el.model.value='auto'}
+async function ensureModelsReady(key){if(state.availableModels.length) return; await fetchAvailableModels(key); populateModelSelect();}
+function sanitizeKeywords(kws,r){let out=Array.isArray(kws)?kws:String(kws||'').split(',');out=out.map(x=>String(x).trim()).filter(Boolean);const forbidden=forbiddenTerms();out=out.filter(k=>!forbidden.some(t=>t&&k.toLowerCase().includes(t)));const primary=primaryTerms().filter(k=>!forbidden.some(t=>t&&k.toLowerCase().includes(t)));out=[...primary,...out];if(el.dedupe.checked)out=dedupeKeywords(out);return out.slice(0,r.k2)}
+async function generateForFile(file){
+  const key=el.apiKey.value.trim();await ensureModelsReady(key);const visualInput=await buildVisualInput(file);
+  if(isAiEps(file)&&visualInput.mode==='vector-source')throw new Error('Vector visual analysis stopped to prevent random metadata. '+(visualInput.videoInfo?.vectorPreviewError||'No usable AI/EPS preview was found.')+' For AI: save with Create PDF Compatible File enabled. For EPS: save with an embedded TIFF preview.');
+  const instruction={text:buildInstruction(file,visualInput)};const autoList=preferredAvailableModels();let chosen=el.model.value==='auto'?autoList:[el.model.value,...autoList.filter(m=>m!==el.model.value)];if(!chosen.length)chosen=PREFERRED_MODELS;let last;
+  for(const model of chosen){try{
+    let raw=await requestWithRetry([instruction,...visualInput.parts],key,model,3);const r=clampRules();let previewKws=sanitizeKeywords(raw.keywords,r);if(needsMetadataRepair(raw.title,previewKws,r))raw=await repairMetadata(raw,visualInput.parts,key,model,file,visualInput.videoInfo,visualInput.mode);
+    let title=applyTitleAffixes(cleanForbiddenFromText(String(raw.title||'').trim()),r.b);let kws=sanitizeKeywords(raw.keywords,r);let desc=cleanForbiddenFromText(String(raw.description||'').replace(/\s+/g,' ').trim());
+    if(kws.length<r.k1){const hint=filenameHint(file.name).toLowerCase().split(/\s+/).filter(Boolean);kws=sanitizeKeywords([...kws,...hint],r)}
+    const analysis=sanitizeAnalysis(raw.analysis);const category=cleanForbiddenFromText(String(raw.category||el.category.value||'').trim());const content_type=cleanForbiddenFromText(String(raw.content_type||(isVideo(file)?'video':(getAssetKind(file)==='vector'?'vector':'photo'))).trim());
+    return {title,description:desc,keywords:kws,category,content_type,analysis,model};
+  }catch(e){last=e;const msg=String(e?.message||'');if(/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(msg))break;if(!isTransientError(e)&&!/not found|not supported|no longer available|deprecated/i.test(msg))break}}
+  throw last||new Error('Generation failed. No compatible Gemini generateContent model was found for this API key.')
+}
+async function chooseModelForAction(){const key=el.apiKey.value.trim();if(!key)throw new Error('Add your Google AI Studio API key first.');await ensureModelsReady(key);const auto=preferredAvailableModels();const model=el.model.value==='auto'?(auto[0]||PREFERRED_MODELS[0]):el.model.value;return{key,model}}
+async function regenerateField(id,field){
+  const rec=getResultById(id);if(!rec||rec.status!=='done'||state.running)return;const allowed=['title','description','keywords'];if(!allowed.includes(field))return;
+  const {key,model}=await chooseModelForAction();const vi=await buildVisualInput(rec.file);if(isAiEps(rec.file)&&vi.mode==='vector-source')throw new Error('No usable vector preview.');
+  const r=clampRules(),current=cloneData(rec.data);let schema=field==='keywords'?'{"keywords":["..."]}':`{"${field}":"..."}`;
+  const prompt={text:`Regenerate ONLY the ${field} for this stock asset. Return ONLY valid JSON: ${schema}. Analyze the supplied visual again. Current metadata for context: ${JSON.stringify(current)}. ${advancedPromptBlock(rec.file)} ${field==='title'?`Return core title only, no configured prefix/suffix; keep it at or below ${affixBudget(r.b,el.prefix.value,el.suffix.value)} characters.`:''} ${field==='keywords'?`Return up to exactly ${r.k2} highly relevant unique keywords with strongest literal terms first.`:''} ${field==='description'?`Keep description between ${r.d1}-${r.d2} words.`:''}`};
+  const btn=document.querySelector(`.asset-card[data-id="${CSS.escape(id)}"] [data-field-regen="${field}"]`);if(btn){btn.disabled=true;btn.textContent='…'}
+  try{const raw=await requestWithRetry([prompt,...vi.parts],key,model,2);pushHistory(rec);if(field==='title')rec.data.title=applyTitleAffixes(cleanForbiddenFromText(raw.title||''),r.b);if(field==='description')rec.data.description=cleanForbiddenFromText(String(raw.description||'').replace(/\s+/g,' ').trim());if(field==='keywords')rec.data.keywords=sanitizeKeywords(raw.keywords,r);rec.updatedAt=now();renderWorkspace();toast(`${field[0].toUpperCase()+field.slice(1)} regenerated.`)}finally{if(btn){btn.disabled=false}}
+}
+async function smartFixMetadata(id){
+  const rec=getResultById(id);if(!rec||rec.status!=='done'||state.running)return;const {key,model}=await chooseModelForAction();const vi=await buildVisualInput(rec.file);if(isAiEps(rec.file)&&vi.mode==='vector-source')throw new Error('No usable vector preview.');const r=clampRules();
+  const prompt={text:`Repair this metadata without changing the correctly identified subject. Return ONLY valid JSON with schema {"title":"...","description":"...","keywords":["..."],"category":"...","content_type":"...","analysis":{"subject":"...","asset_type":"...","visible_text":["..."],"style":"...","colors":["..."],"background":"...","confidence":"high|medium|low"}}. Current metadata: ${JSON.stringify(rec.data)}. Fix irrelevant or hallucinated terms, improve title naturalness, keep description ${r.d1}-${r.d2} words, return up to exactly ${r.k2} relevant unique keywords, honor primary and forbidden words. Return core title only without configured prefix/suffix. ${advancedPromptBlock(rec.file)}`};
+  const raw=await requestWithRetry([prompt,...vi.parts],key,model,2);pushHistory(rec);rec.data={title:applyTitleAffixes(cleanForbiddenFromText(raw.title||''),r.b),description:cleanForbiddenFromText(String(raw.description||'').replace(/\s+/g,' ').trim()),keywords:sanitizeKeywords(raw.keywords,r),category:cleanForbiddenFromText(raw.category||rec.data.category||''),content_type:cleanForbiddenFromText(raw.content_type||rec.data.content_type||''),analysis:sanitizeAnalysis(raw.analysis||rec.data.analysis)};rec.model=model;rec.updatedAt=now();renderWorkspace();toast('Smart Fix completed.')
+}
+function undoMetadata(id){const rec=getResultById(id);if(!rec||!Array.isArray(rec.history)||!rec.history.length){toast('No metadata history available.');return}rec.data=rec.history.pop();rec.updatedAt=now();renderWorkspace();toast('Previous metadata restored.')}
+function friendly(e){const m=String(e?.message||e);if(/API_KEY_INVALID|API key not valid/i.test(m))return'Invalid Google AI Studio API key.';if(/high demand|overload|503|unavailable|temporarily/i.test(m))return'Google Gemini is temporarily busy. The tool retried and tried fallback models, but all were unavailable. Please retry in a moment.';if(/429|quota|rate|resource exhausted/i.test(m))return'API quota/rate limit reached. The tool retried automatically; try again shortly or use another key/project.';if(/too large|payload/i.test(m))return'Asset payload is too large. Use a smaller image/video.';return m}
+
+function workspaceItems(){return state.files.map((file,index)=>{const id=idFor(file,index),rec=getResultById(id);return{id,file,index,rec,status:rec?.status||'waiting',updatedAt:rec?.updatedAt||0}}).sort((a,b)=>{const ar=a.status==='done'||a.status==='error'||a.status==='working',br=b.status==='done'||b.status==='error'||b.status==='working';if(ar!==br)return br-ar;if((b.updatedAt||0)!==(a.updatedAt||0))return(b.updatedAt||0)-(a.updatedAt||0);return a.index-b.index})}
+function statusText(status){return status==='done'?'SUCCESS':status==='error'?'FAILED':status==='working'?'PROCESSING':'WAITING'}
+function renderWorkspace(){const items=workspaceItems();if(!items.length){el.workspaceList.innerHTML='<div class="workspace-empty"><div><div class="empty-orb">✦</div><b>No assets in the workspace yet</b><span>Upload images, vectors or videos above. Each file will appear once here with its original filename and generated metadata.</span></div></div>';updateStats();return}
+el.workspaceList.innerHTML=items.map(item=>{const r=item.rec,status=item.status,kind=getAssetKind(item.file),isDone=status==='done',isErr=status==='error';
+  const hist=isDone&&Array.isArray(r.history)&&r.history.length;const headerActions=isErr?`<button class="mini-btn retry" data-single-retry-id="${esc(item.id)}">↻ Retry</button>`:isDone?`${hist?`<button class="mini-btn undo" data-undo-id="${esc(item.id)}">↶ Undo</button>`:''}<button class="mini-btn" data-copy="all">Copy All</button><button class="mini-btn regen" data-single-retry-id="${esc(item.id)}">↻ Regenerate</button>`:'';
+  let quality={score:0,warnings:[]},analysis={};if(isDone){quality=metadataQuality(r.data);analysis=r.data.analysis||{}}
+  const chips=isDone?[analysis.asset_type&&`<span class="analysis-chip"><strong>Type</strong> ${esc(analysis.asset_type)}</span>`,analysis.subject&&`<span class="analysis-chip"><strong>Subject</strong> ${esc(analysis.subject)}</span>`,analysis.visible_text?.length&&`<span class="analysis-chip"><strong>Text</strong> ${esc(analysis.visible_text.join(' / '))}</span>`,analysis.style&&`<span class="analysis-chip"><strong>Style</strong> ${esc(analysis.style)}</span>`,analysis.colors?.length&&`<span class="analysis-chip"><strong>Colors</strong> ${esc(analysis.colors.join(', '))}</span>`,analysis.confidence&&`<span class="analysis-chip"><strong>Confidence</strong> ${esc(analysis.confidence)}</span>`].filter(Boolean).join(''):'';
+  const warningHtml=isDone&&el.qualityCheck?.checked?`<div class="warning-list">${quality.warnings.length?quality.warnings.slice(0,5).map(w=>`<div class="warning-item">⚠ ${esc(w)}</div>`).join(''):'<div class="warning-item ok">✓ Metadata passes the current quality checks.</div>'}</div>`:'';
+  const qualityHtml=isDone?`<div class="quality-row"><span class="quality-score ${scoreClass(quality.score)}">Quality ${quality.score}/100</span><span class="scorebar"><i style="width:${quality.score}%"></i></span>${analysis.confidence?`<span class="advanced-badge">AI Confidence: ${esc(analysis.confidence)}</span>`:''}</div>${chips?`<div class="analysis-chips">${chips}</div>`:''}${warningHtml}`:'';
+  const fields=isDone?`<div class="metadata-grid">${qualityHtml}<div class="meta-block full"><div class="meta-label"><span>Title</span><em>${r.data.title.length} chars</em><div class="field-actions"><button class="field-action" data-field-regen="title" data-action-id="${esc(item.id)}">↻ Title</button><button class="icon-copy" data-copy="title" title="Copy title">⧉</button></div></div><textarea data-field="title">${esc(r.data.title)}</textarea></div><div class="meta-block full"><div class="meta-label"><span>Description</span><em>${r.data.description.trim().split(/\s+/).filter(Boolean).length} words</em><div class="field-actions"><button class="field-action" data-field-regen="description" data-action-id="${esc(item.id)}">↻ Description</button><button class="icon-copy" data-copy="description" title="Copy description">⧉</button></div></div><textarea data-field="description">${esc(r.data.description)}</textarea></div><div class="meta-block full keyword-block"><div class="meta-label"><span>Keywords</span><em>${r.data.keywords.length} keywords</em><div class="field-actions"><button class="field-action" data-field-regen="keywords" data-action-id="${esc(item.id)}">↻ Keywords</button><button class="icon-copy" data-copy="keywords" title="Copy keywords">⧉</button></div></div><textarea data-field="keywords">${esc(r.data.keywords.join(', '))}</textarea></div><div class="meta-pair"><div class="meta-block"><div class="meta-label"><span>Category</span></div><input class="edit-input" data-field="category" value="${esc(r.data.category)}"></div><div class="meta-block"><div class="meta-label"><span>Content Type</span></div><input class="edit-input" data-field="content_type" value="${esc(r.data.content_type)}"></div></div><div class="smart-actions"><button class="mini-btn fix" data-smart-fix-id="${esc(item.id)}">❤️ Smart Fix Metadata</button>${hist?`<button class="mini-btn undo" data-undo-id="${esc(item.id)}">↶ Restore Previous</button>`:''}</div></div>`:isErr?`<div class="error-panel"><b>Generation failed</b><span>${esc(r.error)}</span><button class="btn retry-wide" data-single-retry-id="${esc(item.id)}">↻ Retry This File</button></div>`:`<div class="pending-panel"><div class="pending-lines"><i></i><i></i><i></i></div><div><b>${status==='working'?'Generating metadata…':'Ready to generate'}</b><span>${status==='working'?'Gemini is analyzing subject, visible text, asset type and metadata quality.':'Click Generate Metadata to create advanced title, description, keywords and visual analysis.'}</span></div></div>`;
+  return `<article class="asset-card ${status}" data-id="${esc(item.id)}"><div class="asset-visual" data-preview-id="${esc(item.id)}">${getAssetPreviewHTML(item.file,true)}<span class="format-chip">${kind.toUpperCase()}</span></div><div class="asset-content"><div class="asset-header"><div class="file-heading"><div class="file-name-line"><b>${esc(item.file.name)}</b><span class="status-chip ${status}">${statusText(status)}</span>${isDone?'<span class="advanced-badge">ADVANCED QC</span>':''}</div><small>${bytes(item.file.size)} • ${esc(kind)}${isDone&&r.model?` • ${esc(r.model)}`:''}</small></div><div class="card-actions">${headerActions}</div></div>${fields}</div></article>`}).join('');updateStats()}
+
+function syncEdits(){document.querySelectorAll('.asset-card[data-id]').forEach(node=>{const r=getResultById(node.dataset.id);if(!r||r.status!=='done')return;node.querySelectorAll('[data-field]').forEach(t=>{const f=t.dataset.field;if(f==='keywords')r.data.keywords=t.value.split(',').map(x=>x.trim()).filter(Boolean);else r.data[f]=t.value.trim()})})}
+function addFiles(list){const raw=[...list],arr=raw.filter(isAcceptedFile);const skipped=raw.length-arr.length;const added=[];for(const f of arr){if(!state.files.some(x=>x.name===f.name&&x.size===f.size&&x.lastModified===f.lastModified)){state.files.push(f);added.push(f)}}renderWorkspace();for(const f of added)if(isAiEps(f))warmVectorPreview(f);if(arr.length)toast(`${arr.length} asset${arr.length===1?'':'s'} added.${added.some(isAiEps)?' Building vector preview…':''}`);if(skipped)toast(`${skipped} file${skipped===1?' was':'s were'} skipped because the format is not supported.`)}
+async function runGeneration(opts={}){if(state.running)return;const priorSingle=opts.singleId?getResultById(opts.singleId):null;const priorHistory=priorSingle?([...(priorSingle.history||[]),...(priorSingle.data?[cloneData(priorSingle.data)]:[])].slice(-6)):[];const key=el.apiKey.value.trim();if(!key){toast('Add your Google AI Studio API key first.');el.apiKey.focus();return}let targetIds=[];if(opts.failedOnly){targetIds=state.results.filter(x=>x.status==='error').map(x=>x.id); if(!targetIds.length){toast('No failed assets to retry.');return}} else if(opts.singleId){targetIds=[opts.singleId]} else {targetIds=state.files.map((f,i)=>idFor(f,i)); state.results=[];} const targets=state.files.map((f,i)=>({file:f,id:idFor(f,i),index:i})).filter(x=>targetIds.includes(x.id)); if(!targets.length){toast('Upload at least one image, vector or video.');return} if(opts.failedOnly){state.results=state.results.filter(x=>!targetIds.includes(x.id))} else if(opts.singleId){state.results=state.results.filter(x=>x.id!==opts.singleId)} state.running=true;state.abort=false;el.generate.disabled=true;el.stop.disabled=false;let completed=0;progress(0,targets.length,'Starting metadata generation…');renderWorkspace();for(const item of targets){if(state.abort)break;const rec={id:item.id,file:item.file,status:'working',updatedAt:now(),history:(opts.singleId&&item.id===opts.singleId)?priorHistory:[]};state.results.push(rec);renderWorkspace();try{const data=await generateForFile(item.file);rec.data=data;rec.model=data.model;delete rec.data.model;markResultUpdated(rec,'done');}catch(e){rec.error=friendly(e);markResultUpdated(rec,'error')} completed++;progress(completed,targets.length,`Processed ${completed} of ${targets.length}`);renderWorkspace();updateStats()} state.running=false;el.generate.disabled=false;el.stop.disabled=true;progress(completed,targets.length,state.abort?'Stopped by user.':'Generation complete.');toast(state.abort?'Generation stopped.':'Metadata generation complete.');if(!state.abort&&targets.length&&state.results.some(x=>targetIds.includes(x.id)&&x.status==='done'))setTimeout(openSupportModal,450)}
+async function retrySingle(id){await runGeneration({singleId:id})}
+async function testKey(){const key=el.apiKey.value.trim();if(!key){toast('Paste an API key first.');return} el.testKey.disabled=true;el.testKey.textContent='Testing…';setApiStatus('Fast checking API key…');const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),8000);try{const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models',{headers:{'x-goog-api-key':key},signal:controller.signal});const j=await res.json().catch(()=>({}));if(!res.ok){const e=new Error(j?.error?.message||`API test failed (HTTP ${res.status})`);e.status=res.status;throw e} state.availableModels=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>String(m.name||'').replace(/^models\//,'')).filter(Boolean);populateModelSelect();const preferred=preferredAvailableModels(); if(!preferred.length) throw new Error('API key is valid, but no compatible generateContent model is available for this project.'); setApiStatus(`✓ API Key Ready — <b>${state.availableModels.length}</b> generateContent models available. Auto will use <b>${preferred[0]}</b>.`,'ok'); toast('API key test completed successfully.');}catch(e){if(e?.name==='AbortError'){setApiStatus('⚠ API check timed out. Your key may still work; try Test again.','warn');toast('API test timed out.')} else {setApiStatus('✕ '+friendly(e),'bad');toast('API key test failed.')}}finally{clearTimeout(timer);el.testKey.disabled=false;el.testKey.textContent='Test'}}
+async function copyText(text){try{await navigator.clipboard.writeText(text);return true}catch{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();return true}}
+function allText(){syncEdits();return sortedResults().filter(x=>x.status==='done').map((r,i)=>`${i+1}. ${r.file.name}\nTitle: ${r.data.title}\nDescription: ${r.data.description}\nKeywords: ${r.data.keywords.join(', ')}\nCategory: ${r.data.category}\nContent Type: ${r.data.content_type}`).join('\n\n------------------------------\n\n')}
+function csvEscape(v){return `"${String(v??'').replaceAll('"','""').replace(/\r?\n/g,' ')}"`}
+function getSheetRows(){syncEdits();const done=sortedResults().filter(x=>x.status==='done');const mp=MARKETPLACES[el.marketplace.value];const headers=mp.csv;const rows=[headers];for(const r of done){const d=r.data;const kws=d.keywords.join(', ');const map={
+  'Filename':r.file.name,
+  'Title':d.title,
+  'Description':d.description,
+  'Keywords':kws,
+  'Tags':kws,
+  'Category':d.category,
+  'Category 1':d.category,
+  'Category 2':'',
+  'Content Type':d.content_type,
+  'Releases':'',
+  'Editorial':'no',
+  'Prompt':filenameHint(r.file.name),
+  'Model':r.model||'',
+  'Country':'',
+  'Artist':'',
+  'Locale':'en-US'
+}; rows.push(headers.map(h=>map[h]??''))} return rows}
+function downloadCSV(){const rows=getSheetRows();if(rows.length<2){toast('No completed metadata to export.');return}const csv='\ufeff'+rows.map(r=>r.map(csvEscape).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`metadata-${el.marketplace.value}-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);toast('CSV downloaded.')}
+function downloadTXT(){const text=allText();if(!text){toast('No completed metadata to export.');return}const blob=new Blob([text],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`metadata-${el.marketplace.value}-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(url);toast('TXT downloaded.')}
+function downloadSheet(){const rows=getSheetRows();if(rows.length<2){toast('No completed metadata to export.');return}let html='<table border="1"><thead><tr>'+rows[0].map(h=>`<th>${esc(h)}</th>`).join('')+'</tr></thead><tbody>';for(let i=1;i<rows.length;i++) html+='<tr>'+rows[i].map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>'; html+='</tbody></table>'; const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`metadata-${el.marketplace.value}-${new Date().toISOString().slice(0,10)}.xls`; a.click(); URL.revokeObjectURL(url); toast('Sheet downloaded.')}
+
+el.files.addEventListener('change',e=>addFiles(e.target.files));
+['dragenter','dragover'].forEach(n=>el.drop.addEventListener(n,e=>{e.preventDefault();el.drop.classList.add('drag')}));
+['dragleave','drop'].forEach(n=>el.drop.addEventListener(n,e=>{e.preventDefault();el.drop.classList.remove('drag')}));
+el.drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+el.generate.addEventListener('click',()=>runGeneration());
+el.supportClose?.addEventListener('click',closeSupportModal);
+el.supportLater?.addEventListener('click',closeSupportModal);
+el.supportModal?.addEventListener('click',e=>{if(e.target===el.supportModal)closeSupportModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el.supportModal?.classList.contains('show'))closeSupportModal()});
+el.retryFailed.addEventListener('click',()=>runGeneration({failedOnly:true}));
+el.stop.addEventListener('click',()=>{state.abort=true;toast('Stopping after current asset…')});
+el.clear.addEventListener('click',()=>{if(state.running)return;state.files=[];state.results=[];state.previewUrls.clear();el.files.value='';state.selectedId=null;renderWorkspace();progress(0,0,'Ready');toast('Assets cleared.')});
+el.testKey.addEventListener('click',testKey);
+el.saveKey.addEventListener('click',()=>{if(!el.apiKey.value.trim()){toast('Enter an API key first.');return} localStorage.setItem('metadata_studio_gemini_key',el.apiKey.value.trim());toast('API key saved in this browser.')});
+el.clearKey.addEventListener('click',()=>{localStorage.removeItem('metadata_studio_gemini_key');el.apiKey.value='';setApiStatus('Saved key cleared.');toast('Saved key cleared.')});
+el.downloadCsv.addEventListener('click',downloadCSV); el.downloadTxt.addEventListener('click',downloadTXT); el.downloadSheet.addEventListener('click',downloadSheet);
+el.copyAll.addEventListener('click',async()=>{const t=allText();if(!t){toast('No completed metadata to copy.');return} await copyText(t);toast('All metadata copied.')});
+el.workspaceList.addEventListener('click',async e=>{const undo=e.target.closest('[data-undo-id]');if(undo){e.stopPropagation();undoMetadata(undo.dataset.undoId);return}const fix=e.target.closest('[data-smart-fix-id]');if(fix){e.stopPropagation();try{fix.disabled=true;fix.textContent='Fixing…';await smartFixMetadata(fix.dataset.smartFixId)}catch(err){toast(friendly(err))}finally{fix.disabled=false}return}const fieldRegen=e.target.closest('[data-field-regen]');if(fieldRegen){e.stopPropagation();try{await regenerateField(fieldRegen.dataset.actionId,fieldRegen.dataset.fieldRegen)}catch(err){toast(friendly(err))}return}const retry=e.target.closest('[data-single-retry-id]');if(retry){e.stopPropagation();retrySingle(retry.dataset.singleRetryId);return}const pv=e.target.closest('[data-preview-id]');if(pv&&!(e.target.closest('video')||e.target.closest('button'))){openPreviewForId(pv.dataset.previewId);return}const btn=e.target.closest('[data-copy]');if(!btn)return;syncEdits();const card=btn.closest('.asset-card'),r=getResultById(card.dataset.id);if(!r||r.status!=='done')return;const type=btn.dataset.copy;let text=type==='title'?r.data.title:type==='description'?r.data.description:type==='keywords'?r.data.keywords.join(', '):`Filename: ${r.file.name}
+Title: ${r.data.title}
+Description: ${r.data.description}
+Keywords: ${r.data.keywords.join(', ')}
+Category: ${r.data.category}
+Content Type: ${r.data.content_type}`;await copyText(text);toast('Copied.')});
+el.closePreview.addEventListener('click',closePreview); el.previewModal.addEventListener('click',e=>{if(e.target===el.previewModal) closePreview()}); document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el.previewModal.classList.contains('show')) closePreview()});
+
+const ADVANCED_SETTING_IDS=['marketplace','contentType','category','titleMin','titleMax','keywordMin','keywordMax','descMin','descMax','prefix','suffix','seo','singleWord','dedupe','commercial','extra','titleStyle','strictMode','detectText','autoClassify','batchDiversity','qualityCheck','primaryKeywords','forbiddenWords'];
+function saveWorkspaceSettings(){const d={};for(const id of ADVANCED_SETTING_IDS){const n=$(id);if(!n)continue;d[id]=n.type==='checkbox'?n.checked:n.value}localStorage.setItem('metadata_studio_v7_settings',JSON.stringify(d))}
+function loadWorkspaceSettings(){try{const d=JSON.parse(localStorage.getItem('metadata_studio_v7_settings')||'{}');for(const [id,v] of Object.entries(d)){const n=$(id);if(!n)continue;if(n.type==='checkbox')n.checked=!!v;else n.value=String(v)}}catch{}}
+ADVANCED_SETTING_IDS.forEach(id=>{const n=$(id);if(n)n.addEventListener(n.type==='checkbox'?'change':'input',saveWorkspaceSettings)});
+
+loadWorkspaceSettings();
+const saved=localStorage.getItem('metadata_studio_gemini_key'); if(saved) el.apiKey.value=saved; populateModelSelect(); renderWorkspace(); updateStats();
+</script>
+<script>
+/* Adobe Stock edition add-on: collapsible panels, buyer chips, Perfect Setup.
+   Does not touch app logic; uses only public element ids. */
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.sidebar .panel').forEach(function (panel) {
+    var head = panel.querySelector('h2');
+    if (!head) return;
+    head.setAttribute('role', 'button');
+    head.setAttribute('tabindex', '0');
+    head.setAttribute('aria-expanded', 'true');
+    var toggle = function () {
+      var closed = panel.classList.toggle('collapsed');
+      head.setAttribute('aria-expanded', String(!closed));
+    };
+    head.addEventListener('click', toggle);
+    head.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+  var market = document.getElementById('marketplace');
+  if (market) market.value = 'adobe';
+  var pk = document.getElementById('primaryKeywords');
+  function syncChips() {
+    if (!pk) return;
+    var have = pk.value.split(',').map(function (s) { return s.trim().toLowerCase(); });
+    document.querySelectorAll('.buyer-chip').forEach(function (chip) {
+      chip.classList.toggle('selected', have.indexOf(chip.getAttribute('data-kw').toLowerCase()) !== -1);
+    });
+  }
+  document.querySelectorAll('.buyer-chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      if (!pk) return;
+      var kw = chip.getAttribute('data-kw');
+      var list = pk.value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      var at = list.map(function (s) { return s.toLowerCase(); }).indexOf(kw.toLowerCase());
+      if (at === -1) list.push(kw); else list.splice(at, 1);
+      pk.value = list.join(', ');
+      syncChips();
+    });
+  });
+  if (pk) pk.addEventListener('input', syncChips);
+  syncChips();
+  var perfect = document.getElementById('adobePerfect');
+  if (perfect) perfect.addEventListener('click', function () {
+    function setVal(id, v) { var n = document.getElementById(id); if (n) n.value = v; }
+    function setChk(id, v) { var n = document.getElementById(id); if (n) n.checked = v; }
+    setVal('marketplace', 'adobe');
+    setVal('titleMin', '60'); setVal('titleMax', '120');
+    setVal('keywordMin', '40'); setVal('keywordMax', '49');
+    setVal('titleStyle', 'seo');
+    setChk('seo', true); setChk('dedupe', true); setChk('commercial', true);
+    setChk('strictMode', true); setChk('qualityCheck', true);
+    setChk('autoClassify', true); setChk('detectText', true); setChk('batchDiversity', true);
+    setChk('singleWord', false);
+    var fw = document.getElementById('forbiddenWords');
+    if (fw && !fw.value.trim()) fw.value = 'ai generated, mockup';
+    if (typeof toast === 'function') toast('Adobe Stock perfect setup applied.');
+  });
+});
+</script>
+
+<script>
+/* Dashboard add-on: nav, workspace menu, bell, help, appearance, language.
+   Uses only public element ids and the app's own toast / support dialog. */
+document.addEventListener('DOMContentLoaded', function () {
+  function scrollToEl(el) { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  function openCard(id) {
+    var c = document.getElementById(id);
+    if (c && c.tagName === 'DETAILS') { c.open = true; scrollToEl(c); }
+    else scrollToEl(c);
+  }
+  document.querySelectorAll('[data-nav]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.dash-nav .nav-item').forEach(function (n) { n.classList.remove('active'); });
+      btn.classList.add('active');
+      var k = btn.getAttribute('data-nav');
+      if (k === 'create') scrollToEl(document.getElementById('createHead'));
+      if (k === 'generations') scrollToEl(document.getElementById('results'));
+      if (k === 'templates') openCard('card-advanced');
+    });
+  });
+  document.querySelectorAll('[data-open]').forEach(function (btn) {
+    btn.addEventListener('click', function () { openCard(btn.getAttribute('data-open')); });
+  });
+  document.querySelectorAll('[data-tool]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var t = document.getElementById(btn.getAttribute('data-tool'));
+      if (t) t.click();
+    });
+  });
+  var toolsToggle = document.getElementById('toolsToggle');
+  var toolsSub = document.getElementById('toolsSub');
+  if (toolsToggle && toolsSub) toolsToggle.addEventListener('click', function () {
+    var hidden = toolsSub.hidden;
+    toolsSub.hidden = !hidden;
+    toolsToggle.setAttribute('aria-expanded', String(hidden));
+    toolsToggle.querySelector('.chev').textContent = hidden ? '▴' : '▾';
+  });
+  var settingsToggle = document.getElementById('settingsToggle');
+  var settingsSub = document.getElementById('settingsSub');
+  if (settingsToggle && settingsSub) settingsToggle.addEventListener('click', function () {
+    var hidden = settingsSub.hidden;
+    settingsSub.hidden = !hidden;
+    settingsToggle.setAttribute('aria-expanded', String(hidden));
+    settingsToggle.querySelector('.chev').textContent = hidden ? '▴' : '▾';
+  });
+  var wsBtn = document.getElementById('wsBtn');
+  var wsDrop = document.getElementById('wsDrop');
+  if (wsBtn && wsDrop) {
+    wsBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      wsDrop.hidden = !wsDrop.hidden;
+      wsBtn.setAttribute('aria-expanded', String(!wsDrop.hidden));
+    });
+    document.addEventListener('click', function () { wsDrop.hidden = true; });
+    var cur = document.getElementById('wsCurrent');
+    if (cur) cur.addEventListener('click', function () { wsDrop.hidden = true; scrollToEl(document.getElementById('createHead')); });
+  }
+  var bell = document.getElementById('bellBtn');
+  if (bell) bell.addEventListener('click', function () {
+    if (typeof toast === 'function') toast('No new notifications.');
+  });
+  var help = document.getElementById('helpBtn');
+  if (help) help.addEventListener('click', function () {
+    if (typeof openSupportModal === 'function') openSupportModal();
+  });
+  document.querySelectorAll('[data-action="appearance"]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var light = document.body.classList.toggle('light');
+      if (typeof toast === 'function') toast(light ? 'Light appearance on.' : 'Dark appearance on.');
+    });
+  });
+  var I18N = {
+    'nav-create': { en: 'Create Metadata', bn: 'মেটাডেটা তৈরি করুন' },
+    'nav-generations': { en: 'My Generations', bn: 'আমার জেনারেশন' },
+    'nav-templates': { en: 'Templates', bn: 'টেমপ্লেট' },
+    'nav-tools': { en: 'Tools', bn: 'টুলস' },
+    'nav-settings': { en: 'Settings', bn: 'সেটিংস' },
+    'nav-ai': { en: 'AI & API', bn: 'এআই ও এপিআই' },
+    'nav-generation': { en: 'Generation', bn: 'জেনারেশন' },
+    'nav-export': { en: 'Export & Format', bn: 'এক্সপোর্ট ও ফরম্যাট' },
+    'nav-appearance': { en: 'Appearance', bn: 'ডিসপ্লে' },
+    'nav-language': { en: 'Language', bn: 'ভাষা' },
+    'page-title': { en: 'Create Metadata', bn: 'মেটাডেটা তৈরি করুন' },
+    'page-sub': { en: 'Generate professional titles, keywords and descriptions for stock content using AI.', bn: 'এআই দিয়ে স্টক কনটেন্টের জন্য পেশাদার টাইটেল, কিওয়ার্ড ও বিবরণ তৈরি করুন।' },
+    'upload-btn': { en: 'Upload File', bn: 'ফাইল আপলোড করুন' },
+    'supports-label': { en: 'Supports:', bn: 'সমর্থিত:' },
+    'supports-list': { en: 'JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV', bn: 'JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV' },
+    'results-title': { en: 'Generated Results', bn: 'তৈরি করা ফলাফল' },
+    'empty-title': { en: 'No metadata generated yet.', bn: 'এখনো কোনো মেটাডেটা তৈরি হয়নি।' },
+    'empty-sub': { en: 'Upload an image and click \u201cGenerate Metadata\u201d to see results here.', bn: 'ছবি আপলোড করে \u201cGenerate Metadata\u201d-এ ক্লিক করুন, ফলাফল এখানে দেখাবে।' },
+    'card-content': { en: 'Content Type', bn: 'কনটেন্টের ধরন' },
+    'card-content-sub': { en: 'Image, Vector or Video', bn: 'ছবি, ভেক্টর বা ভিডিও' },
+    'card-ai': { en: 'AI Settings', bn: 'এআই সেটিংস' },
+    'card-ai-sub': { en: 'Model & Creativity', bn: 'মডেল ও ক্রিয়েটিভিটি' },
+    'card-output': { en: 'Output Options', bn: 'আউটপুট অপশন' },
+    'card-output-sub': { en: 'Title, Keywords, Description', bn: 'টাইটেল, কিওয়ার্ড, বিবরণ' },
+    'card-advanced': { en: 'Advanced', bn: 'অ্যাডভান্সড' },
+    'card-advanced-sub': { en: 'Industry & Style', bn: 'ইন্ডাস্ট্রি ও স্টাইল' },
+    'buy': { en: 'Buy Subscription', bn: 'সাবস্ক্রিপশন কিনুন' }
+  };
+  var lang = 'en';
+  document.querySelectorAll('[data-action="language"]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      lang = lang === 'en' ? 'bn' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var d = I18N[el.getAttribute('data-i18n')];
+        if (d) el.textContent = d[lang];
+      });
+      var up = document.querySelector('#drop b');
+      if (up) up.textContent = lang === 'bn' ? 'আপনার ছবি বা ভেক্টর আপলোড করুন' : 'Upload your image or vector';
+      var sub = document.querySelector('#drop small');
+      if (sub) sub.textContent = lang === 'bn' ? 'ফাইল এখানে টেনে ছাড়ুন অথবা ক্লিক করে আপলোড করুন' : 'Drag & drop files here or click to upload';
+      if (typeof toast === 'function') toast(lang === 'bn' ? 'বাংলা ভাষা চালু হয়েছে।' : 'English language on.');
+    });
+  });
+});
+</script>
+
+</body></html>
