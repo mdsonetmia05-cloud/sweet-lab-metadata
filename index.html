@@ -278,11 +278,12 @@ textarea{line-height:1.6!important}
 
 <style id="dash-dark">
 /* ===== Sweet Metadata Lab — Dashboard (from mockup) =====
-   DEFAULT theme is warm cream white (body.light): page #FAF5EC,
-   panels #FFFDF8, ink #221D15, muted #6E6455, hairline #E9DFCC.
-   The deep-navy dark theme (#070D1A / #0F1930 / #EAF0FA) is the
-   optional theme, switched on from Settings > Appearance.
-   Blue accent #2563EB in both themes. Inter throughout.
+   DEFAULT theme is Paper Formal (body.paper, dash-paper.css):
+   warm paper #F3ECDA, panels #FBF7EC, ink #2E2118, bronze #6B4423.
+   Warm cream white (body.light) and the deep-navy dark theme
+   (#070D1A / #0F1930 / #EAF0FA) are the optional themes, reached
+   from Settings > Appearance (cycles Paper -> Cream -> Dark).
+   Blue accent #2563EB in the cream and dark themes. Inter throughout.
    Flat surfaces; the upload hero alone carries the starry wave artwork
    (dark theme only — the cream hero is a soft plain gradient). */
 body{font-size:14px!important;line-height:1.55!important;background:#070D1A!important;background-image:none!important;color:#EAF0FA}
@@ -761,7 +762,181 @@ body:not(.light) .results{box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0
 body:not(.light) .upload-shell{box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.3)}
 </style>
 
-</head><body class="light"><div class="app">
+<style id="dash-paper">
+/* ===== Sweet Metadata Lab — Paper Formal theme (DEFAULT) =====
+   Look 18 from Mark's selection: certificate-style formal paper.
+   Warm paper #F3ECDA, panels #FBF7EC, inset #F7F1DF, ink #2E2118,
+   soft #4A3B2C, muted #71624E, hairline #D9CBAE, bronze #6B4423,
+   wax seal #5C1A1A with gold #C9A86A. Double hairline rules on the
+   big frames, serif card titles, wax-seal avatar. Appended last, wins.
+   Cream (body.light) and dark (no class) stay available via
+   Settings > Appearance, which cycles Paper -> Cream -> Dark. */
+body.paper{background:#F3ECDA!important;color:#2E2118}
+body.paper a{color:#6B4423}
+body.paper :focus-visible{outline-color:#6B4423}
+body.paper .sidebar{background:#FBF7EC!important;border-right:1px solid #D9CBAE}
+body.paper .dash-brand b{color:#2E2118!important}
+body.paper .dash-brand span{color:#71624E!important}
+body.paper .nav-label{color:#A08D68}
+body.paper .nav-item,body.paper .nav-group{color:#4A3B2C}
+body.paper .nav-item:hover,body.paper .nav-group:hover{background:#F7F1DF!important;color:#2E2118!important}
+body.paper .nav-item.active{background:#6B4423!important;color:#FBF7EC!important;box-shadow:0 6px 16px rgba(107,68,35,.3)}
+body.paper .nav-sub .nav-item{color:#71624E}
+body.paper .nav-group .chev{color:#71624E}
+body.paper .dash-side-foot{border-top:1px solid #D9CBAE}
+body.paper .dash-credit{color:#71624E!important}
+body.paper .dash-credit a{color:#6B4423!important}
+body.paper .side-btn.buy{background:#6B4423!important;border-color:#6B4423!important;color:#FBF7EC!important;box-shadow:0 6px 16px rgba(107,68,35,.28)}
+body.paper .side-btn.buy:hover{background:#54341B!important}
+body.paper .side-btn.support{color:#4A3B2C!important;border-color:#C9B892!important}
+body.paper .side-btn.support:hover{border-color:#6B4423!important;color:#2E2118!important}
+body.paper .main{background:#F3ECDA!important}
+body.paper .topbar{background:#FBF7EC!important;border-bottom:1px solid #D9CBAE;box-shadow:0 1px 14px rgba(74,58,32,.06)}
+body.paper .ws-btn{background:#FBF7EC!important;border-color:#C9B892!important;color:#2E2118!important;box-shadow:0 1px 3px rgba(74,58,32,.08)}
+body.paper .ws-btn svg{color:#6B4423}
+body.paper .ws-btn .chev{color:#71624E}
+body.paper .ws-drop{background:#FBF7EC!important;border-color:#D9CBAE!important;box-shadow:0 16px 40px rgba(60,45,20,.18)}
+body.paper .ws-drop button{color:#2E2118!important}
+body.paper .ws-drop button small{color:#71624E}
+body.paper .ws-drop button:hover{background:#F7F1DF}
+body.paper .icon-btn{color:#4A3B2C}
+body.paper .icon-btn:hover{background:#F7F1DF;color:#2E2118}
+body.paper .icon-btn .dot{border-color:#FBF7EC}
+body.paper .avatar-btn{background:#5C1A1A!important;color:#E8C97A!important;border:2px solid #C9A86A!important}
+body.paper .avatar-btn:hover{border-color:#E8C97A!important}
+body.paper .page-head{border-left:4px solid #6B4423;border-bottom:3px double #D9CBAE}
+body.paper .page-head h2{color:#2E2118!important}
+body.paper .page-head p{color:#71624E!important}
+body.paper .upload-shell{background:#FBF7EC!important;border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px;box-shadow:0 1px 3px rgba(74,58,32,.07),0 10px 28px rgba(74,58,32,.05)}
+body.paper .drop{background:linear-gradient(180deg,#FBF7EC,#F7F1DF)!important}
+body.paper .drop:after{display:none}
+body.paper .drop.drag{border-color:#6B4423!important;background:#F3EAD2!important}
+body.paper .drop b{color:#2E2118!important}
+body.paper .drop small{color:#71624E!important}
+body.paper .drop-orb{background:#EFE6CF!important;border-color:#D9CBAE!important;color:#6B4423!important;box-shadow:0 0 0 10px rgba(239,230,207,.7),0 12px 26px rgba(74,58,32,.12)!important}
+body.paper .drop-orb .plus-badge{border-color:#FBF7EC;background:#6B4423}
+body.paper .browse-btn{background:linear-gradient(180deg,#7A4E28,#6B4423)!important;box-shadow:0 10px 26px rgba(107,68,35,.4)!important}
+body.paper .browse-btn:hover{background:linear-gradient(180deg,#7A4E28,#6B4423)!important}
+body.paper .supports{color:#71624E!important}
+body.paper .supports b{color:#4A3B2C!important}
+body.paper .upload-actions{background:#FBF7EC!important;border-top:1px solid #D9CBAE!important}
+body.paper .progress-wrap{background:#F7F1DF!important;border-color:#D9CBAE!important}
+body.paper .track{background:#D9CBAE!important;border-color:#D9CBAE!important}
+body.paper .bar{background:#6B4423!important}
+body.paper .progress-meta{color:#71624E!important}
+body.paper .opt-card{background:#FBF7EC!important;border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px;box-shadow:0 1px 3px rgba(74,58,32,.07),0 10px 28px rgba(74,58,32,.05)}
+body.paper .opt-card:hover{border-color:#C9B892!important}
+body.paper .opt-card[open]{box-shadow:0 14px 34px rgba(74,58,32,.12)}
+body.paper .opt-card>summary b{color:#2E2118!important;font-family:"Fraunces",Georgia,"Times New Roman",serif!important}
+body.paper .opt-card>summary span{color:#71624E!important}
+body.paper .opt-card>summary .chev{color:#71624E}
+body.paper .opt-card>summary .opt-ic{background:#EFE6CF!important;color:#6B4423!important}
+body.paper .opt-body{border-top:1px solid #D9CBAE}
+body.paper .panel h2{color:#2E2118!important}
+body.paper .panel+.panel{border-top:1px solid #D9CBAE!important}
+body.paper .label{color:#4A3B2C!important}
+body.paper .hint,body.paper .inline-note{color:#71624E!important}
+body.paper .footer-note{color:#71624E!important;border-top:1px solid #D9CBAE}
+body.paper .input,body.paper select,body.paper textarea,body.paper .edit-input{background:#FFFFFF!important;border-color:#C9B892!important;color:#2E2118!important}
+body.paper .input::placeholder,body.paper textarea::placeholder{color:#A08D68}
+body.paper .input:focus,body.paper select:focus,body.paper textarea:focus,body.paper .edit-input:focus{border-color:#6B4423!important;box-shadow:0 0 0 3px rgba(107,68,35,.18)!important}
+body.paper .switch{background:#C9B892!important}
+body.paper .switch:checked{background:#6B4423!important}
+body.paper .switchrow span{color:#4A3B2C!important}
+body.paper .switchrow{border-top:1px solid #D9CBAE}
+body.paper .advanced-note,body.paper .adobe-note{border-color:#D9CBAE!important;background:#F7F1DF!important;color:#4A3B2C!important}
+body.paper .advanced-note b,body.paper .adobe-note b,body.paper .adobe-rules b{color:#2E2118}
+body.paper .adobe-rules{color:#4A3B2C}
+body.paper .buyer-group h4{color:#2E2118}
+body.paper .buyer-chip{border-color:#C9B892!important;background:#FFFFFF!important;color:#4A3B2C!important}
+body.paper .buyer-chip:hover{border-color:#6B4423!important;color:#2E2118!important}
+body.paper .buyer-chip.selected{background:#6B4423!important;border-color:#6B4423!important;color:#FBF7EC!important}
+body.paper .results{background:#FBF7EC!important;border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px;box-shadow:0 1px 3px rgba(74,58,32,.07),0 10px 28px rgba(74,58,32,.05)}
+body.paper .results-head h3{color:#2E2118!important}
+body.paper .results-head h3 svg{color:#6B4423}
+body.paper .stat-pill{background:#F7F1DF!important;border-color:#D9CBAE!important;color:#4A3B2C!important}
+body.paper .stat-pill:before{background:#6B4423!important}
+body.paper .workspace-toolbar{background:#F7F1DF!important;border-color:#D9CBAE!important}
+body.paper .workspace-toolbar h3{color:#2E2118!important}
+body.paper .workspace-toolbar p{color:#71624E!important}
+body.paper .workspace-empty{background:#FBF7EC!important;border-color:#C9B892!important;color:#71624E!important}
+body.paper .workspace-empty b{color:#2E2118!important}
+body.paper .empty-orb{background:#F7F1DF!important;border-color:#D9CBAE!important;color:#6B4423!important}
+body.paper .asset-card{background:#FBF7EC!important;border-color:#D9CBAE!important}
+body.paper .asset-card.done{border-color:#A7D8B5!important}
+body.paper .asset-card.error{border-color:#F0B4B4!important}
+body.paper .asset-card.working{border-color:#6B4423!important}
+body.paper .asset-visual{background:#F7F1DF!important;border-right:1px solid #D9CBAE}
+body.paper .vector-badge{color:#6B4423!important}
+body.paper .format-chip{background:#F7F1DF!important;border-color:#D9CBAE!important;color:#4A3B2C!important}
+body.paper .file-name-line b{color:#2E2118!important}
+body.paper .file-heading small{color:#71624E!important}
+body.paper .status-chip.done{color:#15803D!important;border-color:#A7D8B5!important;background:#DCFCE7!important}
+body.paper .status-chip.error{color:#B91C1C!important;border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.paper .status-chip.working{color:#6B4423!important;border-color:#C9B892!important;background:#F3EAD2!important}
+body.paper .status-chip.waiting{color:#4A3B2C!important;border-color:#D9CBAE!important;background:#F7F1DF!important}
+body.paper .asset-header{border-bottom:1px solid #D9CBAE}
+body.paper .meta-label{color:#2E2118!important}
+body.paper .meta-label em{color:#71624E!important}
+body.paper .meta-block textarea{background:#FFFFFF!important;border-color:#C9B892!important}
+body.paper .icon-copy{border-color:#C9B892!important;background:#F7F1DF!important;color:#4A3B2C!important}
+body.paper .icon-copy:hover{border-color:#6B4423!important;color:#6B4423!important}
+body.paper .field-action{border-color:#C9B892!important;background:#F7F1DF!important;color:#6B4423!important}
+body.paper .quality-score{border-color:#D9CBAE!important;background:#F7F1DF!important;color:#4A3B2C!important}
+body.paper .quality-score.good{color:#15803D!important;border-color:#A7D8B5!important;background:#DCFCE7!important}
+body.paper .quality-score.mid{color:#B45309!important;border-color:#FCD34D!important;background:#FEF3C7!important}
+body.paper .quality-score.low{color:#B91C1C!important;border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.paper .analysis-chip{border-color:#D9CBAE!important;background:#F7F1DF!important;color:#4A3B2C!important}
+body.paper .analysis-chip strong{color:#2E2118!important}
+body.paper .advanced-badge{border-color:#C9B892!important;background:#F3EAD2!important;color:#6B4423!important}
+body.paper .scorebar{background:#D9CBAE!important;border-color:#D9CBAE!important}
+body.paper .scorebar>i{background:#6B4423!important}
+body.paper .warning-item{border-color:#FCD34D!important;background:#FEF3C7!important;color:#92400E!important}
+body.paper .warning-item.ok{border-color:#A7D8B5!important;background:#DCFCE7!important;color:#15803D!important}
+body.paper .advanced-status{color:#6B4423!important}
+body.paper .pending-panel{border-color:#C9B892!important;background:#F7F1DF!important}
+body.paper .pending-panel b{color:#2E2118!important}
+body.paper .pending-panel span{color:#71624E!important}
+body.paper .pending-lines i{background:#6B4423!important}
+body.paper .error-panel{border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.paper .error-panel b{color:#B91C1C!important}
+body.paper .error-panel span{color:#7F1D1D!important}
+body.paper .smart-actions{border-top:1px solid #D9CBAE}
+body.paper .btn,body.paper .mini-btn{background:#FBF7EC!important;border-color:#C9B892!important;color:#2E2118!important}
+body.paper .btn:hover,body.paper .mini-btn:hover{border-color:#6B4423!important;background:#F7F1DF!important}
+body.paper .btn.primary{background:linear-gradient(180deg,#7A4E28,#6B4423)!important;border-color:#6B4423!important;color:#FBF7EC!important;box-shadow:0 6px 16px rgba(107,68,35,.3)!important}
+body.paper .btn.primary:hover{background:linear-gradient(180deg,#7A4E28,#6B4423)!important}
+body.paper .btn.danger{color:#B91C1C!important;border-color:#F0B4B4!important;background:#FEE2E2!important}
+body.paper .btn.success{color:#15803D!important;border-color:#A7D8B5!important;background:#DCFCE7!important}
+body.paper .mini-btn.retry{color:#B91C1C!important}
+body.paper .mini-btn.regen,body.paper .mini-btn.fieldregen{color:#6B4423!important}
+body.paper .mini-btn.undo{color:#B45309!important}
+body.paper .mini-btn.fix{color:#15803D!important}
+body.paper .toast{background:#2E2118!important;color:#FBF7EC!important;border-color:#2E2118!important}
+body.paper .preview-modal,body.paper .support-modal{background:rgba(46,33,24,.55)!important}
+body.paper .preview-dialog{background:#FBF7EC!important;border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px}
+body.paper .preview-toolbar b{color:#2E2118!important}
+body.paper .preview-body{background:#F7F1DF!important;border-color:#D9CBAE!important}
+body.paper .support-dialog{border:1px solid #D9CBAE!important;outline:1px solid #D9CBAE;outline-offset:3px;background:#FBF7EC!important}
+body.paper .support-close{border-color:#C9B892!important;background:#F7F1DF!important;color:#4A3B2C!important}
+body.paper .support-icon{background:#F7F1DF!important;border-color:#D9CBAE!important;color:#6B4423!important}
+body.paper .support-dialog h3{color:#2E2118!important}
+body.paper .support-dialog p{color:#4A3B2C!important}
+body.paper .support-dialog p strong{color:#2E2118!important}
+body.paper .support-actions .support-btn{background:#6B4423!important;border-color:#6B4423!important;color:#FBF7EC!important}
+body.paper .support-actions .support-btn:hover{background:#54341B!important;border-color:#54341B!important}
+body.paper .status-ok{color:#15803D!important}
+body.paper .status-warn{color:#B45309!important}
+body.paper .status-bad{color:#B91C1C!important}
+@media(max-width:1060px){
+  body.paper .sidebar{border-bottom:1px solid #D9CBAE}
+}
+@media(max-width:760px){
+  body.paper .asset-visual{border-bottom:1px solid #D9CBAE}
+}
+</style>
+
+</head><body class="paper"><div class="app">
 <aside class="sidebar">
   <div class="dash-brand"><svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0" stop-color="#A855F7"/><stop offset=".55" stop-color="#6366F1"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs><path d="M20 4l14 6-14 6L6 10l14-6z" fill="url(#lg)"/><path d="M6 17l14 6 14-6v5l-14 6L6 22v-5z" fill="url(#lg)" opacity=".85"/><path d="M6 25l14 6 14-6v5l-14 6L6 30v-5z" fill="url(#lg)" opacity=".7"/></svg><div><b>Sweet Metadata Lab</b><span>AI Metadata Generator</span></div></div>
   <nav class="dash-nav" aria-label="Main">
@@ -1529,8 +1704,13 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   document.querySelectorAll('[data-action="appearance"]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var light = document.body.classList.toggle('light');
-      if (typeof toast === 'function') toast(light ? 'Light appearance on.' : 'Dark appearance on.');
+      var order = ['paper', 'light', 'dark'];
+      var cur = document.body.classList.contains('paper') ? 'paper'
+        : document.body.classList.contains('light') ? 'light' : 'dark';
+      var next = order[(order.indexOf(cur) + 1) % order.length];
+      document.body.classList.remove('paper', 'light');
+      if (next !== 'dark') document.body.classList.add(next);
+      if (typeof toast === 'function') toast(next === 'paper' ? 'Paper Formal theme on.' : next === 'light' ? 'Light appearance on.' : 'Dark appearance on.');
     });
   });
   var I18N = {
