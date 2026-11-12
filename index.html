@@ -386,6 +386,7 @@ body.sidebar-open .side-backdrop{opacity:1;pointer-events:auto}
 .tools-menu .ws-drop{left:auto;right:0}
 .ws-drop a.ws-item{display:flex;flex-direction:row;align-items:center;gap:8px;width:100%;padding:9px 12px;border:0;border-radius:8px;background:transparent;color:#EAF0FA;font-size:13px;font-weight:700;text-align:left;cursor:pointer;text-decoration:none}
 .ws-drop a.ws-item:hover{background:#16223C}
+.ws-drop .ws-sep{height:1px;margin:4px 10px;background:rgba(255,255,255,.14)}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .icon-btn{position:relative;width:40px;height:40px;display:grid;place-items:center;border:1px solid transparent;border-radius:10px;background:transparent;color:#C3CEE2;cursor:pointer}
 .icon-btn:hover{background:#111C33;color:#FFFFFF}
@@ -634,6 +635,7 @@ body.light .ws-drop button.ws-item{color:#221D15}
 body.light .ws-drop a.ws-item{color:#221D15}
 body.light .ws-drop button.ws-item:hover,body.light .ws-drop button.ws-item.active{background:#F5EDDC!important}
 body.light .ws-drop a.ws-item:hover{background:#F5EDDC!important}
+body.light .ws-drop .ws-sep{background:#E5DCC4}
 body.light .ws-drop button.ws-item.active{box-shadow:inset 2px 0 0 #2563EB}
 body.light .ws-item-count{background:#EFE7D6!important;color:#6E6455!important}
 body.light .ws-drop button.ws-item.active .ws-item-count{background:#2563EB!important;color:#FFFFFF!important}
@@ -910,6 +912,7 @@ body.paper .ws-drop button.ws-item{color:#2E2118}
 body.paper .ws-drop a.ws-item{color:#2E2118}
 body.paper .ws-drop button.ws-item:hover,body.paper .ws-drop button.ws-item.active{background:#EDE2C8!important}
 body.paper .ws-drop a.ws-item:hover{background:#EDE2C8!important}
+body.paper .ws-drop .ws-sep{background:#D9CBAE}
 body.paper .ws-drop button.ws-item.active{box-shadow:inset 2px 0 0 #6B4423}
 body.paper .ws-item-count{background:#EFE7D6!important;color:#71624E!important}
 body.paper .ws-drop button.ws-item.active .ws-item-count{background:#6B4423!important;color:#FBF7EC!important}
@@ -1169,6 +1172,13 @@ body.paper .status-bad{color:#B91C1C!important}
           <a class="ws-item" href="stock-checker/">Sweet Stock Checker</a>
           <a class="ws-item" href="image-to-prompt/">Sweet Image to Prompt</a>
           <a class="ws-item" href="promptex/">PromptEx</a>
+          <div class="ws-sep" role="separator"></div>
+          <a class="ws-item" href="https://prompt-to-video-studio.vercel.app/" target="_blank" rel="noopener">Prompt or HTML to Video ↗</a>
+          <a class="ws-item" href="https://promptguru-two.vercel.app/" target="_blank" rel="noopener">Prompt Guru ↗</a>
+          <a class="ws-item" href="https://sweetprompt-studio.vercel.app/" target="_blank" rel="noopener">Sweet Prompt Studio ↗</a>
+          <a class="ws-item" href="https://sweet-design-studio-delta.vercel.app/" target="_blank" rel="noopener">Sweet Design Studio ↗</a>
+          <a class="ws-item" href="https://promptex-nine.vercel.app/" target="_blank" rel="noopener">Prompt Executor ↗</a>
+          <a class="ws-item" href="https://sweet-smart-calendar.vercel.app/" target="_blank" rel="noopener">Sweet Smart Calendar ↗</a>
         </div>
       </div>
       <button type="button" class="icon-btn" id="helpBtn" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 015 .8c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg></button>
