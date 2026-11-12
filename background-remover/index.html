@@ -1,1 +1,831 @@
-<!-- placeholder -->
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Background Remover — ছবির ব্যাকগ্রাউন্ড সরান</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f5f7;
+        --surface: #ffffff;
+        --surface-2: #eceef1;
+        --ink: #17191d;
+        --muted: #565b63;
+        --accent: #315cba;
+        --accent-ink: #ffffff;
+        --accent-soft: #dce5f7;
+        --border: #dde1e7;
+        --ok: #1c7c43;
+        --err: #b3261e;
+        --checker-a: #ffffff;
+        --checker-b: #d8dce2;
+        --shadow: 0 1px 2px rgba(23, 25, 29, .06), 0 8px 24px rgba(23, 25, 29, .07);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f1114;
+          --surface: #191c20;
+          --surface-2: #23262c;
+          --ink: #f1f2f4;
+          --muted: #a3a9b2;
+          --accent: #7fa3e8;
+          --accent-ink: #0e1524;
+          --accent-soft: #26334f;
+          --border: #2b2f36;
+          --ok: #5fce8d;
+          --err: #f08a84;
+          --checker-a: #2a2e35;
+          --checker-b: #1d2025;
+          --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Hind Siliguri", "Inter", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 28px 18px 64px; }
+
+      header.top { margin-bottom: 22px; }
+      h1 {
+        font-size: clamp(26px, 4.5vw, 38px);
+        line-height: 1.2;
+        margin: 0 0 6px;
+        font-weight: 700;
+        letter-spacing: -.01em;
+      }
+      h1 .en { font-family: "Inter", sans-serif; }
+      .sub { color: var(--muted); margin: 0; max-width: 62ch; font-size: 16.5px; }
+      .model-status {
+        display: inline-flex; align-items: center; gap: 8px;
+        margin-top: 14px; padding: 5px 12px 5px 9px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 999px; font-size: 13.5px; color: var(--muted);
+      }
+      .model-status .dot { width: 9px; height: 9px; border-radius: 50%; background: #c8a13a; flex: none; }
+      .model-status.ready .dot { background: var(--ok); }
+      .model-status.error .dot { background: var(--err); }
+      .model-status button {
+        font: inherit; font-size: 13px; border: 0; background: none;
+        color: var(--accent); cursor: pointer; padding: 0; font-weight: 600;
+      }
+
+      /* ---------- dropzone ---------- */
+      .dropzone {
+        border: 2px dashed var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 38px 20px 34px;
+        text-align: center;
+        transition: border-color .15s, background .15s;
+        cursor: pointer;
+      }
+      .dropzone:hover, .dropzone:focus-visible { border-color: var(--accent); outline: none; }
+      .dropzone.dragging { border-color: var(--accent); background: var(--accent-soft); }
+      .dz-icon { width: 52px; height: 52px; margin: 0 auto 12px; color: var(--accent); }
+      .dz-title { font-size: 19px; font-weight: 600; margin: 0 0 4px; }
+      .dz-hint { color: var(--muted); margin: 0; font-size: 14.5px; }
+      .dz-hint kbd {
+        font-family: "Inter", sans-serif; font-size: 12px;
+        background: var(--surface-2); border: 1px solid var(--border);
+        border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px;
+      }
+      .privacy-note { text-align: center; color: var(--muted); font-size: 13.5px; margin: 10px 0 0; }
+
+      /* ---------- queue ---------- */
+      .panel {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 14px; box-shadow: var(--shadow);
+        padding: 18px; margin-top: 22px;
+      }
+      .panel-head {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+      }
+      .panel-head h2 { font-size: 18px; margin: 0; font-weight: 600; }
+      .panel-head .count { color: var(--muted); font-weight: 400; font-size: 14.5px; }
+      .queue { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+      .qitem {
+        position: relative; border: 1px solid var(--border); border-radius: 10px;
+        overflow: hidden; background: var(--surface-2);
+      }
+      .qitem img { display: block; width: 100%; height: 92px; object-fit: cover; }
+      .qitem .qmeta { padding: 6px 8px 7px; font-size: 12px; }
+      .qitem .qname {
+        font-family: "Inter", sans-serif; white-space: nowrap; overflow: hidden;
+        text-overflow: ellipsis; color: var(--ink);
+      }
+      .qitem .qstatus { color: var(--muted); }
+      .qitem .qstatus.done { color: var(--ok); font-weight: 600; }
+      .qitem .qstatus.working { color: var(--accent); font-weight: 600; }
+      .qitem .qstatus.failed { color: var(--err); font-weight: 600; }
+      .qremove {
+        position: absolute; top: 5px; right: 5px; width: 24px; height: 24px;
+        border-radius: 50%; border: 1px solid var(--border);
+        background: var(--surface); color: var(--ink); cursor: pointer;
+        font-size: 14px; line-height: 1; display: grid; place-items: center;
+      }
+      .qremove:hover { color: var(--err); border-color: var(--err); }
+
+      /* ---------- controls ---------- */
+      .controls {
+        display: flex; gap: 18px 26px; flex-wrap: wrap; align-items: flex-end;
+        margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+      }
+      .ctl label.ctl-label { display: block; font-size: 13.5px; font-weight: 600; color: var(--muted); margin-bottom: 7px; }
+      .seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 3px; }
+      .seg button {
+        font: inherit; font-size: 14.5px; border: 0; background: transparent; color: var(--muted);
+        padding: 6px 13px; border-radius: 7px; cursor: pointer; font-weight: 500;
+      }
+      .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+      .color-row { display: none; align-items: center; gap: 8px; margin-top: 8px; }
+      .color-row.show { display: flex; }
+      .color-row input[type="color"] { width: 38px; height: 30px; border: 1px solid var(--border); border-radius: 7px; padding: 2px; background: var(--surface); cursor: pointer; }
+      .swatches { display: flex; gap: 6px; }
+      .swatches button { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; padding: 0; }
+      .swatches button.sel { outline: 2px solid var(--accent); outline-offset: 1px; }
+      input[type="range"] { accent-color: var(--accent); width: 150px; }
+      .range-val { font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted); margin-left: 6px; }
+
+      .btn {
+        font: inherit; font-weight: 600; font-size: 15.5px;
+        border-radius: 10px; border: 1px solid transparent;
+        padding: 10px 20px; cursor: pointer; display: inline-flex;
+        align-items: center; gap: 8px; text-decoration: none;
+      }
+      .btn-primary { background: var(--accent); color: var(--accent-ink); }
+      .btn-primary:hover { filter: brightness(1.07); }
+      .btn-primary:disabled { opacity: .55; cursor: wait; }
+      .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--ink); }
+      .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+      .btn-small { padding: 7px 13px; font-size: 14px; border-radius: 8px; }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+
+      /* ---------- results ---------- */
+      .results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 4px; }
+      .rcard { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+      .compare {
+        position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+        background:
+          conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%, var(--checker-a) 0 75%, var(--checker-b) 0) 0 0 / 22px 22px;
+        touch-action: none; cursor: ew-resize; user-select: none;
+      }
+      .compare img {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        object-fit: contain; pointer-events: none;
+      }
+      .compare .after-img { background: transparent; }
+      .compare .handle {
+        position: absolute; top: 0; bottom: 0; width: 2px; background: #fff;
+        box-shadow: 0 0 0 1px rgba(0,0,0,.25); pointer-events: none;
+      }
+      .compare .grip {
+        position: absolute; top: 50%; transform: translate(-50%, -50%);
+        width: 34px; height: 34px; border-radius: 50%; background: #fff;
+        box-shadow: 0 1px 6px rgba(0,0,0,.35); display: grid; place-items: center;
+        color: #333; font-size: 15px; pointer-events: none; font-family: "Inter", sans-serif;
+      }
+      .compare .tag {
+        position: absolute; top: 8px; font-size: 11.5px; font-weight: 600;
+        background: rgba(15,17,20,.72); color: #fff; padding: 2px 8px; border-radius: 999px;
+        pointer-events: none; font-family: "Inter", sans-serif; letter-spacing: .02em;
+      }
+      .compare .tag.before-tag { left: 8px; }
+      .compare .tag.after-tag { right: 8px; }
+      .rmeta { padding: 13px 15px 15px; }
+      .rmeta .rname { font-family: "Inter", sans-serif; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .rmeta .rinfo { color: var(--muted); font-size: 13px; margin: 2px 0 11px; }
+      .rbtns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+      .empty-note { color: var(--muted); text-align: center; padding: 26px 10px; margin: 0; }
+      .hidden { display: none !important; }
+
+      footer.note { margin-top: 34px; color: var(--muted); font-size: 13.5px; border-top: 1px solid var(--border); padding-top: 16px; }
+      footer.note p { margin: 0 0 6px; max-width: 75ch; }
+
+      @media (max-width: 560px) {
+        .wrap { padding: 20px 13px 48px; }
+        .actions { margin-left: 0; width: 100%; }
+        .actions .btn { flex: 1; justify-content: center; }
+        .results { grid-template-columns: 1fr; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+<a href="../" style="display:inline-block;margin:0 0 10px;font:600 13px Inter,system-ui,sans-serif;color:#6B4423;text-decoration:none">&larr; Sweet Metadata Lab</a>
+    <div class="wrap">
+      <header class="top">
+        <h1><span class="en">Background Remover</span> — ছবির ব্যাকগ্রাউন্ড সরান</h1>
+        <p class="sub">ছবি দিন, AI নিজে থেকে সাবজেক্ট চিনে ব্যাকগ্রাউন্ড সরিয়ে দেবে। তারপর ট্রান্সপারেন্ট PNG, সাদা ব্যাকগ্রাউন্ডের JPG, কিংবা পছন্দের রঙের ব্যাকগ্রাউন্ডে ডাউনলোড করুন — Microstock-এ আপলোডের জন্য তৈরি।</p>
+        <div class="model-status" id="modelStatus" role="status">
+          <span class="dot"></span>
+          <span id="modelStatusText">AI মডেল এখনো লোড হয়নি — প্রথম ছবি প্রসেসের সময় লোড হবে</span>
+        </div>
+      </header>
+
+      <main>
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="ছবি যোগ করুন">
+          <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-4.5-4.5a1.5 1.5 0 0 0-2 0L6 19"/>
+            <path d="M12 8V3m0 0L9.8 5.2M12 3l2.2 2.2"/>
+          </svg>
+          <p class="dz-title">ছবি এখানে টেনে ছাড়ুন, অথবা ক্লিক করে বেছে নিন</p>
+          <p class="dz-hint">JPG, PNG বা WebP — একসাথে অনেকগুলো ছবিও দেওয়া যাবে · পেস্ট করতে <kbd>Ctrl</kbd> + <kbd>V</kbd></p>
+        </div>
+        <p class="privacy-note">সব প্রসেসিং এই ব্রাউজারেই হয় — আপনার ছবি কোনো সার্ভারে আপলোড হয় না।</p>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp" multiple hidden />
+
+        <section class="panel hidden" id="queuePanel" aria-label="ছবির তালিকা">
+          <div class="panel-head">
+            <h2>আপনার ছবি <span class="count" id="queueCount"></span></h2>
+            <button class="btn btn-ghost btn-small" id="clearAllBtn" type="button">সব মুছুন</button>
+          </div>
+          <div class="queue" id="queue"></div>
+
+          <div class="controls">
+            <div class="ctl">
+              <label class="ctl-label" id="bgLabel">ব্যাকগ্রাউন্ড</label>
+              <div class="seg" role="group" aria-labelledby="bgLabel">
+                <button type="button" data-bg="transparent" aria-pressed="true">ট্রান্সপারেন্ট</button>
+                <button type="button" data-bg="white" aria-pressed="false">সাদা</button>
+                <button type="button" data-bg="color" aria-pressed="false">নিজের রঙ</button>
+              </div>
+              <div class="color-row" id="colorRow">
+                <input type="color" id="colorPick" value="#f2c94c" aria-label="ব্যাকগ্রাউন্ডের রঙ বেছে নিন" />
+                <div class="swatches" id="swatches">
+                  <button type="button" data-color="#ffffff" style="background:#ffffff" aria-label="সাদা"></button>
+                  <button type="button" data-color="#000000" style="background:#000000" aria-label="কালো"></button>
+                  <button type="button" data-color="#f2c94c" style="background:#f2c94c" aria-label="হলুদ"></button>
+                  <button type="button" data-color="#7fb069" style="background:#7fb069" aria-label="সবুজ"></button>
+                  <button type="button" data-color="#e76f51" style="background:#e76f51" aria-label="কমলা"></button>
+                  <button type="button" data-color="#a8dadc" style="background:#a8dadc" aria-label="হালকা নীল"></button>
+                </div>
+              </div>
+            </div>
+            <div class="ctl">
+              <label class="ctl-label" for="featherRange">কিনারা মসৃণ (feather)</label>
+              <input type="range" id="featherRange" min="0" max="4" step="0.5" value="1" />
+              <span class="range-val" id="featherVal">1px</span>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" id="processBtn" type="button">ব্যাকগ্রাউন্ড সরান</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="resultsPanel" aria-label="তৈরি ছবি">
+          <div class="panel-head">
+            <h2>তৈরি ছবি <span class="count" id="resultsCount"></span></h2>
+            <button class="btn btn-ghost btn-small" id="downloadAllBtn" type="button">সব একসাথে ডাউনলোড</button>
+          </div>
+          <div class="results" id="results"></div>
+          <p class="empty-note hidden" id="resultsEmpty">এখনো কোনো ছবি তৈরি হয়নি।</p>
+        </section>
+      </main>
+
+      <footer class="note">
+        <p><strong>কীভাবে কাজ করে:</strong> U<sup>2</sup>-Net AI মডেলটি সরাসরি আপনার ব্রাউজারে চলে (ONNX Runtime Web)। ছবি ৩২০×৩২০ সাইজে বিশ্লেষণ করে সাবজেক্টের মাস্ক তৈরি হয়, তারপর আসল রেজোলিউশনে কিনারা মসৃণ করে কেটে বসানো হয়।</p>
+        <p>চুল বা পশমের মতো খুব সূক্ষ্ম কিনারায় হালকা অসম্পূর্ণতা থাকতে পারে — feather বাড়িয়ে দেখুন। খুব বড় ছবি (৫০০০px-এর বেশি) হলে আউটপুট সর্বোচ্চ ৫০০০px-এ নামিয়ে আনা হয়।</p>
+      </footer>
+    </div>
+
+    <script>
+    (function () {
+      'use strict';
+
+      var MODEL_URL = 'assets/u2netp.onnx';
+      var MODEL_SIZE = 320;
+      var MAX_EDGE = 5000;
+      var MEAN = [0.485, 0.456, 0.406];
+      var STD = [0.229, 0.224, 0.225];
+
+      var dropzone = document.getElementById('dropzone');
+      var fileInput = document.getElementById('fileInput');
+      var queuePanel = document.getElementById('queuePanel');
+      var queueEl = document.getElementById('queue');
+      var queueCount = document.getElementById('queueCount');
+      var processBtn = document.getElementById('processBtn');
+      var clearAllBtn = document.getElementById('clearAllBtn');
+      var resultsPanel = document.getElementById('resultsPanel');
+      var resultsEl = document.getElementById('results');
+      var resultsCount = document.getElementById('resultsCount');
+      var resultsEmpty = document.getElementById('resultsEmpty');
+      var downloadAllBtn = document.getElementById('downloadAllBtn');
+      var modelStatus = document.getElementById('modelStatus');
+      var modelStatusText = document.getElementById('modelStatusText');
+      var featherRange = document.getElementById('featherRange');
+      var featherVal = document.getElementById('featherVal');
+      var colorRow = document.getElementById('colorRow');
+      var colorPick = document.getElementById('colorPick');
+      var swatches = document.getElementById('swatches');
+
+      var items = [];        // {id, file, name, url, img, status, statusEl, result}
+      var results = [];      // {item, cutout (canvas), width, height, seconds, card}
+      var nextId = 1;
+      var session = null;
+      var sessionPromise = null;
+      var processing = false;
+
+      var bgMode = 'transparent';   // transparent | white | color
+      var bgColor = '#f2c94c';
+
+      /* ---------------- model ---------------- */
+      function setModelStatus(state, text) {
+        modelStatus.classList.remove('ready', 'error');
+        if (state) modelStatus.classList.add(state);
+        modelStatusText.textContent = text;
+        var oldBtn = modelStatus.querySelector('button');
+        if (oldBtn) oldBtn.remove();
+        if (state === 'error') {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = 'আবার চেষ্টা করুন';
+          b.addEventListener('click', function () { sessionPromise = null; loadModel(); });
+          modelStatus.appendChild(b);
+        }
+      }
+
+      function loadModel() {
+        if (session) return Promise.resolve(session);
+        if (sessionPromise) return sessionPromise;
+        setModelStatus('', 'AI মডেল লোড হচ্ছে… (প্রায় ৪.৫ MB, একবারই লাগবে)');
+        sessionPromise = (async function () {
+          if (typeof ort === 'undefined') {
+            throw new Error('ONNX Runtime লোড হয়নি — ইন্টারনেট সংযোগ চেক করে আবার চেষ্টা করুন।');
+          }
+          ort.env.wasm.numThreads = 1;
+          ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/';
+          var s = await ort.InferenceSession.create(MODEL_URL, { executionProviders: ['wasm'] });
+          session = s;
+          setModelStatus('ready', 'AI মডেল তৈরি — ছবি প্রসেস করা যাবে');
+          return s;
+        })().catch(function (err) {
+          sessionPromise = null;
+          setModelStatus('error', 'মডেল লোড হয়নি: ' + (err && err.message ? err.message : err));
+          throw err;
+        });
+        return sessionPromise;
+      }
+
+      /* ---------------- file intake ---------------- */
+      function addFiles(fileList) {
+        var added = 0;
+        Array.prototype.forEach.call(fileList, function (file) {
+          if (!file || file.type.indexOf('image/') !== 0) return;
+          var item = {
+            id: nextId++,
+            file: file,
+            name: file.name || ('pasted-image-' + nextId + '.png'),
+            url: URL.createObjectURL(file),
+            img: null,
+            status: 'waiting',
+            result: null
+          };
+          items.push(item);
+          renderQueueItem(item);
+          added++;
+        });
+        if (added) {
+          queuePanel.classList.remove('hidden');
+          updateQueueCount();
+        }
+      }
+
+      function renderQueueItem(item) {
+        var box = document.createElement('div');
+        box.className = 'qitem';
+        box.id = 'q-' + item.id;
+        var img = document.createElement('img');
+        img.src = item.url;
+        img.alt = item.name;
+        var meta = document.createElement('div');
+        meta.className = 'qmeta';
+        var nm = document.createElement('div');
+        nm.className = 'qname';
+        nm.textContent = item.name;
+        nm.title = item.name;
+        var st = document.createElement('div');
+        st.className = 'qstatus';
+        st.textContent = 'অপেক্ষায়';
+        item.statusEl = st;
+        var rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'qremove';
+        rm.textContent = '×';
+        rm.setAttribute('aria-label', item.name + ' সরান');
+        rm.addEventListener('click', function () { removeItem(item); });
+        meta.appendChild(nm);
+        meta.appendChild(st);
+        box.appendChild(img);
+        box.appendChild(meta);
+        box.appendChild(rm);
+        queueEl.appendChild(box);
+      }
+
+      function setItemStatus(item, cls, text) {
+        item.status = cls;
+        if (item.statusEl) {
+          item.statusEl.className = 'qstatus' + (cls ? ' ' + cls : '');
+          item.statusEl.textContent = text;
+        }
+      }
+
+      function removeItem(item) {
+        items = items.filter(function (i) { return i !== item; });
+        var el = document.getElementById('q-' + item.id);
+        if (el) el.remove();
+        if (item.result) {
+          results = results.filter(function (r) { return r.item !== item; });
+          if (item.result.card) item.result.card.remove();
+          updateResultsCount();
+        }
+        URL.revokeObjectURL(item.url);
+        if (!items.length) queuePanel.classList.add('hidden');
+        updateQueueCount();
+      }
+
+      function updateQueueCount() {
+        queueCount.textContent = items.length ? '— ' + items.length + 'টি ছবি' : '';
+      }
+
+      dropzone.addEventListener('click', function () { fileInput.click(); });
+      dropzone.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+      });
+      fileInput.addEventListener('change', function () {
+        addFiles(fileInput.files);
+        fileInput.value = '';
+      });
+      ['dragenter', 'dragover'].forEach(function (ev) {
+        dropzone.addEventListener(ev, function (e) { e.preventDefault(); dropzone.classList.add('dragging'); });
+      });
+      ['dragleave', 'drop'].forEach(function (ev) {
+        dropzone.addEventListener(ev, function (e) { e.preventDefault(); dropzone.classList.remove('dragging'); });
+      });
+      dropzone.addEventListener('drop', function (e) {
+        if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+      });
+      window.addEventListener('paste', function (e) {
+        if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) {
+          addFiles(e.clipboardData.files);
+        }
+      });
+      clearAllBtn.addEventListener('click', function () {
+        items.slice().forEach(removeItem);
+        resultsEl.innerHTML = '';
+        resultsPanel.classList.add('hidden');
+      });
+
+      /* ---------------- inference ---------------- */
+      function loadImage(url) {
+        return new Promise(function (resolve, reject) {
+          var img = new Image();
+          img.onload = function () { resolve(img); };
+          img.onerror = reject;
+          img.src = url;
+        });
+      }
+
+      function buildInput(img) {
+        var c = document.createElement('canvas');
+        c.width = MODEL_SIZE; c.height = MODEL_SIZE;
+        var ctx = c.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, MODEL_SIZE, MODEL_SIZE);
+        var data = ctx.getImageData(0, 0, MODEL_SIZE, MODEL_SIZE).data;
+        var n = MODEL_SIZE * MODEL_SIZE;
+        var max = 0.000001;
+        var i, v;
+        for (i = 0; i < n; i++) {
+          v = Math.max(data[i * 4], data[i * 4 + 1], data[i * 4 + 2]);
+          if (v > max) max = v;
+        }
+        var input = new Float32Array(3 * n);
+        for (i = 0; i < n; i++) {
+          for (var ch = 0; ch < 3; ch++) {
+            var p = data[i * 4 + ch] / max;             // rembg-style: scale by image max
+            input[ch * n + i] = (p - MEAN[ch]) / STD[ch];
+          }
+        }
+        return new ort.Tensor('float32', input, [1, 3, MODEL_SIZE, MODEL_SIZE]);
+      }
+
+      async function runModel(img) {
+        var sess = await loadModel();
+        var inputName = sess.inputNames[0];
+        var feeds = {};
+        feeds[inputName] = buildInput(img);
+        var out = await sess.run(feeds);
+        var mask = out[sess.outputNames[0]].data;
+        var n = MODEL_SIZE * MODEL_SIZE;
+        var mn = Infinity, mx = -Infinity, i;
+        for (i = 0; i < n; i++) { if (mask[i] < mn) mn = mask[i]; if (mask[i] > mx) mx = mask[i]; }
+        var range = (mx - mn) || 1;
+        var mc = document.createElement('canvas');
+        mc.width = MODEL_SIZE; mc.height = MODEL_SIZE;
+        var mctx = mc.getContext('2d');
+        var im = mctx.createImageData(MODEL_SIZE, MODEL_SIZE);
+        for (i = 0; i < n; i++) {
+          var a = Math.round(((mask[i] - mn) / range) * 255);
+          im.data[i * 4] = 255; im.data[i * 4 + 1] = 255; im.data[i * 4 + 2] = 255; im.data[i * 4 + 3] = a;
+        }
+        mctx.putImageData(im, 0, 0);
+        return mc;
+      }
+
+      function makeCutout(img, maskSmall, featherPx) {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var scale = Math.min(1, MAX_EDGE / Math.max(w, h));
+        var W = Math.max(1, Math.round(w * scale));
+        var H = Math.max(1, Math.round(h * scale));
+
+        var maskCanvas = document.createElement('canvas');
+        maskCanvas.width = W; maskCanvas.height = H;
+        var mctx = maskCanvas.getContext('2d');
+        mctx.imageSmoothingEnabled = true;
+        mctx.imageSmoothingQuality = 'high';
+        if (featherPx > 0) mctx.filter = 'blur(' + featherPx + 'px)';
+        mctx.drawImage(maskSmall, 0, 0, W, H);
+        mctx.filter = 'none';
+
+        var out = document.createElement('canvas');
+        out.width = W; out.height = H;
+        var octx = out.getContext('2d');
+        octx.drawImage(img, 0, 0, W, H);
+        octx.globalCompositeOperation = 'destination-in';
+        octx.drawImage(maskCanvas, 0, 0);
+        octx.globalCompositeOperation = 'source-over';
+        return out;
+      }
+
+      function composite(cutout, mode, color) {
+        if (mode === 'transparent') return cutout;
+        var c = document.createElement('canvas');
+        c.width = cutout.width; c.height = cutout.height;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = mode === 'white' ? '#ffffff' : color;
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(cutout, 0, 0);
+        return c;
+      }
+
+      /* ---------------- processing ---------------- */
+      processBtn.addEventListener('click', async function () {
+        if (processing) return;
+        var pending = items.filter(function (i) { return i.status !== 'done'; });
+        if (!pending.length) {
+          pending = items.slice(); // re-run all with current settings
+        }
+        if (!pending.length) return;
+        processing = true;
+        processBtn.disabled = true;
+        processBtn.textContent = 'প্রসেস হচ্ছে…';
+        try {
+          await loadModel();
+        } catch (e) {
+          processing = false;
+          processBtn.disabled = false;
+          processBtn.textContent = 'ব্যাকগ্রাউন্ড সরান';
+          return;
+        }
+        var feather = parseFloat(featherRange.value) || 0;
+        for (var k = 0; k < pending.length; k++) {
+          var item = pending[k];
+          setItemStatus(item, 'working', 'প্রসেস হচ্ছে…');
+          try {
+            var t0 = performance.now();
+            if (!item.img) item.img = await loadImage(item.url);
+            var mask = await runModel(item.img);
+            var cutout = makeCutout(item.img, mask, feather);
+            var seconds = ((performance.now() - t0) / 1000).toFixed(1);
+            upsertResult(item, cutout, seconds);
+            setItemStatus(item, 'done', 'তৈরি ✓');
+          } catch (err) {
+            setItemStatus(item, 'failed', 'হয়নি — আবার চেষ্টা করুন');
+          }
+          // let the UI breathe between images
+          await new Promise(function (r) { setTimeout(r, 30); });
+        }
+        processing = false;
+        processBtn.disabled = false;
+        processBtn.textContent = 'ব্যাকগ্রাউন্ড সরান';
+      });
+
+      /* ---------------- results UI ---------------- */
+      function upsertResult(item, cutout, seconds) {
+        var existing = null;
+        results.forEach(function (r) { if (r.item === item) existing = r; });
+        if (existing) {
+          existing.cutout = cutout;
+          existing.seconds = seconds;
+          renderResultPreview(existing);
+          existing.infoEl.textContent = cutout.width + ' × ' + cutout.height + ' px · ' + seconds + ' সেকেন্ডে তৈরি';
+          return;
+        }
+        var r = { item: item, cutout: cutout, seconds: seconds, card: null, preview: null, infoEl: null };
+        results.push(r);
+        item.result = r;
+        buildResultCard(r);
+        updateResultsCount();
+      }
+
+      function updateResultsCount() {
+        resultsCount.textContent = results.length ? '— ' + results.length + 'টি' : '';
+        resultsEmpty.classList.toggle('hidden', results.length > 0);
+        if (results.length) resultsPanel.classList.remove('hidden');
+      }
+
+      function buildResultCard(r) {
+        var card = document.createElement('article');
+        card.className = 'rcard';
+
+        var cmp = document.createElement('div');
+        cmp.className = 'compare';
+        var before = document.createElement('img');
+        before.src = r.item.url;
+        before.alt = 'আসল ছবি — ' + r.item.name;
+        before.className = 'before-img';
+        var after = document.createElement('img');
+        after.alt = 'ব্যাকগ্রাউন্ড ছাড়া ছবি — ' + r.item.name;
+        after.className = 'after-img';
+        var handle = document.createElement('div');
+        handle.className = 'handle';
+        var grip = document.createElement('div');
+        grip.className = 'grip';
+        grip.textContent = '⇔';
+        var tagB = document.createElement('span');
+        tagB.className = 'tag before-tag'; tagB.textContent = 'আগে';
+        var tagA = document.createElement('span');
+        tagA.className = 'tag after-tag'; tagA.textContent = 'পরে';
+        cmp.appendChild(before);
+        cmp.appendChild(after);
+        cmp.appendChild(handle);
+        cmp.appendChild(grip);
+        cmp.appendChild(tagB);
+        cmp.appendChild(tagA);
+        r.preview = after;
+
+        var pos = 50;
+        function setPos(pct) {
+          pos = Math.max(2, Math.min(98, pct));
+          after.style.clipPath = 'inset(0 0 0 ' + pos + '%)';
+          handle.style.left = pos + '%';
+          grip.style.left = pos + '%';
+          tagB.style.opacity = pos < 18 ? '0' : '1';
+          tagA.style.opacity = pos > 82 ? '0' : '1';
+        }
+        setPos(50);
+        function fromEvent(e) {
+          var rect = cmp.getBoundingClientRect();
+          var x = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+          setPos(((x - rect.left) / rect.width) * 100);
+        }
+        var dragging = false;
+        cmp.addEventListener('pointerdown', function (e) { dragging = true; cmp.setPointerCapture(e.pointerId); fromEvent(e); });
+        cmp.addEventListener('pointermove', function (e) { if (dragging) fromEvent(e); });
+        cmp.addEventListener('pointerup', function () { dragging = false; });
+        cmp.addEventListener('pointercancel', function () { dragging = false; });
+
+        var meta = document.createElement('div');
+        meta.className = 'rmeta';
+        var nm = document.createElement('div');
+        nm.className = 'rname';
+        nm.textContent = r.item.name;
+        nm.title = r.item.name;
+        var info = document.createElement('div');
+        info.className = 'rinfo';
+        info.textContent = r.cutout.width + ' × ' + r.cutout.height + ' px · ' + r.seconds + ' সেকেন্ডে তৈরি';
+        r.infoEl = info;
+
+        var btns = document.createElement('div');
+        btns.className = 'rbtns';
+        var dlPng = document.createElement('button');
+        dlPng.type = 'button';
+        dlPng.className = 'btn btn-primary btn-small';
+        dlPng.textContent = 'PNG ডাউনলোড';
+        dlPng.addEventListener('click', function () { downloadResult(r, 'png'); });
+        var dlJpg = document.createElement('button');
+        dlJpg.type = 'button';
+        dlJpg.className = 'btn btn-ghost btn-small';
+        dlJpg.textContent = 'সাদা ব্যাকগ্রাউন্ড JPG';
+        dlJpg.addEventListener('click', function () { downloadResult(r, 'jpg'); });
+        btns.appendChild(dlPng);
+        btns.appendChild(dlJpg);
+
+        meta.appendChild(nm);
+        meta.appendChild(info);
+        meta.appendChild(btns);
+        card.appendChild(cmp);
+        card.appendChild(meta);
+        r.card = card;
+        resultsEl.appendChild(card);
+        renderResultPreview(r);
+      }
+
+      function renderResultPreview(r) {
+        var c = composite(r.cutout, bgMode, bgColor);
+        r.preview.src = c.toDataURL('image/png');
+      }
+
+      function refreshAllPreviews() {
+        results.forEach(renderResultPreview);
+      }
+
+      function baseName(name) {
+        var dot = name.lastIndexOf('.');
+        return (dot > 0 ? name.slice(0, dot) : name) || 'image';
+      }
+
+      function downloadCanvas(canvas, filename, type) {
+        canvas.toBlob(function (blob) {
+          if (!blob) return;
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        }, type);
+      }
+
+      function downloadResult(r, kind) {
+        if (kind === 'jpg') {
+          var c = composite(r.cutout, 'white', '#ffffff');
+          downloadCanvas(c, baseName(r.item.name) + '-white-bg.jpg', 'image/jpeg');
+        } else {
+          var c2 = composite(r.cutout, bgMode, bgColor);
+          var suffix = bgMode === 'transparent' ? '-no-bg.png' : '-bg.png';
+          downloadCanvas(c2, baseName(r.item.name) + suffix, 'image/png');
+        }
+      }
+
+      downloadAllBtn.addEventListener('click', function () {
+        results.forEach(function (r, i) {
+          setTimeout(function () { downloadResult(r, 'png'); }, i * 450);
+        });
+      });
+
+      /* ---------------- controls ---------------- */
+      var segBtns = document.querySelectorAll('.seg button[data-bg]');
+      segBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          segBtns.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+          b.setAttribute('aria-pressed', 'true');
+          bgMode = b.getAttribute('data-bg');
+          colorRow.classList.toggle('show', bgMode === 'color');
+          refreshAllPreviews();
+        });
+      });
+      colorPick.addEventListener('input', function () {
+        bgColor = colorPick.value;
+        markSwatch();
+        refreshAllPreviews();
+      });
+      function markSwatch() {
+        swatches.querySelectorAll('button').forEach(function (s) {
+          s.classList.toggle('sel', s.getAttribute('data-color').toLowerCase() === bgColor.toLowerCase());
+        });
+      }
+      swatches.querySelectorAll('button').forEach(function (s) {
+        s.addEventListener('click', function () {
+          bgColor = s.getAttribute('data-color');
+          colorPick.value = bgColor;
+          markSwatch();
+          refreshAllPreviews();
+        });
+      });
+      markSwatch();
+      featherRange.addEventListener('input', function () {
+        featherVal.textContent = featherRange.value + 'px';
+      });
+
+      // Warm the model in the background once the page settles, so the
+      // first real process run is fast. Failure here is non-fatal; the
+      // Process button retries and shows the error state.
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(function () { loadModel().catch(function () {}); }, { timeout: 4000 });
+      } else {
+        setTimeout(function () { loadModel().catch(function () {}); }, 2500);
+      }
+    })();
+    </script>
+  </body>
+</html>
