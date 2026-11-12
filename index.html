@@ -430,7 +430,14 @@ body.sidebar-open .side-backdrop{opacity:1;pointer-events:auto}
   radial-gradient(120% 140% at 92% 122%,rgba(46,124,246,.16),transparent 55%),
   radial-gradient(90% 120% at 50% 128%,rgba(124,58,237,.14),transparent 60%)}
 .drop.drag{border:2px dashed #2563EB!important;background:#0D1B36!important}
-.drop>*{position:relative;z-index:1}
+/* Upload fix: the invisible file input must sit ABOVE the drop content.
+   .drop>*{z-index:1} lifts the text/button over the decorative :after
+   gradient — but it also lifted them over the input, so clicks never
+   reached it and the Browse Files button did nothing (drag still worked
+   because the drop handler lives on #drop). Keep content at z-index 1,
+   put the input at z-index 2 so the whole drop zone opens the picker. */
+.drop>*:not(input){position:relative;z-index:1}
+.drop input{z-index:2}
 .drop-orb{position:relative;width:92px;height:92px;display:grid;place-items:center;margin:0 auto 18px;border-radius:22px;background:rgba(46,124,246,.12)!important;border:1.5px solid rgba(110,168,255,.55)!important;color:#6EA8FF!important;box-shadow:0 0 0 10px rgba(46,124,246,.06)!important}
 .drop-orb svg{width:46px;height:46px}
 .drop-orb .plus-badge{position:absolute;right:-9px;bottom:-9px;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#2563EB;color:#FFFFFF;font-size:19px;font-weight:800;border:3px solid #0B1426}
