@@ -1,1 +1,1046 @@
-<!-- placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptEx — Sweet Metadata Lab</title>
+<meta name="description" content="PromptEx turns your images into sell-ready microstock metadata — title, keywords, caption and prompt — using your own Gemini API key. Your key stays in your browser only.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3ECDA;
+    --panel:#FBF7EC;
+    --panel-2:#F7F0DC;
+    --ink:#2E2118;
+    --ink-soft:#5C4A38;
+    --ink-mute:#8A7561;
+    --bronze:#6B4423;
+    --bronze-light:#A67C52;
+    --line:#D8C9A8;
+    --line-soft:#E7DCC0;
+    --danger:#B42318;
+    --ok:#2E6B34;
+    --shadow:0 1px 3px rgba(46,33,24,.10),0 8px 24px rgba(46,33,24,.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hind Siliguri","Source Serif 4",Georgia,serif;
+    font-size:17px;
+    line-height:1.6;
+  }
+  a{color:var(--bronze)}
+  a:hover{color:#4A2E17}
+  h1,h2,h3,.serif{font-family:"Playfair Display",Georgia,serif}
+  h1{font-size:clamp(2rem,5vw,2.9rem);line-height:1.15;margin:.2em 0 .3em}
+  h2{font-size:1.5rem;margin:2.2rem 0 .6rem;border-bottom:1px solid var(--line);padding-bottom:.4rem}
+  h3{font-size:1.15rem;margin:0 0 .4rem}
+  p{margin:.5em 0}
+  .muted{color:var(--ink-soft)}
+  .small{font-size:.9rem}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px 64px}
+
+  /* Top bar */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    background:rgba(243,236,218,.96);
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(4px);
+  }
+  .topbar-inner{max-width:1020px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .back-link{
+    text-decoration:none;color:var(--bronze);font-weight:600;font-size:.95rem;
+    border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--panel);
+    white-space:nowrap;
+  }
+  .back-link:hover{background:var(--panel-2);border-color:var(--bronze-light)}
+  .topbar-title{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:1.25rem}
+  .topbar-title span{color:var(--bronze)}
+  .topbar-sub{color:var(--ink-mute);font-size:.85rem;margin-left:auto}
+
+  /* Hero */
+  .hero{padding:28px 0 8px;text-align:left}
+  .eyebrow{
+    display:inline-block;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--bronze);border:1px solid var(--bronze-light);border-radius:999px;
+    padding:4px 12px;background:var(--panel);
+  }
+  .bn{font-size:1.05rem;color:var(--ink-soft)}
+  .rule{height:3px;width:72px;background:var(--bronze);border-radius:2px;margin:14px 0 0}
+
+  /* Cards / panels */
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px 22px;
+    margin:16px 0;
+  }
+  .card-soft{background:var(--panel-2);box-shadow:none}
+  .badge{
+    display:inline-block;background:var(--bronze);color:#FBF7EC;
+    font-size:.78rem;font-weight:600;letter-spacing:.04em;
+    border-radius:999px;padding:3px 10px;vertical-align:middle;
+  }
+  .notice{border-left:4px solid var(--bronze);background:var(--panel-2)}
+  .notice.warn{border-left-color:var(--danger)}
+  .notice.ok{border-left-color:var(--ok)}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:16px 0}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+  .step .num{
+    font-family:"Playfair Display",Georgia,serif;font-weight:800;font-size:1.4rem;color:var(--bronze);
+  }
+
+  /* Forms */
+  label{display:block;font-weight:600;margin:14px 0 4px}
+  label .hint{display:block;font-weight:400;color:var(--ink-soft);font-size:.9rem}
+  input[type="text"],input[type="password"],input[type="number"],select,textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    background:#FFFDF6;color:var(--ink);font-family:inherit;font-size:1rem;
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--bronze-light);outline-offset:1px;border-color:var(--bronze)}
+  textarea{resize:vertical;min-height:64px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 16px}
+  .check{display:flex;align-items:flex-start;gap:10px;font-weight:400;margin:14px 0}
+  .check input{width:auto;margin-top:4px;accent-color:var(--bronze)}
+  details{margin-top:14px}
+  details summary{cursor:pointer;font-weight:600;color:var(--bronze)}
+  details summary:hover{color:#4A2E17}
+
+  /* Buttons */
+  .btn{
+    display:inline-block;cursor:pointer;border:1px solid var(--bronze);
+    background:var(--bronze);color:#FBF7EC;font-family:inherit;font-size:1rem;font-weight:600;
+    border-radius:999px;padding:10px 22px;margin:4px 6px 4px 0;
+  }
+  .btn:hover{background:#54331A;border-color:#54331A}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.secondary{background:var(--panel);color:var(--bronze)}
+  .btn.secondary:hover{background:var(--panel-2)}
+  .btn.danger{background:var(--panel);color:var(--danger);border-color:var(--danger)}
+  .btn.danger:hover{background:#FBEDEB}
+
+  /* Drop zone */
+  .drop{
+    border:2px dashed var(--bronze-light);border-radius:var(--radius);
+    background:var(--panel);padding:28px 22px;text-align:center;margin:16px 0;
+    transition:background .15s,border-color .15s;
+  }
+  .drop.drag{border-color:var(--bronze);background:var(--panel-2)}
+  .drop p{margin:.4em 0}
+
+  /* Image grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0}
+  .item{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;box-shadow:var(--shadow);overflow:hidden;
+  }
+  .item img{width:100%;height:160px;object-fit:cover;border-radius:8px;display:block;background:var(--panel-2)}
+  .item .fname{font-weight:600;word-break:break-all;margin:10px 0 4px}
+  .status{font-size:.9rem}
+  .status.done{color:var(--ok);font-weight:600}
+  .status.generating{color:var(--bronze);font-weight:600}
+  .status.error{color:var(--danger);font-weight:600}
+  .status.eps{color:var(--ink-mute);font-weight:600}
+  .err{color:var(--danger);font-size:.92rem}
+  .okmsg{color:var(--ok)}
+
+  /* Results table */
+  .table-wrap{overflow-x:auto;margin:16px 0}
+  table{width:100%;border-collapse:collapse;background:var(--panel);font-size:.95rem}
+  th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top;text-align:left}
+  th{background:var(--panel-2);font-family:"Playfair Display",Georgia,serif}
+  td input,td textarea,td select{font-size:.92rem;padding:8px 10px}
+  td textarea{min-height:56px}
+  .thumb{width:64px;height:64px;object-fit:cover;border-radius:6px;display:block}
+  .kw-count{font-size:.82rem;color:var(--ink-mute)}
+  .kw-count.over{color:var(--danger);font-weight:600}
+  .title-count{font-size:.82rem;color:var(--ink-mute)}
+  .title-count.over{color:var(--danger);font-weight:600}
+
+  /* Empty state */
+  .empty{
+    border:1px dashed var(--line);border-radius:var(--radius);background:var(--panel);
+    padding:28px 22px;text-align:center;color:var(--ink-soft);margin:16px 0;
+  }
+  .empty .big{font-family:"Playfair Display",Georgia,serif;font-size:1.3rem;color:var(--ink);margin-bottom:6px}
+
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:16px;color:var(--ink-mute);font-size:.9rem}
+  .kbd{font-family:ui-monospace,monospace;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.85em}
+  @media (max-width:640px){
+    body{font-size:16px}
+    .topbar-sub{display:none}
+    .card{padding:16px}
+    .item img{height:180px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../">← Sweet Metadata Lab</a>
+    <div class="topbar-title">Prompt<span>Ex</span></div>
+    <div class="topbar-sub">AI microstock metadata from your images</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="eyebrow">Sweet Lab · AI Tool</span>
+    <h1>PromptEx</h1>
+    <p class="bn">নিজের ছবি আপলোড করুন, নিজের Gemini API key দিন — AI দিয়ে stock-এর জন্য title, keyword ও caption তৈরি করুন।</p>
+    <p class="muted">Turn images into sell-ready microstock metadata. Upload your artwork, add your own free Gemini key, and get stock titles, keywords, captions — or detailed image-generation prompts — ready to download as CSV.</p>
+    <div class="rule"></div>
+  </section>
+
+  <div class="card notice">
+    <p><span class="badge">Your key, your browser</span></p>
+    <p><strong>A Gemini API key is required — PromptEx has no built-in key and never fakes results.</strong> Your key is stored only in this browser (localStorage) after it passes a real test with Google, and it is sent only to Google&rsquo;s Gemini API when you press Generate. No image and no key is ever sent to a Sweet Lab or SONET server — there is no server here at all; this page runs entirely in your browser.</p>
+    <p class="small muted">Other providers (Groq, OpenRouter, Together, Mistral, HuggingFace) are <strong>Not Configured</strong> here — they are listed honestly instead of being shown as working.</p>
+  </div>
+
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h3>Get a free Gemini key</h3><p class="muted small">Create a free API key in Google AI Studio. Google&rsquo;s free-tier limits apply; Google decides how much you can process per day.</p></div>
+    <div class="step"><div class="num">2</div><h3>Test &amp; save the key</h3><p class="muted small">Paste the key below and press <strong>Test &amp; Save</strong>. It is saved only after Gemini accepts it.</p></div>
+    <div class="step"><div class="num">3</div><h3>Upload images</h3><p class="muted small">Drag and drop, browse, or paste (<span class="kbd">Ctrl+V</span>). Batch upload JPG, PNG, WEBP, SVG — and EPS is listed but cannot be read by Gemini vision.</p></div>
+    <div class="step"><div class="num">4</div><h3>Generate &amp; download CSV</h3><p class="muted small">Generate metadata or prompts for each image, edit the results, then download them as CSV.</p></div>
+  </div>
+
+  <h2>Mode &amp; platform</h2>
+  <div class="card">
+    <p><strong>Mode</strong></p>
+    <p>
+      <button type="button" class="btn" id="modeMetadataBtn">Metadata mode</button>
+      <button type="button" class="btn secondary" id="modePromptBtn">Image to Prompt mode</button>
+    </p>
+    <p class="muted" id="modeDesc">SEO title, keywords, and a one-line caption per image.</p>
+    <label for="platformSelect">Stock platform
+      <span class="hint">The platform only changes the wording of the prompt sent to Gemini. It is not a connection to that stock site.</span>
+      <select id="platformSelect">
+        <option>Adobe Stock</option>
+        <option>Shutterstock</option>
+        <option>Freepik</option>
+        <option>Pond5</option>
+        <option>Vecteezy</option>
+      </select>
+    </label>
+  </div>
+
+  <h2>Your Gemini API key</h2>
+  <div class="card">
+    <p><a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer">Get a free key at Google AI Studio →</a></p>
+    <p class="small muted">Your key is needed for every generation, and it is stored only in your browser (localStorage). It is never sent to any Sweet Lab or SONET server.</p>
+    <label for="keyInput">Gemini API key</label>
+    <input type="password" id="keyInput" placeholder="Paste your Gemini API key here" autocomplete="off" spellcheck="false">
+    <p>
+      <button type="button" class="btn secondary" id="toggleKeyBtn">Show key</button>
+      <button type="button" class="btn" id="testKeyBtn">Test &amp; Save</button>
+      <button type="button" class="btn danger" id="removeKeyBtn" hidden>Remove saved key</button>
+    </p>
+    <p id="keyMessage" class="okmsg" hidden></p>
+    <p id="keyError" class="err" hidden></p>
+  </div>
+
+  <h2>Settings</h2>
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="titleMinWords">Title length (words, min)</label>
+        <input type="number" id="titleMinWords" min="1" max="50" value="4">
+      </div>
+      <div>
+        <label for="titleMaxWords">Title length (words, max)</label>
+        <input type="number" id="titleMaxWords" min="1" max="50" value="12">
+      </div>
+      <div>
+        <label for="keywordMin">Keywords (min)</label>
+        <input type="number" id="keywordMin" min="1" max="100" value="15">
+      </div>
+      <div>
+        <label for="keywordMax">Keywords (max)</label>
+        <input type="number" id="keywordMax" min="1" max="49" value="49">
+      </div>
+    </div>
+    <label for="customInstructions">Custom instructions</label>
+    <textarea id="customInstructions" placeholder="e.g. Focus on the flat vector style and keep titles simple."></textarea>
+    <div class="row">
+      <div>
+        <label for="titlePrefix">Title prefix</label>
+        <input type="text" id="titlePrefix" placeholder="Optional text added before each title">
+      </div>
+      <div>
+        <label for="titleSuffix">Title suffix</label>
+        <input type="text" id="titleSuffix" placeholder="Optional text added after each title">
+      </div>
+    </div>
+    <details>
+      <summary>Advanced settings</summary>
+      <label for="titleCase">Title case</label>
+      <select id="titleCase">
+        <option value="title" selected>Title Case</option>
+        <option value="sentence">Sentence case</option>
+        <option value="upper">UPPERCASE</option>
+        <option value="lower">lowercase</option>
+      </select>
+      <label for="maxTitleLength">Max title length (characters)
+        <span class="hint">Adobe Stock titles may be up to 200 characters. Only the first ~70 characters show in Adobe search, so put the most important buyer-intended, SEO-friendly words first.</span>
+      </label>
+      <input type="number" id="maxTitleLength" min="20" max="500" value="200">
+      <label for="bannedWords">Banned words (comma-separated)</label>
+      <input type="text" id="bannedWords" placeholder="e.g. ai, generated, illustration">
+      <label for="creativity">AI creativity</label>
+      <select id="creativity">
+        <option value="precise">Precise</option>
+        <option value="balanced" selected>Balanced</option>
+        <option value="creative">Creative</option>
+      </select>
+      <label for="promptDetail">Prompt detail</label>
+      <select id="promptDetail">
+        <option value="concise">Concise</option>
+        <option value="detailed" selected>Detailed</option>
+        <option value="ultra">Ultra</option>
+      </select>
+      <label class="check">
+        <input type="checkbox" id="singleWordKeywords" checked>
+        <span>Single-word keywords only (Adobe Stock compliant)</span>
+      </label>
+    </details>
+    <p class="small muted"><strong>Adobe title rule:</strong> title up to 200 characters — the first 70 characters must carry the key buyer-intended, SEO-friendly words. Keywords: maximum 49.</p>
+  </div>
+
+  <h2>Upload images</h2>
+  <div class="drop" id="dropZone" tabindex="0">
+    <p><strong>Drag and drop images here, paste with Ctrl+V, or browse.</strong></p>
+    <p class="muted small">Accepted: JPG, PNG, WEBP, SVG, EPS. Files stay in your browser.</p>
+    <p><button type="button" class="btn" id="browseBtn">Browse images</button></p>
+    <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,.svg,.eps" multiple hidden>
+    <p class="small muted">EPS files are listed but cannot be previewed or read by Gemini vision — add a JPG/PNG preview of the same artwork to generate its metadata.</p>
+  </div>
+
+  <div id="imagesSection" hidden>
+    <h2>Images (<span id="imageCount">0</span>)</h2>
+    <div class="grid" id="imageGrid"></div>
+    <p>
+      <button type="button" class="btn" id="generateBtn">Generate metadata</button>
+      <button type="button" class="btn secondary" id="clearBtn">Clear all</button>
+    </p>
+    <p id="generateError" class="err" hidden></p>
+    <p id="noKeyHint" class="muted" hidden>Generation needs a tested Gemini key — see the API key section above.</p>
+  </div>
+
+  <div id="resultsSection" hidden>
+    <h2>Results (<span id="resultCount">0</span>)</h2>
+    <p class="muted">Edit any field before downloading — the CSV uses exactly what is shown here. <strong>Category</strong> is your choice per image (Adobe Stock&rsquo;s 21 categories); <strong>Releases</strong> defaults to “None” — change it only if a model or property release actually exists for the image.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Title</th><th>Keywords</th><th>Caption / Prompt</th><th>Category</th><th>Releases</th></tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <p><button type="button" class="btn" id="downloadCsvBtn">Download CSV</button></p>
+    <p class="small muted">CSV columns: Filename, Title, Keywords, Category, Releases. Keywords are joined with “, ” inside one quoted field.</p>
+  </div>
+
+  <div id="emptyState" class="empty">
+    <div class="big">No images yet</div>
+    <p>Upload one or more JPG or PNG images above to begin. Nothing is generated until you add images and a tested Gemini key.</p>
+  </div>
+
+  <h2>Frequently asked questions</h2>
+  <details>
+    <summary>Where do I get a Gemini API key?</summary>
+    <p>Free from Google AI Studio — follow the “Get a free key” link above. No payment is needed for a key; Google&rsquo;s free-tier limits apply.</p>
+  </details>
+  <details>
+    <summary>Is my API key safe here?</summary>
+    <p>Your key is saved only in this browser after it passes a real test with Google, and it is sent only to Google&rsquo;s Gemini API when you generate. It is never sent to, or stored on, any Sweet Lab or SONET server.</p>
+  </details>
+  <details>
+    <summary>Does PromptEx cost anything?</summary>
+    <p>The tool itself is free. You use your own Gemini key, so Google&rsquo;s free-tier limits apply — heavy use may need a paid Google plan, which is between you and Google.</p>
+  </details>
+  <details>
+    <summary>Is an API key really required?</summary>
+    <p>Yes. Generation does not run without a tested, saved key, and PromptEx never shows faked metadata in its place.</p>
+  </details>
+  <details>
+    <summary>Which image formats are accepted?</summary>
+    <p>JPG, PNG, WEBP, SVG, and EPS. SVG files are rendered to PNG in your browser before being sent to Gemini. EPS files are listed but cannot be previewed or read by Gemini vision — upload a JPG/PNG preview of the same artwork to generate its metadata.</p>
+  </details>
+  <details>
+    <summary>What do Category and Releases mean in the CSV?</summary>
+    <p>Category is the stock category you pick for each image (Adobe Stock&rsquo;s 21 categories). Releases records whether a model or property release exists for the image; it defaults to “None” because PromptEx cannot know that — only you can. Both are your own entries, not AI guesses.</p>
+  </details>
+
+  <footer>
+    <p>PromptEx · Sweet Metadata Lab — runs entirely in your browser. Your Gemini key is stored only in localStorage on this device, and images are sent only to Google&rsquo;s Gemini API when you press Generate. Adobe Stock, Shutterstock, Freepik, Pond5 and Vecteezy are named only as prompt wording; this page is not connected to any of them.</p>
+    <p><a href="../">← Back to Sweet Metadata Lab</a></p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Constants (mirrors SONET src/lib/promptex.ts) ---------- */
+  var STORAGE_KEY = "sweetlab-promptex-gemini-key";
+  var GEMINI_MODEL = "gemini-2.0-flash";
+  var MAX_KEYWORDS = 49;
+  var MAX_TITLE_CHARS = 200;
+  var FIRST_70_NOTE = "Only the first ~70 characters show in Adobe search — put the key buyer-intended words first.";
+
+  /* Adobe Stock's 21 categories (name + numeric ID, as published by Adobe). */
+  var ADOBE_CATEGORIES = [
+    { id: 1, name: "Animals" }, { id: 2, name: "Buildings and Architecture" },
+    { id: 3, name: "Business" }, { id: 4, name: "Drinks" },
+    { id: 5, name: "The Environment" }, { id: 6, name: "States of Mind" },
+    { id: 7, name: "Food" }, { id: 8, name: "Graphic Resources" },
+    { id: 9, name: "Hobbies and Leisure" }, { id: 10, name: "Industry" },
+    { id: 11, name: "Landscapes" }, { id: 12, name: "Lifestyle" },
+    { id: 13, name: "People" }, { id: 14, name: "Plants and Flowers" },
+    { id: 15, name: "Culture and Religion" }, { id: 16, name: "Science" },
+    { id: 17, name: "Social Issues" }, { id: 18, name: "Sports" },
+    { id: 19, name: "Technology" }, { id: 20, name: "Transport" },
+    { id: 21, name: "Travel" }
+  ];
+
+  var CREATIVITY_TEXT = {
+    precise: "Be precise and factual. Do not invent objects, people, text, or details that are not visible in the image.",
+    balanced: "Be accurate but natural. Describe only what is visible in the image.",
+    creative: "Be vivid and expressive while staying true to what is visible in the image."
+  };
+  var DETAIL_TEXT = {
+    concise: "Keep the prompt short: subject, style, and mood in one or two sentences.",
+    detailed: "Write a detailed prompt covering subject, composition, colours, lighting, style, and mood.",
+    ultra: "Write a very detailed prompt covering subject, composition, colours, lighting, textures, background, style, camera feel, and mood."
+  };
+
+  /* ---------- State ---------- */
+  var mode = "metadata"; /* "metadata" | "prompt" */
+  var savedKey = "";
+  var items = []; /* {id, filename, previewUrl, dataBase64, dataMime, status, error, result} */
+  var generating = false;
+
+  /* ---------- Element helpers ---------- */
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = text;
+    return n;
+  }
+  function uid() { return Date.now() + "-" + Math.random().toString(36).slice(2, 9); }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  /* ---------- Settings (read live from the form) ---------- */
+  function readSettings() {
+    return {
+      mode: mode,
+      platform: $("platformSelect").value,
+      titleMinWords: num($("titleMinWords").value, 4),
+      titleMaxWords: num($("titleMaxWords").value, 12),
+      keywordMin: num($("keywordMin").value, 15),
+      keywordMax: num($("keywordMax").value, MAX_KEYWORDS),
+      customInstructions: $("customInstructions").value,
+      titlePrefix: $("titlePrefix").value,
+      titleSuffix: $("titleSuffix").value,
+      titleCase: $("titleCase").value,
+      maxTitleLength: num($("maxTitleLength").value, MAX_TITLE_CHARS),
+      bannedWords: $("bannedWords").value,
+      creativity: $("creativity").value,
+      promptDetail: $("promptDetail").value,
+      singleWordKeywords: $("singleWordKeywords").checked
+    };
+  }
+  function num(v, fallback) {
+    var n = Number(v);
+    return (isFinite(n) && n > 0) ? n : fallback;
+  }
+
+  /* ---------- PromptEx helpers (ported from src/lib/promptex.ts) ---------- */
+  function buildGeminiPrompt(settings) {
+    var lines = [
+      "You are a microstock metadata assistant. The image will be used on " + settings.platform + ".",
+      CREATIVITY_TEXT[settings.creativity] || CREATIVITY_TEXT.balanced,
+      settings.customInstructions.trim() ? "Extra instructions from the contributor: " + settings.customInstructions.trim() : ""
+    ];
+    if (settings.mode === "metadata") {
+      lines.push(
+        "Write a search-friendly stock title of " + settings.titleMinWords + " to " + settings.titleMaxWords + " words,",
+        "between " + settings.keywordMin + " and " + settings.keywordMax + " single-word, lowercase, comma-separated keywords (no phrases, no duplicates),",
+        "and one short caption sentence describing the image.",
+        "The title may be up to " + Math.min(settings.maxTitleLength, MAX_TITLE_CHARS) + " characters, and the first 70 characters must carry the most important buyer-intended, SEO-friendly keywords.",
+        "Reply with strict JSON only, no markdown, no extra text: {\"title\": \"...\", \"keywords\": [\"...\", \"...\"], \"caption\": \"...\"}"
+      );
+    } else {
+      lines.push(
+        DETAIL_TEXT[settings.promptDetail] || DETAIL_TEXT.detailed,
+        "Write one image-generation prompt that could recreate an image like this one.",
+        "Reply with strict JSON only, no markdown, no extra text: {\"prompt\": \"...\"}"
+      );
+    }
+    return lines.filter(Boolean).join(" ");
+  }
+
+  function stripCodeFences(text) {
+    return text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  }
+  function normaliseKeywords(value) {
+    if (Array.isArray(value)) return value.map(function (v) { return String(v).trim(); }).filter(Boolean);
+    if (typeof value === "string") return value.split(",").map(function (v) { return v.trim(); }).filter(Boolean);
+    return [];
+  }
+  function parseMetadataResponse(text) {
+    var cleaned = stripCodeFences(text);
+    var start = cleaned.indexOf("{");
+    var end = cleaned.lastIndexOf("}");
+    if (start === -1 || end === -1 || end <= start) return { caption: cleaned };
+    try {
+      var parsed = JSON.parse(cleaned.slice(start, end + 1));
+      var out = {};
+      if (typeof parsed.title === "string" && parsed.title.trim()) out.title = parsed.title.trim();
+      var kws = normaliseKeywords(parsed.keywords);
+      if (kws.length) out.keywords = kws;
+      if (typeof parsed.caption === "string" && parsed.caption.trim()) out.caption = parsed.caption.trim();
+      if (typeof parsed.prompt === "string" && parsed.prompt.trim()) out.prompt = parsed.prompt.trim();
+      if (!out.title && !out.keywords && !out.caption && !out.prompt) return { caption: cleaned };
+      return out;
+    } catch (e) {
+      return { caption: cleaned };
+    }
+  }
+  function escapeRegExp(value) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function toTitleCase(value) {
+    return value.split(" ").map(function (w) { return w ? w.charAt(0).toUpperCase() + w.slice(1) : w; }).join(" ");
+  }
+  function applyTitleRules(title, settings) {
+    var out = String(title).replace(/\s+/g, " ").trim();
+    var banned = settings.bannedWords.split(",").map(function (w) { return w.trim(); }).filter(Boolean);
+    banned.forEach(function (word) {
+      out = out.replace(new RegExp("\\b" + escapeRegExp(word) + "\\b", "gi"), "").replace(/\s+/g, " ").trim();
+    });
+    if (settings.titlePrefix.trim()) out = (settings.titlePrefix.trim() + " " + out).trim();
+    if (settings.titleSuffix.trim()) out = (out + " " + settings.titleSuffix.trim()).trim();
+    if (settings.titleCase === "title") out = toTitleCase(out);
+    else if (settings.titleCase === "sentence") out = out ? out.charAt(0).toUpperCase() + out.slice(1).toLowerCase() : out;
+    else if (settings.titleCase === "upper") out = out.toUpperCase();
+    else if (settings.titleCase === "lower") out = out.toLowerCase();
+    var maxLength = Math.max(1, Math.min(settings.maxTitleLength || MAX_TITLE_CHARS, MAX_TITLE_CHARS));
+    if (out.length > maxLength) {
+      var cut = out.slice(0, maxLength);
+      var lastSpace = cut.lastIndexOf(" ");
+      out = (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trim();
+    }
+    var words = out.split(" ").filter(Boolean);
+    var maxWords = Math.max(1, settings.titleMaxWords || 12);
+    if (words.length > maxWords) out = words.slice(0, maxWords).join(" ");
+    return out;
+  }
+  function applyKeywordRules(keywords, settings) {
+    var banned = {};
+    settings.bannedWords.split(",").map(function (w) { return w.trim().toLowerCase(); }).filter(Boolean)
+      .forEach(function (w) { banned[w] = true; });
+    var seen = {};
+    var out = [];
+    keywords.forEach(function (raw) {
+      var kw = String(raw).trim().toLowerCase();
+      if (!kw) return;
+      if (banned[kw]) return;
+      if (settings.singleWordKeywords && kw.indexOf(" ") !== -1) return;
+      if (seen[kw]) return;
+      seen[kw] = true;
+      out.push(kw);
+    });
+    return out.slice(0, Math.max(1, Math.min(settings.keywordMax || MAX_KEYWORDS, MAX_KEYWORDS)));
+  }
+  function csvEscape(value) {
+    var v = String(value == null ? "" : value);
+    if (/[",\n\r]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
+    return v;
+  }
+  function buildCsv(rows) {
+    var header = ["Filename", "Title", "Keywords", "Category", "Releases"].map(csvEscape).join(",");
+    var lines = rows.map(function (r) {
+      return [r.filename, r.title, r.keywords.join(", "), r.category, r.releases].map(csvEscape).join(",");
+    });
+    return [header].concat(lines).join("\r\n");
+  }
+
+  /* ---------- File reading ---------- */
+  function readAsDataUrl(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result)); };
+      reader.onerror = function () { reject(new Error("Could not read file.")); };
+      reader.readAsDataURL(file);
+    });
+  }
+  function svgToPngDataUrl(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var canvas = document.createElement("canvas");
+          canvas.width = img.naturalWidth || 1024;
+          canvas.height = img.naturalHeight || 1024;
+          var ctx = canvas.getContext("2d");
+          if (!ctx) throw new Error("Canvas is not available in this browser.");
+          ctx.drawImage(img, 0, 0);
+          URL.revokeObjectURL(url);
+          resolve(canvas.toDataURL("image/png"));
+        } catch (err) {
+          URL.revokeObjectURL(url);
+          reject(err instanceof Error ? err : new Error("Could not convert SVG."));
+        }
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject(new Error("Could not render this SVG file."));
+      };
+      img.src = url;
+    });
+  }
+
+  function addFiles(list) {
+    var files = Array.prototype.slice.call(list || []);
+    if (!files.length) return;
+    files.forEach(function (file) {
+      var id = uid();
+      var lower = file.name.toLowerCase();
+      var isEps = lower.endsWith(".eps") || file.type === "application/postscript";
+      var item = {
+        id: id, filename: file.name, previewUrl: null, dataBase64: null,
+        dataMime: file.type || "image/png",
+        status: isEps ? "eps" : "ready", error: "",
+        result: null, category: "", releases: "None"
+      };
+      items.push(item);
+      if (isEps) { render(); return; }
+      var isSvg = lower.endsWith(".svg") || file.type === "image/svg+xml";
+      var p = isSvg ? svgToPngDataUrl(file) : readAsDataUrl(file);
+      p.then(function (dataUrl) {
+        var comma = dataUrl.indexOf(",");
+        item.previewUrl = dataUrl;
+        item.dataBase64 = comma >= 0 ? dataUrl.slice(comma + 1) : "";
+        item.dataMime = isSvg ? "image/png" : (file.type || "image/png");
+        render();
+      }).catch(function (err) {
+        item.status = "error";
+        item.error = err instanceof Error ? err.message : "Could not read this file.";
+        render();
+      });
+    });
+    render();
+  }
+
+  /* ---------- Rendering ---------- */
+  function statusLabel(item) {
+    if (item.status === "ready") return "Ready";
+    if (item.status === "generating") return "Generating…";
+    if (item.status === "done") return "Done";
+    if (item.status === "eps") return "EPS — needs a JPG/PNG preview";
+    return "Error";
+  }
+
+  function render() {
+    var grid = $("imageGrid");
+    grid.innerHTML = "";
+    items.forEach(function (item) {
+      var card = el("div", "item");
+      if (item.previewUrl) {
+        var img = el("img");
+        img.src = item.previewUrl;
+        img.alt = item.filename;
+        card.appendChild(img);
+      } else if (item.status === "eps") {
+        var ph = el("div", "empty small", "EPS preview is not available in the browser.");
+        ph.style.margin = "0";
+        card.appendChild(ph);
+      }
+      card.appendChild(el("div", "fname", item.filename));
+      card.appendChild(el("p", "status " + item.status, "Status: " + statusLabel(item)));
+      if (item.status === "eps") {
+        card.appendChild(el("p", "muted small", "Gemini vision cannot read EPS binary. Upload a JPG/PNG preview of this artwork to generate its metadata."));
+      }
+      if (item.error) card.appendChild(el("p", "err", item.error));
+      var rm = el("button", "btn secondary", "Remove");
+      rm.type = "button";
+      rm.addEventListener("click", function () {
+        items = items.filter(function (it) { return it.id !== item.id; });
+        render();
+      });
+      card.appendChild(rm);
+      grid.appendChild(card);
+    });
+
+    $("imageCount").textContent = String(items.length);
+    $("imagesSection").hidden = items.length === 0;
+    $("emptyState").hidden = items.length !== 0;
+    $("noKeyHint").hidden = Boolean(savedKey) || items.length === 0;
+
+    var readyCount = items.filter(function (it) { return it.status === "ready" || it.status === "error"; }).length;
+    var genBtn = $("generateBtn");
+    genBtn.disabled = generating || readyCount === 0;
+    genBtn.textContent = generating ? "Generating…" :
+      (mode === "metadata" ? "Generate metadata (" + readyCount + " image" + (readyCount === 1 ? "" : "s") + ")"
+                           : "Generate prompts (" + readyCount + " image" + (readyCount === 1 ? "" : "s") + ")");
+    renderResults();
+  }
+
+  function categoryOptionsHtml(selectedName) {
+    var html = '<option value="">— Choose a category —</option>';
+    ADOBE_CATEGORIES.forEach(function (c) {
+      html += '<option value="' + esc(c.name) + '"' + (c.name === selectedName ? " selected" : "") + ">" + c.id + " — " + esc(c.name) + "</option>";
+    });
+    return html;
+  }
+
+  function renderResults() {
+    var results = items.filter(function (it) { return it.result; });
+    $("resultsSection").hidden = results.length === 0;
+    $("resultCount").textContent = String(results.length);
+    if (!results.length) { $("resultsBody").innerHTML = ""; return; }
+
+    var body = $("resultsBody");
+    body.innerHTML = "";
+    results.forEach(function (item) {
+      var r = item.result;
+      var tr = document.createElement("tr");
+
+      var tdFile = el("td");
+      if (item.previewUrl) {
+        var th = el("img", "thumb");
+        th.src = item.previewUrl;
+        th.alt = item.filename;
+        tdFile.appendChild(th);
+      }
+      tdFile.appendChild(el("div", "small", item.filename));
+      tr.appendChild(tdFile);
+
+      /* Title (editable, with live char count: max 200, first 70 matter) */
+      var tdTitle = el("td");
+      var titleInput = el("input");
+      titleInput.type = "text";
+      titleInput.value = r.title || "";
+      titleInput.setAttribute("aria-label", "Title for " + item.filename);
+      var titleCount = el("div", "title-count");
+      var updateTitleCount = function () {
+        var len = titleInput.value.length;
+        titleCount.textContent = len + " / 200 chars · first 70 carry the SEO words";
+        titleCount.classList.toggle("over", len > MAX_TITLE_CHARS);
+      };
+      titleInput.addEventListener("input", function () { r.title = titleInput.value; updateTitleCount(); });
+      tdTitle.appendChild(titleInput);
+      tdTitle.appendChild(titleCount);
+      var first70 = el("div", "small muted", FIRST_70_NOTE);
+      tdTitle.appendChild(first70);
+      updateTitleCount();
+      tr.appendChild(tdTitle);
+
+      /* Keywords (editable, live count, max 49) */
+      var tdKw = el("td");
+      var kwArea = el("textarea");
+      kwArea.value = (r.keywords || []).join(", ");
+      kwArea.rows = 3;
+      kwArea.setAttribute("aria-label", "Keywords for " + item.filename);
+      var kwCount = el("div", "kw-count");
+      var updateKwCount = function () {
+        var list = kwArea.value.split(",").map(function (k) { return k.trim(); }).filter(Boolean);
+        kwCount.textContent = list.length + " / 49 keywords";
+        kwCount.classList.toggle("over", list.length > MAX_KEYWORDS);
+        r.keywords = list;
+      };
+      kwArea.addEventListener("input", updateKwCount);
+      tdKw.appendChild(kwArea);
+      tdKw.appendChild(kwCount);
+      updateKwCount();
+      tr.appendChild(tdKw);
+
+      /* Caption / Prompt (editable) */
+      var tdText = el("td");
+      var textArea = el("textarea");
+      textArea.rows = 3;
+      textArea.value = mode === "metadata" ? (r.caption || "") : (r.prompt || "");
+      textArea.setAttribute("aria-label", (mode === "metadata" ? "Caption" : "Prompt") + " for " + item.filename);
+      textArea.addEventListener("input", function () {
+        if (mode === "metadata") r.caption = textArea.value; else r.prompt = textArea.value;
+      });
+      tdText.appendChild(textArea);
+      tr.appendChild(tdText);
+
+      /* Category (Adobe 21) */
+      var tdCat = el("td");
+      var catSel = el("select");
+      catSel.innerHTML = categoryOptionsHtml(item.category || "");
+      catSel.setAttribute("aria-label", "Category for " + item.filename);
+      catSel.addEventListener("change", function () { item.category = catSel.value; });
+      tdCat.appendChild(catSel);
+      tr.appendChild(tdCat);
+
+      /* Releases */
+      var tdRel = el("td");
+      var relInput = el("input");
+      relInput.type = "text";
+      relInput.value = item.releases || "None";
+      relInput.setAttribute("aria-label", "Releases for " + item.filename);
+      relInput.addEventListener("input", function () { item.releases = relInput.value; });
+      tdRel.appendChild(relInput);
+      tdRel.appendChild(el("div", "small muted", "“None” unless a model/property release actually exists."));
+      tr.appendChild(tdRel);
+
+      body.appendChild(tr);
+    });
+  }
+
+  /* ---------- Gemini key: test & save (localStorage only) ---------- */
+  function showKeyMsg(msg) {
+    var m = $("keyMessage");
+    m.textContent = msg;
+    m.hidden = !msg;
+  }
+  function showKeyErr(msg) {
+    var e = $("keyError");
+    e.textContent = msg;
+    e.hidden = !msg;
+  }
+  function refreshKeyUI() {
+    $("removeKeyBtn").hidden = !savedKey;
+    $("toggleKeyBtn").textContent = $("keyInput").type === "text" ? "Hide key" : "Show key";
+    render();
+  }
+
+  function testAndSaveKey() {
+    var key = $("keyInput").value.trim();
+    showKeyMsg("");
+    showKeyErr("");
+    if (!key) { showKeyErr("Paste your Gemini API key first."); return; }
+    var btn = $("testKeyBtn");
+    btn.disabled = true;
+    btn.textContent = "Testing…";
+    fetch("https://generativelanguage.googleapis.com/v1beta/models?key=" + encodeURIComponent(key))
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().catch(function () { return null; }).then(function (data) {
+            var msg = (data && data.error && data.error.message) ||
+              ("Gemini returned status " + res.status + ". Check the key and try again.");
+            throw new Error(msg);
+          });
+        }
+        return res.json();
+      })
+      .then(function () {
+        try { window.localStorage.setItem(STORAGE_KEY, key); } catch (e) { /* storage unavailable */ }
+        savedKey = key;
+        showKeyMsg("Key tested and saved in this browser only. It is never sent to any Sweet Lab or SONET server.");
+      })
+      .catch(function (err) {
+        showKeyErr(err instanceof Error ? err.message : "The key could not be tested.");
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = "Test & Save";
+        refreshKeyUI();
+      });
+  }
+
+  function removeKey() {
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    savedKey = "";
+    $("keyInput").value = "";
+    showKeyMsg("");
+    showKeyErr("");
+    refreshKeyUI();
+  }
+
+  /* ---------- Generation ---------- */
+  function setGenerateError(msg) {
+    var e = $("generateError");
+    e.textContent = msg || "";
+    e.hidden = !msg;
+  }
+
+  function generateAll() {
+    if (!savedKey) {
+      setGenerateError("Add your Gemini API key and press TEST & SAVE first. Generation never runs without a tested key, and no output is faked.");
+      return;
+    }
+    var ready = items.filter(function (it) { return it.status === "ready" || it.status === "error"; });
+    if (!ready.length) {
+      setGenerateError("Upload at least one JPG, PNG, WEBP, or SVG image first. EPS files need a JPG/PNG preview of the same artwork.");
+      return;
+    }
+    setGenerateError("");
+    generating = true;
+    render();
+    var settings = readSettings();
+    var promptText = buildGeminiPrompt(settings);
+    var temperature = settings.creativity === "precise" ? 0.2 : settings.creativity === "creative" ? 1.0 : 0.7;
+
+    var chain = Promise.resolve();
+    ready.forEach(function (item) {
+      chain = chain.then(function () {
+        if (!item.dataBase64) return;
+        item.status = "generating";
+        item.error = "";
+        render();
+        return fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent?key=" + encodeURIComponent(savedKey),
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }, { inlineData: { mimeType: item.dataMime, data: item.dataBase64 } }] }],
+              generationConfig: { temperature: temperature, responseMimeType: "application/json" }
+            })
+          }
+        ).then(function (res) {
+          if (!res.ok) {
+            return res.json().catch(function () { return null; }).then(function (data) {
+              var msg = (data && data.error && data.error.message) ||
+                ("Gemini returned status " + res.status + ".");
+              throw new Error(msg);
+            });
+          }
+          return res.json();
+        }).then(function (data) {
+          var parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+          var text = parts.map(function (p) { return p.text || ""; }).join("").trim();
+          if (!text) throw new Error("Gemini returned an empty response.");
+          var parsed = parseMetadataResponse(text);
+          var result = {
+            title: parsed.title ? applyTitleRules(parsed.title, settings) : "",
+            keywords: parsed.keywords ? applyKeywordRules(parsed.keywords, settings) : [],
+            caption: parsed.caption || "",
+            prompt: parsed.prompt || parsed.caption || ""
+          };
+          if (settings.mode === "prompt" && !result.prompt) result.prompt = text;
+          if (settings.mode === "metadata" && !result.title && !result.keywords.length && !result.caption) {
+            throw new Error("Gemini returned a response that could not be parsed as metadata.");
+          }
+          item.status = "done";
+          item.result = result;
+          render();
+        }).catch(function (err) {
+          item.status = "error";
+          item.error = err instanceof Error ? err.message : "Generation failed.";
+          render();
+        });
+      });
+    });
+    chain.then(function () {
+      generating = false;
+      render();
+    });
+  }
+
+  /* ---------- CSV download ---------- */
+  function downloadCsv() {
+    var rows = items.filter(function (it) { return it.result; }).map(function (it) {
+      return {
+        filename: it.filename,
+        title: (it.result && it.result.title) || "",
+        keywords: (it.result && it.result.keywords) || [],
+        category: it.category || "",
+        releases: it.releases || "None"
+      };
+    });
+    if (!rows.length) return;
+    var blob = new Blob([buildCsv(rows)], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "promptex-metadata.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  /* ---------- Mode switching ---------- */
+  function setMode(next) {
+    mode = next;
+    var isMeta = mode === "metadata";
+    $("modeMetadataBtn").className = "btn" + (isMeta ? "" : " secondary");
+    $("modePromptBtn").className = "btn" + (isMeta ? " secondary" : "");
+    $("modeDesc").textContent = isMeta
+      ? "SEO title, keywords, and a one-line caption per image."
+      : "A detailed image-generation prompt per image.";
+    render();
+  }
+
+  /* ---------- Wiring ---------- */
+  $("modeMetadataBtn").addEventListener("click", function () { setMode("metadata"); });
+  $("modePromptBtn").addEventListener("click", function () { setMode("prompt"); });
+  $("testKeyBtn").addEventListener("click", testAndSaveKey);
+  $("removeKeyBtn").addEventListener("click", removeKey);
+  $("toggleKeyBtn").addEventListener("click", function () {
+    var input = $("keyInput");
+    input.type = input.type === "password" ? "text" : "password";
+    refreshKeyUI();
+  });
+  $("generateBtn").addEventListener("click", generateAll);
+  $("downloadCsvBtn").addEventListener("click", downloadCsv);
+  $("clearBtn").addEventListener("click", function () {
+    if (generating) return;
+    items = [];
+    setGenerateError("");
+    render();
+  });
+  $("browseBtn").addEventListener("click", function () { $("fileInput").click(); });
+  $("fileInput").addEventListener("change", function (e) {
+    if (e.target.files) addFiles(e.target.files);
+    e.target.value = "";
+  });
+
+  var drop = $("dropZone");
+  ["dragenter", "dragover"].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("drag"); });
+  });
+  ["dragleave", "drop"].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("drag"); });
+  });
+  drop.addEventListener("drop", function (e) {
+    if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+  });
+  drop.addEventListener("paste", function (e) {
+    if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) addFiles(e.clipboardData.files);
+  });
+  document.addEventListener("paste", function (e) {
+    if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) addFiles(e.clipboardData.files);
+  });
+
+  /* Restore a previously saved key (localStorage only, never sent anywhere on load). */
+  try {
+    var stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      savedKey = stored;
+      showKeyMsg("A tested Gemini key is saved in this browser.");
+    }
+  } catch (e) { /* storage unavailable — key entry still works, it just will not persist */ }
+
+  setMode("metadata");
+  refreshKeyUI();
+})();
+</script>
+</body>
+</html>
