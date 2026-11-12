@@ -382,6 +382,10 @@ body.sidebar-open .side-backdrop{opacity:1;pointer-events:auto}
 .ws-drop button.ws-item.active{background:#16223C;color:#FFFFFF;box-shadow:inset 2px 0 0 #2563EB}
 .ws-item-count{margin-left:auto;min-width:22px;padding:1px 7px;border-radius:99px;background:#1C2A47;color:#8B98B4;font-size:11px;font-weight:700;text-align:center}
 .ws-drop button.ws-item.active .ws-item-count{background:#2563EB;color:#FFFFFF}
+/* Tools menu: same dropdown, right-aligned under the topbar button. */
+.tools-menu .ws-drop{left:auto;right:0}
+.ws-drop a.ws-item{display:flex;flex-direction:row;align-items:center;gap:8px;width:100%;padding:9px 12px;border:0;border-radius:8px;background:transparent;color:#EAF0FA;font-size:13px;font-weight:700;text-align:left;cursor:pointer;text-decoration:none}
+.ws-drop a.ws-item:hover{background:#16223C}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .icon-btn{position:relative;width:40px;height:40px;display:grid;place-items:center;border:1px solid transparent;border-radius:10px;background:transparent;color:#C3CEE2;cursor:pointer}
 .icon-btn:hover{background:#111C33;color:#FFFFFF}
@@ -627,7 +631,9 @@ body.light .ws-drop{background:#FFFDF8!important;border-color:#E9DFCC!important;
 body.light .ws-drop button{color:#221D15!important}
 body.light .ws-drop button small{color:#6E6455}
 body.light .ws-drop button.ws-item{color:#221D15}
+body.light .ws-drop a.ws-item{color:#221D15}
 body.light .ws-drop button.ws-item:hover,body.light .ws-drop button.ws-item.active{background:#F5EDDC!important}
+body.light .ws-drop a.ws-item:hover{background:#F5EDDC!important}
 body.light .ws-drop button.ws-item.active{box-shadow:inset 2px 0 0 #2563EB}
 body.light .ws-item-count{background:#EFE7D6!important;color:#6E6455!important}
 body.light .ws-drop button.ws-item.active .ws-item-count{background:#2563EB!important;color:#FFFFFF!important}
@@ -901,7 +907,9 @@ body.paper .page-head h2{color:#2E2118!important}
 body.paper .page-head p{color:#71624E!important}
 body.paper .journey-line{color:#6B4423!important}
 body.paper .ws-drop button.ws-item{color:#2E2118}
+body.paper .ws-drop a.ws-item{color:#2E2118}
 body.paper .ws-drop button.ws-item:hover,body.paper .ws-drop button.ws-item.active{background:#EDE2C8!important}
+body.paper .ws-drop a.ws-item:hover{background:#EDE2C8!important}
 body.paper .ws-drop button.ws-item.active{box-shadow:inset 2px 0 0 #6B4423}
 body.paper .ws-item-count{background:#EFE7D6!important;color:#71624E!important}
 body.paper .ws-drop button.ws-item.active .ws-item-count{background:#6B4423!important;color:#FBF7EC!important}
@@ -1151,7 +1159,18 @@ body.paper .status-bad{color:#B91C1C!important}
       </div>
     </div>
     <div class="topbar-right">
-      <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 10-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9"/><path d="M10 20a2.2 2.2 0 004 0"/></svg><span class="dot"></span></button>
+      <div class="ws-menu tools-menu">
+        <button type="button" class="ws-btn" id="toolsBtn" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg><span>Tools</span><span class="chev">▾</span></button>
+        <div class="ws-drop" id="toolsDrop" hidden>
+          <a class="ws-item" href="smart-calendar/">Sweet Smart Calendar</a>
+          <a class="ws-item" href="upscaler/">Sweet AI Upscaler</a>
+          <a class="ws-item" href="background-remover/">Sweet Background Remover</a>
+          <a class="ws-item" href="event-finder/">Sweet Event Finder</a>
+          <a class="ws-item" href="stock-checker/">Sweet Stock Checker</a>
+          <a class="ws-item" href="image-to-prompt/">Sweet Image to Prompt</a>
+          <a class="ws-item" href="promptex/">PromptEx</a>
+        </div>
+      </div>
       <button type="button" class="icon-btn" id="helpBtn" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 015 .8c0 1.7-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg></button>
       <a class="avatar-btn" href="https://www.facebook.com/mdsonet.mia.777" target="_blank" rel="noopener noreferrer" aria-label="Md Sonet Mia">S</a>
     </div>
@@ -2020,6 +2039,7 @@ document.addEventListener('DOMContentLoaded', function () {
       e.stopPropagation();
       wsDrop.hidden = !wsDrop.hidden;
       wsBtn.setAttribute('aria-expanded', String(!wsDrop.hidden));
+      if (!wsDrop.hidden && typeof toolsDrop !== 'undefined' && toolsDrop) toolsDrop.hidden = true;
     });
     document.addEventListener('click', function () { wsDrop.hidden = true; });
     document.querySelectorAll('.ws-item').forEach(function (btn) {
@@ -2030,10 +2050,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   setWorkspace(currentWs, false);
-  var bell = document.getElementById('bellBtn');
-  if (bell) bell.addEventListener('click', function () {
-    if (typeof toast === 'function') toast('No new notifications.');
-  });
+  var toolsBtn = document.getElementById('toolsBtn');
+  var toolsDrop = document.getElementById('toolsDrop');
+  if (toolsBtn && toolsDrop) {
+    toolsBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toolsDrop.hidden = !toolsDrop.hidden;
+      toolsBtn.setAttribute('aria-expanded', String(!toolsDrop.hidden));
+      if (!toolsDrop.hidden && wsDrop) wsDrop.hidden = true;
+    });
+    document.addEventListener('click', function () { toolsDrop.hidden = true; });
+  }
   var help = document.getElementById('helpBtn');
   if (help) help.addEventListener('click', function () {
     if (typeof openSupportModal === 'function') openSupportModal();
@@ -2173,6 +2200,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'Video': 'ভিডিও',
     'Vision': 'ভিশন',
     'All Files': 'সব ফাইল',
+    'Tools': 'টুলস',
     '2026 trends:': '২০২৬-এর ট্রেন্ড:',
     'Evergreen demand:': 'চিরন্তন চাহিদা:',
     'Menu': 'মেনু',
@@ -2203,7 +2231,6 @@ document.addEventListener('DOMContentLoaded', function () {
     'No completed metadata to export.': 'এক্সপোর্ট করার মতো সম্পূর্ণ মেটাডেটা নেই।',
     'No failed assets to retry.': 'আবার চেষ্টা করার মতো ব্যর্থ অ্যাসেট নেই।',
     'No metadata history available.': 'কোনো মেটাডেটা ইতিহাস নেই।',
-    'No new notifications.': 'কোনো নতুন নোটিফিকেশন নেই।',
     'Paste an API key first.': 'আগে একটি API Key পেস্ট করুন।',
     'Previous metadata restored.': 'আগের মেটাডেটা ফিরিয়ে আনা হয়েছে।',
     'Saved key cleared.': 'সংরক্ষিত Key মুছে ফেলা হয়েছে।',
