@@ -1,1 +1,500 @@
-<!-- placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Finder — Sweet Metadata Lab</title>
+<meta name="description" content="Find upcoming fixed-date observances and seasonal themes for microstock planning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3ECDA;
+    --panel:#FBF7EC;
+    --panel-2:#F7F0DC;
+    --ink:#2E2118;
+    --ink-soft:#5C4A38;
+    --bronze:#6B4423;
+    --bronze-light:#A67C52;
+    --line:#D8C9A8;
+    --gold:#B08D57;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Source Serif 4",Georgia,serif;
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .topbar{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:14px 20px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel);
+  }
+  .topbar a.back{
+    color:var(--bronze);text-decoration:none;font-weight:600;
+    font-size:15px;white-space:nowrap;
+  }
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar .title{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:22px;font-weight:700;color:var(--ink);
+  }
+  .topbar .bn{
+    font-family:"Hind Siliguri",sans-serif;
+    color:var(--ink-soft);font-size:14px;
+  }
+  main{max-width:960px;margin:0 auto;padding:24px 18px 60px}
+  h1{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:32px;line-height:1.2;margin-bottom:6px;
+  }
+  .subtitle{color:var(--ink-soft);font-size:16px;margin-bottom:4px}
+  .subtitle-bn{font-family:"Hind Siliguri",sans-serif;color:var(--ink-soft);font-size:15px;margin-bottom:22px}
+  .notice{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-left:4px solid var(--bronze);
+    border-radius:8px;
+    padding:12px 16px;
+    margin-bottom:24px;
+    font-size:15px;
+  }
+  .notice strong{color:var(--bronze)}
+  section{margin-bottom:36px}
+  h2{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:23px;margin-bottom:12px;
+    border-bottom:1px solid var(--line);padding-bottom:6px;
+  }
+  /* Controls */
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .controls input[type="search"],.controls select{
+    font-family:inherit;font-size:15px;color:var(--ink);
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:10px 12px;min-width:0;
+  }
+  .controls input[type="search"]{flex:1;min-width:200px}
+  .controls select{cursor:pointer}
+  /* Event list */
+  .event-list{display:grid;gap:12px}
+  .event{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;
+  }
+  .event .date-badge{
+    flex:0 0 auto;text-align:center;
+    background:var(--bronze);color:#FBF7EC;
+    border-radius:8px;padding:8px 10px;min-width:64px;
+  }
+  .event .date-badge .day{font-family:"Playfair Display",Georgia,serif;font-size:22px;font-weight:700;line-height:1.1;display:block}
+  .event .date-badge .mon{font-size:12px;letter-spacing:1px;text-transform:uppercase;display:block}
+  .event .body{flex:1;min-width:200px}
+  .event .body h3{font-family:"Playfair Display",Georgia,serif;font-size:18px;margin-bottom:2px}
+  .event .body p{color:var(--ink-soft);font-size:15px}
+  .event .countdown{
+    flex:0 0 auto;text-align:right;font-size:14px;color:var(--bronze);
+    font-weight:600;white-space:nowrap;
+  }
+  .event .countdown .today{color:#1E6B3A}
+  .event.user-added{border-style:dashed}
+  .event .tag{
+    display:inline-block;font-size:12px;color:var(--bronze);
+    border:1px solid var(--bronze-light);border-radius:20px;
+    padding:1px 8px;margin-left:6px;vertical-align:middle;
+  }
+  .del-btn{
+    background:none;border:1px solid var(--line);color:var(--ink-soft);
+    border-radius:6px;padding:4px 10px;font-size:13px;cursor:pointer;
+    font-family:inherit;
+  }
+  .del-btn:hover{border-color:#A33;color:#A33}
+  .empty{
+    background:var(--panel);border:1px dashed var(--line);
+    border-radius:10px;padding:28px 18px;text-align:center;
+    color:var(--ink-soft);font-size:16px;
+  }
+  /* Seasons */
+  .seasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .season{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:16px;
+  }
+  .season h3{font-family:"Playfair Display",Georgia,serif;font-size:18px;margin-bottom:6px}
+  .season h3 span{margin-right:6px}
+  .season ul{padding-left:18px;color:var(--ink-soft);font-size:15px}
+  .season li{margin-bottom:3px}
+  /* Add form */
+  .add-form{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:18px;
+  }
+  .add-form .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .add-form label{font-size:14px;color:var(--ink-soft);display:block;margin-bottom:4px}
+  .add-form input{
+    font-family:inherit;font-size:15px;color:var(--ink);
+    background:#fff;border:1px solid var(--line);
+    border-radius:8px;padding:10px 12px;width:100%;
+  }
+  .add-form .grow{flex:1;min-width:180px}
+  .add-form .small{flex:0 1 150px}
+  .add-form button{
+    background:var(--bronze);color:#FBF7EC;border:none;border-radius:8px;
+    padding:11px 22px;font-family:inherit;font-size:15px;font-weight:600;
+    cursor:pointer;
+  }
+  .add-form button:hover{background:#57371C}
+  .form-error{color:#A33;font-size:14px;margin-top:8px;display:none}
+  footer{
+    text-align:center;color:var(--ink-soft);font-size:13px;
+    border-top:1px solid var(--line);padding:18px;
+  }
+  @media (max-width:560px){
+    h1{font-size:26px}
+    .event .countdown{text-align:left}
+    .topbar .title{font-size:19px}
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="../">← Sweet Metadata Lab</a>
+  <span class="title">Event Finder</span>
+  <span class="bn">স্টক কনটেন্টের জন্য আসন্ন দিবস ও মৌসুম খুঁজুন</span>
+</header>
+
+<main>
+  <h1>Event Finder</h1>
+  <p class="subtitle">Upcoming observances and seasonal themes for microstock planning — plan your shoots and uploads ahead of the date.</p>
+  <p class="subtitle-bn">মাইক্রোস্টক পরিকল্পনার জন্য আসন্ন দিবস ও মৌসুমের থিম খুঁজে নিন।</p>
+
+  <div class="notice">
+    <strong>Fixed dates only.</strong> This page lists observances that fall on the same
+    calendar date every year. Lunar and religious dates (such as Eid, Ramadan, Diwali and
+    Chinese New Year) shift every year and are <strong>not</strong> listed here — always verify
+    those dates from a current calendar before planning content around them.
+  </div>
+
+  <section aria-labelledby="events-heading">
+    <h2 id="events-heading">Upcoming Observances</h2>
+    <div class="controls">
+      <input type="search" id="search" placeholder="Search events… (e.g. women, earth, photo)" aria-label="Search events">
+      <select id="monthFilter" aria-label="Filter by month">
+        <option value="">All months</option>
+        <option value="0">January</option>
+        <option value="1">February</option>
+        <option value="2">March</option>
+        <option value="3">April</option>
+        <option value="4">May</option>
+        <option value="5">June</option>
+        <option value="6">July</option>
+        <option value="7">August</option>
+        <option value="8">September</option>
+        <option value="9">October</option>
+        <option value="10">November</option>
+        <option value="11">December</option>
+      </select>
+    </div>
+    <div class="event-list" id="eventList"></div>
+    <div class="empty" id="emptyState" hidden>No events match your search. Try a different keyword or month — or add your own event below.</div>
+  </section>
+
+  <section aria-labelledby="seasons-heading">
+    <h2 id="seasons-heading">Seasonal Microstock Themes</h2>
+    <p style="color:var(--ink-soft);margin-bottom:14px">General seasonal guidance for planning shoots and uploads. No demand figures are claimed here — these are evergreen themes buyers return to each year.</p>
+    <div class="seasons">
+      <div class="season">
+        <h3><span>🌸</span>Spring</h3>
+        <ul>
+          <li>Blooming flowers, gardens and fresh greenery</li>
+          <li>Spring cleaning and fresh starts</li>
+          <li>Easter-adjacent imagery (verify the date yearly)</li>
+          <li>Outdoor renewal: picnics, cycling, gardening</li>
+        </ul>
+      </div>
+      <div class="season">
+        <h3><span>☀️</span>Summer</h3>
+        <ul>
+          <li>Beaches, travel and holidays</li>
+          <li>Outdoor sports, festivals and barbecues</li>
+          <li>Hydration, sun protection and heat</li>
+          <li>Back-to-school preparation in late summer</li>
+        </ul>
+      </div>
+      <div class="season">
+        <h3><span>🍂</span>Autumn</h3>
+        <ul>
+          <li>Fall foliage, harvest and pumpkins</li>
+          <li>Cozy interiors, warm drinks and reading</li>
+          <li>Back to school and back to work</li>
+          <li>Halloween and autumn celebrations</li>
+        </ul>
+      </div>
+      <div class="season">
+        <h3><span>❄️</span>Winter</h3>
+        <ul>
+          <li>Christmas, New Year and holiday celebrations</li>
+          <li>Snow, winter sports and cozy indoor scenes</li>
+          <li>Year-in-review and fresh-start / resolution themes</li>
+          <li>Winter fashion and cold-weather lifestyle</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="add-heading">
+    <h2 id="add-heading">Add Your Own Event</h2>
+    <form class="add-form" id="addForm">
+      <div class="row">
+        <div class="grow">
+          <label for="newName">Event name</label>
+          <input type="text" id="newName" maxlength="80" placeholder="e.g. Local Book Fair" required>
+        </div>
+        <div class="small">
+          <label for="newMonth">Month</label>
+          <input type="number" id="newMonth" min="1" max="12" placeholder="1–12" required>
+        </div>
+        <div class="small">
+          <label for="newDay">Day</label>
+          <input type="number" id="newDay" min="1" max="31" placeholder="1–31" required>
+        </div>
+      </div>
+      <button type="submit">Add event</button>
+      <p class="form-error" id="formError"></p>
+    </form>
+    <p style="color:var(--ink-soft);font-size:14px;margin-top:10px">Your events are saved only in this browser (localStorage) and are shown with a “Yours” tag. They are never uploaded anywhere.</p>
+  </section>
+</main>
+
+<footer>Sweet Metadata Lab · Event Finder — fixed-date observances only. Verify lunar / religious dates from a current calendar.</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // Built-in dataset: fixed-date annual observances only.
+  // Every date below is a widely established, fixed calendar date.
+  var BUILTIN = [
+    { name: "New Year's Day", month: 1, day: 1,
+      desc: "Fresh starts, resolutions, calendars and celebration imagery lead the year's first uploads." },
+    { name: "Valentine's Day", month: 2, day: 14,
+      desc: "Romance, couples, gifts, flowers and hearts — one of the biggest seasonal stock themes." },
+    { name: "International Women's Day", month: 3, day: 8,
+      desc: "Women's achievements, equality and empowerment — strong editorial and lifestyle demand." },
+    { name: "St. Patrick's Day", month: 3, day: 17,
+      desc: "Irish culture, green themes, parades and celebration imagery." },
+    { name: "April Fools' Day", month: 4, day: 1,
+      desc: "Humour, pranks and playful concepts for light-hearted content." },
+    { name: "Earth Day", month: 4, day: 22,
+      desc: "Environment, sustainability, nature and climate action — evergreen green content." },
+    { name: "International Workers' Day", month: 5, day: 1,
+      desc: "Labour, workers and workplace themes; widely observed as Labour Day / May Day." },
+    { name: "International Day of Families", month: 5, day: 15,
+      desc: "Family life, togetherness and multi-generational lifestyle imagery." },
+    { name: "World Environment Day", month: 6, day: 5,
+      desc: "Conservation, clean energy and nature — pairs well with Earth Day content." },
+    { name: "World Oceans Day", month: 6, day: 8,
+      desc: "Ocean, marine life and coastal themes for environmental and travel content." },
+    { name: "International Yoga Day", month: 6, day: 21,
+      desc: "Yoga, wellness, mindfulness and healthy-lifestyle imagery." },
+    { name: "World Population Day", month: 7, day: 11,
+      desc: "Cities, crowds and demographic themes for editorial use." },
+    { name: "International Friendship Day", month: 7, day: 30,
+      desc: "Friendship, togetherness and social-bond lifestyle content." },
+    { name: "World Photography Day", month: 8, day: 19,
+      desc: "Cameras, photographers at work and the craft of photography itself." },
+    { name: "International Literacy Day", month: 9, day: 8,
+      desc: "Reading, books, education and learning — strong for education content." },
+    { name: "International Day of Peace", month: 9, day: 21,
+      desc: "Peace, unity and harmony themes for editorial and conceptual stock." },
+    { name: "World Tourism Day", month: 9, day: 27,
+      desc: "Travel, destinations and tourism — a key date for travel stock planning." },
+    { name: "World Teachers' Day", month: 10, day: 5,
+      desc: "Teachers, classrooms and education — classroom and appreciation imagery." },
+    { name: "World Mental Health Day", month: 10, day: 10,
+      desc: "Wellbeing, calm and mental-health awareness — sensitive, supportive imagery." },
+    { name: "World Food Day", month: 10, day: 16,
+      desc: "Food, farming, harvest and food-security themes." },
+    { name: "Halloween", month: 10, day: 31,
+      desc: "Costumes, pumpkins, spooky decor and autumn-night scenes — a major seasonal seller." },
+    { name: "World Children's Day", month: 11, day: 20,
+      desc: "Children, play and children's rights — joyful, authentic childhood imagery." },
+    { name: "World AIDS Day", month: 12, day: 1,
+      desc: "Health awareness and red-ribbon imagery for editorial and awareness content." },
+    { name: "Christmas Day", month: 12, day: 25,
+      desc: "The biggest seasonal stock theme: decorations, family, gifts and festive scenes." },
+    { name: "Boxing Day", month: 12, day: 26,
+      desc: "Post-Christmas sales, winter leisure and holiday leftovers in Commonwealth countries." }
+  ];
+
+  var MONTH_NAMES = ["January","February","March","April","May","June",
+                     "July","August","September","October","November","December"];
+  var MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var DAYS_IN_MONTH = [31,29,31,30,31,30,31,31,30,31,30,31]; // Feb allows 29 (leap years)
+  var STORE_KEY = "sweetlab-event-finder-custom";
+
+  function loadCustom(){
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(function(e){
+        return e && typeof e.name === "string" && e.name.trim() &&
+               Number.isInteger(e.month) && e.month >= 1 && e.month <= 12 &&
+               Number.isInteger(e.day) && e.day >= 1 && e.day <= DAYS_IN_MONTH[e.month - 1];
+      });
+    } catch (err) { return []; }
+  }
+
+  function saveCustom(list){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+    catch (err) { /* storage unavailable — list still works in memory */ }
+  }
+
+  // Days until the next occurrence of month/day from today.
+  function daysUntil(month, day){
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var next = new Date(now.getFullYear(), month - 1, day);
+    if (next < today) next = new Date(now.getFullYear() + 1, month - 1, day);
+    return Math.round((next - today) / 86400000);
+  }
+
+  function countdownText(month, day){
+    var d = daysUntil(month, day);
+    if (d === 0) return { text: "Today!", cls: "today" };
+    if (d === 1) return { text: "Tomorrow", cls: "" };
+    return { text: "in " + d + " days", cls: "" };
+  }
+
+  var listEl = document.getElementById("eventList");
+  var emptyEl = document.getElementById("emptyState");
+  var searchEl = document.getElementById("search");
+  var monthEl = document.getElementById("monthFilter");
+
+  function allEvents(){
+    var custom = loadCustom().map(function(e){
+      return { name: e.name, month: e.month, day: e.day,
+               desc: "Your event — saved in this browser only.", custom: true, id: e.id };
+    });
+    return BUILTIN.concat(custom).sort(function(a, b){
+      if (a.month !== b.month) return a.month - b.month;
+      return a.day - b.day;
+    });
+  }
+
+  function render(){
+    var q = searchEl.value.trim().toLowerCase();
+    var mf = monthEl.value;
+    var events = allEvents().filter(function(e){
+      if (mf !== "" && e.month - 1 !== parseInt(mf, 10)) return false;
+      if (q && e.name.toLowerCase().indexOf(q) === -1 &&
+          e.desc.toLowerCase().indexOf(q) === -1 &&
+          MONTH_NAMES[e.month - 1].toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    listEl.innerHTML = "";
+    emptyEl.hidden = events.length > 0;
+
+    events.forEach(function(e){
+      var cd = countdownText(e.month, e.day);
+      var card = document.createElement("article");
+      card.className = "event" + (e.custom ? " user-added" : "");
+
+      var badge = document.createElement("div");
+      badge.className = "date-badge";
+      var daySpan = document.createElement("span");
+      daySpan.className = "day";
+      daySpan.textContent = e.day;
+      var monSpan = document.createElement("span");
+      monSpan.className = "mon";
+      monSpan.textContent = MONTH_SHORT[e.month - 1];
+      badge.appendChild(daySpan);
+      badge.appendChild(monSpan);
+
+      var body = document.createElement("div");
+      body.className = "body";
+      var h3 = document.createElement("h3");
+      h3.textContent = e.name + " · " + MONTH_NAMES[e.month - 1] + " " + e.day;
+      if (e.custom) {
+        var tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = "Yours";
+        h3.appendChild(tag);
+      }
+      var p = document.createElement("p");
+      p.textContent = e.desc;
+      body.appendChild(h3);
+      body.appendChild(p);
+
+      var cdEl = document.createElement("div");
+      cdEl.className = "countdown";
+      var cdSpan = document.createElement("span");
+      if (cd.cls) cdSpan.className = cd.cls;
+      cdSpan.textContent = cd.text;
+      cdEl.appendChild(cdSpan);
+
+      if (e.custom) {
+        var del = document.createElement("button");
+        del.type = "button";
+        del.className = "del-btn";
+        del.textContent = "Delete";
+        del.setAttribute("aria-label", "Delete " + e.name);
+        del.addEventListener("click", function(){
+          var list = loadCustom().filter(function(c){ return c.id !== e.id; });
+          saveCustom(list);
+          render();
+        });
+        cdEl.appendChild(document.createElement("br"));
+        cdEl.appendChild(del);
+      }
+
+      card.appendChild(badge);
+      card.appendChild(body);
+      card.appendChild(cdEl);
+      listEl.appendChild(card);
+    });
+  }
+
+  searchEl.addEventListener("input", render);
+  monthEl.addEventListener("change", render);
+
+  // Add-your-own form
+  var form = document.getElementById("addForm");
+  var errEl = document.getElementById("formError");
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    errEl.style.display = "none";
+    var name = document.getElementById("newName").value.trim();
+    var month = parseInt(document.getElementById("newMonth").value, 10);
+    var day = parseInt(document.getElementById("newDay").value, 10);
+
+    if (!name) { errEl.textContent = "Please enter an event name."; errEl.style.display = "block"; return; }
+    if (!Number.isInteger(month) || month < 1 || month > 12) {
+      errEl.textContent = "Month must be a number from 1 to 12."; errEl.style.display = "block"; return;
+    }
+    if (!Number.isInteger(day) || day < 1 || day > DAYS_IN_MONTH[month - 1]) {
+      errEl.textContent = "Day must be valid for that month (e.g. February has at most 29 days).";
+      errEl.style.display = "block"; return;
+    }
+
+    var list = loadCustom();
+    list.push({ id: "c" + Date.now(), name: name, month: month, day: day });
+    saveCustom(list);
+    form.reset();
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
