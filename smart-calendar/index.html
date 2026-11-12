@@ -1,1 +1,635 @@
-<!-- placeholder -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Smart Calendar — a simple month calendar for the Sweet Metadata Lab. Add your own events; they are saved only in this browser. No holidays are pre-filled.">
+<title>Smart Calendar — Sweet Metadata Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3ECDA;
+    --panel:#FBF7EC;
+    --panel-2:#F6EEDC;
+    --ink:#2E2118;
+    --ink-soft:#5A4636;
+    --ink-muted:#8A7561;
+    --bronze:#6B4423;
+    --bronze-deep:#4E2F16;
+    --bronze-soft:#D9BE9C;
+    --line:#E3D6BC;
+    --line-strong:#CDB894;
+    --danger:#9B2C1E;
+    --shadow:0 1px 2px rgba(46,33,24,.06),0 10px 30px rgba(46,33,24,.08);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:15px;line-height:1.6;
+    background-image:radial-gradient(ellipse 60% 40% at 85% 0%,rgba(107,68,35,.06),transparent 70%);
+  }
+  button,input,textarea{font:inherit;color:inherit}
+  button{cursor:pointer}
+  :focus-visible{outline:2px solid var(--bronze);outline-offset:2px;border-radius:6px}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:14px 22px;
+    background:rgba(251,247,236,.94);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .back-link{
+    display:inline-flex;align-items:center;gap:7px;
+    color:var(--bronze);text-decoration:none;font-weight:700;font-size:14px;
+    padding:8px 12px;border:1px solid var(--line-strong);border-radius:999px;
+    background:var(--panel);transition:background .15s,border-color .15s;
+  }
+  .back-link:hover{background:var(--panel-2);border-color:var(--bronze)}
+  .topbar .title{margin:0;font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;letter-spacing:-.01em;line-height:1.1}
+  .topbar .subtitle{margin:2px 0 0;color:var(--ink-muted);font-size:12.5px}
+  .topbar .subtitle .bn{font-family:"Hind Siliguri",sans-serif}
+
+  /* ---------- Layout ---------- */
+  .wrap{width:min(1080px,100%);margin:0 auto;padding:26px 20px 60px}
+  .hero{text-align:center;margin:6px 0 26px}
+  .hero .script{
+    font-family:"Dancing Script",cursive;font-weight:700;font-size:clamp(34px,6vw,52px);
+    line-height:1.05;color:var(--bronze);margin:0;
+  }
+  .hero h1{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(26px,4.5vw,38px);line-height:1.12;margin:10px 0 8px}
+  .hero p{margin:0 auto;max-width:620px;color:var(--ink-soft);font-size:14.5px}
+  .hero p .bn{font-family:"Hind Siliguri",sans-serif}
+
+  .layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:20px;
+  }
+  .card h2{
+    font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:20px;
+    margin:0 0 4px;line-height:1.2;
+  }
+  .card .card-sub{margin:0 0 16px;color:var(--ink-muted);font-size:13px}
+
+  /* ---------- Calendar ---------- */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .cal-month{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(19px,3.4vw,24px);line-height:1.15;margin:0}
+  .cal-nav{display:flex;gap:8px;align-items:center}
+  .nav-btn{
+    min-width:40px;height:40px;padding:0 10px;border-radius:10px;
+    border:1px solid var(--line-strong);background:var(--panel);
+    font-size:17px;font-weight:700;color:var(--bronze);line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .nav-btn:hover{background:var(--panel-2);border-color:var(--bronze)}
+  .today-btn{
+    height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--bronze);
+    background:var(--bronze);color:#FBF7EC;font-weight:700;font-size:13px;
+  }
+  .today-btn:hover{background:var(--bronze-deep)}
+
+  .weekdays,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .weekdays{margin-bottom:6px}
+  .weekdays span{
+    text-align:center;font-size:11px;font-weight:800;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-muted);padding:6px 0;
+  }
+  .day{
+    position:relative;min-height:64px;padding:7px 6px 18px;border-radius:12px;
+    border:1px solid transparent;background:transparent;text-align:left;
+    display:flex;flex-direction:column;align-items:flex-start;
+  }
+  .day .num{font-size:14.5px;font-weight:600;line-height:1.2;width:28px;height:28px;display:grid;place-items:center;border-radius:50%}
+  .day:hover{background:var(--panel-2);border-color:var(--line)}
+  .day.other{opacity:.38}
+  .day.other:hover{background:transparent;border-color:transparent}
+  .day.today .num{background:var(--bronze);color:#FBF7EC;font-weight:800}
+  .day.selected{background:#EFE3C8;border-color:var(--bronze)}
+  .day.selected .num{font-weight:800}
+  .day .dots{position:absolute;left:0;right:0;bottom:7px;display:flex;justify-content:center;gap:3px}
+  .day .dots i{width:6px;height:6px;border-radius:50%;background:var(--bronze)}
+  .day .dots i.more{background:var(--bronze-soft);box-shadow:inset 0 0 0 1px var(--bronze)}
+
+  .cal-foot{
+    display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    margin-top:14px;padding-top:13px;border-top:1px solid var(--line);
+    color:var(--ink-muted);font-size:12.5px;
+  }
+  .cal-foot b{color:var(--ink-soft)}
+
+  /* ---------- Events panel ---------- */
+  .selected-date{font-family:"Fraunces",Georgia,serif;font-size:19px;font-weight:700;margin:0 0 2px}
+  .selected-date .bn{font-family:"Hind Siliguri",sans-serif;font-size:15px;color:var(--ink-muted);font-weight:500}
+  .event-count{margin:0 0 14px;color:var(--ink-muted);font-size:13px}
+
+  .event-list{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:10px}
+  .event-item{
+    display:flex;gap:12px;align-items:flex-start;
+    border:1px solid var(--line);border-radius:12px;background:var(--panel-2);
+    padding:12px 13px;
+  }
+  .event-time{
+    flex:0 0 auto;min-width:58px;text-align:center;
+    font-size:12px;font-weight:800;color:var(--bronze);
+    border:1px solid var(--bronze-soft);border-radius:9px;background:var(--panel);
+    padding:5px 6px;line-height:1.3;
+  }
+  .event-time small{display:block;font-size:10px;font-weight:600;color:var(--ink-muted)}
+  .event-body{min-width:0;flex:1}
+  .event-body b{display:block;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}
+  .event-body p{margin:3px 0 0;color:var(--ink-soft);font-size:13px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+  .event-del{
+    flex:0 0 auto;border:1px solid transparent;background:transparent;color:var(--danger);
+    font-size:12.5px;font-weight:700;padding:5px 8px;border-radius:8px;
+  }
+  .event-del:hover{background:#FBE9E4;border-color:#EFC5BC}
+  .empty{
+    border:1.5px dashed var(--line-strong);border-radius:12px;background:var(--panel);
+    padding:22px 16px;text-align:center;color:var(--ink-muted);font-size:13.5px;line-height:1.6;
+    margin:0 0 18px;
+  }
+  .empty b{display:block;color:var(--ink-soft);font-size:14.5px;margin-bottom:3px}
+
+  .add-form{border-top:1px solid var(--line);padding-top:16px}
+  .add-form h3{font-family:"Fraunces",Georgia,serif;font-size:17px;margin:0 0 12px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+  .field label .opt{color:var(--ink-muted);font-weight:500}
+  .field input,.field textarea{
+    width:100%;border:1px solid var(--line-strong);border-radius:10px;
+    background:#FFFDF6;padding:10px 12px;font-size:14px;line-height:1.5;
+  }
+  .field input:focus,.field textarea:focus{border-color:var(--bronze);outline:none;box-shadow:0 0 0 3px rgba(107,68,35,.14)}
+  .field textarea{resize:vertical;min-height:64px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{
+    min-height:44px;padding:10px 18px;border-radius:11px;font-weight:800;font-size:14px;
+    border:1px solid var(--bronze);background:var(--bronze);color:#FBF7EC;
+  }
+  .btn:hover{background:var(--bronze-deep)}
+  .btn.ghost{background:transparent;color:var(--bronze)}
+  .btn.ghost:hover{background:var(--panel-2)}
+  .form-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .form-msg{font-size:13px;color:var(--ink-muted);min-height:20px;margin:10px 0 0}
+  .form-msg.error{color:var(--danger);font-weight:600}
+  .form-msg.ok{color:#4C6B2F;font-weight:600}
+
+  /* ---------- Notes ---------- */
+  .notes{margin-top:20px;display:grid;gap:14px}
+  .note{
+    border:1px solid var(--line);border-radius:14px;background:var(--panel);
+    padding:15px 17px;font-size:13.5px;color:var(--ink-soft);line-height:1.65;
+  }
+  .note b{color:var(--ink)}
+  .note .note-title{font-family:"Fraunces",Georgia,serif;font-size:15.5px;color:var(--bronze);display:block;margin-bottom:4px}
+  .footer{text-align:center;color:var(--ink-muted);font-size:12.5px;margin-top:34px;line-height:1.7}
+  .footer a{color:var(--bronze);font-weight:700;text-decoration:none}
+  .footer a:hover{text-decoration:underline}
+
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr}
+    .day{min-height:56px}
+  }
+  @media (max-width:520px){
+    .wrap{padding:20px 14px 48px}
+    .card{padding:16px}
+    .topbar{padding:12px 14px}
+    .topbar .title{font-size:19px}
+    .day{min-height:50px;padding:5px 4px 16px}
+    .day .num{font-size:13px;width:25px;height:25px}
+    .weekdays{gap:3px}
+    .grid{gap:3px}
+    .form-row{grid-template-columns:1fr}
+    .nav-btn{min-width:38px;height:38px}
+    .today-btn{height:38px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="back-link" href="../">← Sweet Metadata Lab</a>
+  <div>
+    <p class="title">Smart Calendar</p>
+    <p class="subtitle">Your own dates, your own events <span class="bn">· নিজের ক্যালেন্ডার, নিজের ইভেন্ট</span></p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="script">Smart Calendar</p>
+    <h1>Plan your days, your way.</h1>
+    <p>Pick any day, add an event, and it stays saved in this browser.
+       <span class="bn">যেকোনো দিন বেছে নিন, ইভেন্ট যোগ করুন — সবকিছু এই ব্রাউজারেই সংরক্ষিত থাকবে।</span></p>
+  </section>
+
+  <div class="layout">
+    <!-- Calendar -->
+    <section class="card" aria-label="Month calendar">
+      <div class="cal-head">
+        <h2 class="cal-month" id="monthLabel">Month Year</h2>
+        <div class="cal-nav">
+          <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous month">‹</button>
+          <button class="today-btn" id="todayBtn" type="button">Today</button>
+          <button class="nav-btn" id="nextBtn" type="button" aria-label="Next month">›</button>
+        </div>
+      </div>
+
+      <div class="weekdays" aria-hidden="true">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="grid" id="calendarGrid" role="grid" aria-label="Days of the month"></div>
+
+      <div class="cal-foot">
+        <span id="monthSummary">—</span>
+        <span>● = day has an event</span>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <section class="card" aria-label="Events for the selected day">
+      <h2 class="selected-date" id="selectedLabel">—</h2>
+      <p class="event-count" id="eventCount">—</p>
+
+      <ul class="event-list" id="eventList"></ul>
+      <div class="empty" id="emptyState" hidden>
+        <b>No events on this day yet.</b>
+        Add your first event below — a shoot, a deadline, a reminder, anything.
+      </div>
+
+      <form class="add-form" id="addForm">
+        <h3>Add an event</h3>
+        <div class="field">
+          <label for="eventTitle">Event title</label>
+          <input id="eventTitle" type="text" maxlength="120" placeholder="e.g. Upload spring vector pack" autocomplete="off" required>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="eventTime">Time <span class="opt">(optional)</span></label>
+            <input id="eventTime" type="time">
+          </div>
+          <div class="field">
+            <label for="eventSort">Sort order <span class="opt">(optional)</span></label>
+            <input id="eventSort" type="text" maxlength="40" placeholder="e.g. Morning" autocomplete="off">
+          </div>
+        </div>
+        <div class="field">
+          <label for="eventNote">Note <span class="opt">(optional)</span></label>
+          <textarea id="eventNote" maxlength="500" placeholder="Anything worth remembering about this event…"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Add event</button>
+          <button class="btn ghost" type="button" id="clearBtn">Clear form</button>
+        </div>
+        <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
+
+  <!-- Honest notes -->
+  <section class="notes">
+    <div class="note">
+      <span class="note-title">No holidays are pre-filled.</span>
+      Public holidays, lunar dates and religious observances shift every year, so this calendar does
+      not come with any fixed holiday list. Add the dates that matter to you as your own events —
+      what you see here is only what you added.
+    </div>
+    <div class="note">
+      <span class="note-title">Saved only in this browser.</span>
+      Events are stored in this browser's local storage on this device. They are not uploaded,
+      synced, or backed up anywhere. Clearing this browser's site data will remove them, and they
+      will not appear on your other devices.
+    </div>
+  </section>
+
+  <footer class="footer">
+    Smart Calendar · part of the <a href="../">Sweet Metadata Lab</a><br>
+    Works fully offline once loaded — no account, no tracking, no data leaves your browser.
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "sweetlab.smartcalendar.events.v1";
+
+  var monthLabel = document.getElementById("monthLabel");
+  var grid = document.getElementById("calendarGrid");
+  var monthSummary = document.getElementById("monthSummary");
+  var selectedLabel = document.getElementById("selectedLabel");
+  var eventCount = document.getElementById("eventCount");
+  var eventList = document.getElementById("eventList");
+  var emptyState = document.getElementById("emptyState");
+  var form = document.getElementById("addForm");
+  var titleInput = document.getElementById("eventTitle");
+  var timeInput = document.getElementById("eventTime");
+  var sortInput = document.getElementById("eventSort");
+  var noteInput = document.getElementById("eventNote");
+  var formMsg = document.getElementById("formMsg");
+
+  var today = new Date();
+  var todayKey = dateKey(today);
+  var viewYear = today.getFullYear();
+  var viewMonth = today.getMonth(); // 0-based
+  var selectedKey = todayKey;
+
+  var MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  var DAY_NAMES = [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  ];
+
+  /* ---------- storage ---------- */
+
+  function loadEvents() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+      return parsed;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveEvents(all) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  var events = loadEvents();
+
+  /* ---------- helpers ---------- */
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+  function dateKey(d) {
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+
+  function keyToDate(key) {
+    var parts = key.split("-");
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  }
+
+  function formatLong(key) {
+    var d = keyToDate(key);
+    return DAY_NAMES[d.getDay()] + ", " + MONTH_NAMES[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function eventsFor(key) {
+    var list = events[key];
+    if (!Array.isArray(list)) return [];
+    return list.slice().sort(function (a, b) {
+      var ta = a.time || "99:99", tb = b.time || "99:99";
+      if (ta !== tb) return ta < tb ? -1 : 1;
+      return (a.created || 0) - (b.created || 0);
+    });
+  }
+
+  function monthEventCount(year, month) {
+    var prefix = year + "-" + pad(month + 1) + "-";
+    var count = 0;
+    Object.keys(events).forEach(function (key) {
+      if (key.indexOf(prefix) === 0 && Array.isArray(events[key])) count += events[key].length;
+    });
+    return count;
+  }
+
+  function setMsg(text, kind) {
+    formMsg.textContent = text || "";
+    formMsg.className = "form-msg" + (kind ? " " + kind : "");
+  }
+
+  /* ---------- calendar rendering ---------- */
+
+  function renderCalendar() {
+    monthLabel.textContent = MONTH_NAMES[viewMonth] + " " + viewYear;
+
+    var firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    var daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+
+    grid.innerHTML = "";
+
+    // 42 cells = 6 full weeks, so the grid never jumps in height.
+    for (var i = 0; i < 42; i++) {
+      var cellDate, inMonth = true;
+      if (i < firstDay) {
+        cellDate = new Date(viewYear, viewMonth - 1, daysInPrevMonth - firstDay + 1 + i);
+        inMonth = false;
+      } else if (i >= firstDay + daysInMonth) {
+        cellDate = new Date(viewYear, viewMonth + 1, i - firstDay - daysInMonth + 1);
+        inMonth = false;
+      } else {
+        cellDate = new Date(viewYear, viewMonth, i - firstDay + 1);
+      }
+
+      var key = dateKey(cellDate);
+      var dayEvents = eventsFor(key);
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "day" + (inMonth ? "" : " other") +
+        (key === todayKey ? " today" : "") +
+        (key === selectedKey ? " selected" : "");
+      btn.setAttribute("role", "gridcell");
+      btn.setAttribute("aria-label", formatLong(key) +
+        (dayEvents.length ? " — " + dayEvents.length + (dayEvents.length === 1 ? " event" : " events") : " — no events"));
+      if (key === selectedKey) btn.setAttribute("aria-current", "date");
+      btn.dataset.date = key;
+
+      var num = document.createElement("span");
+      num.className = "num";
+      num.textContent = String(cellDate.getDate());
+      btn.appendChild(num);
+
+      if (dayEvents.length) {
+        var dots = document.createElement("span");
+        dots.className = "dots";
+        dots.setAttribute("aria-hidden", "true");
+        var shown = Math.min(dayEvents.length, 3);
+        for (var d = 0; d < shown; d++) {
+          var dot = document.createElement("i");
+          if (dayEvents.length > 3 && d === 2) dot.className = "more";
+          dots.appendChild(dot);
+        }
+        btn.appendChild(dots);
+      }
+
+      btn.addEventListener("click", function () {
+        var k = this.dataset.date;
+        var d = keyToDate(k);
+        selectedKey = k;
+        viewYear = d.getFullYear();
+        viewMonth = d.getMonth();
+        setMsg("");
+        renderAll();
+        titleInput.focus();
+      });
+
+      grid.appendChild(btn);
+    }
+
+    var count = monthEventCount(viewYear, viewMonth);
+    monthSummary.innerHTML = "<b>" + count + "</b> event" + (count === 1 ? "" : "s") +
+      " in " + escapeHtml(MONTH_NAMES[viewMonth]) + " " + viewYear;
+  }
+
+  /* ---------- event list rendering ---------- */
+
+  function renderEvents() {
+    var list = eventsFor(selectedKey);
+    selectedLabel.textContent = formatLong(selectedKey);
+    eventCount.textContent = list.length === 0
+      ? "No events yet on this day."
+      : list.length + (list.length === 1 ? " event" : " events") + " on this day.";
+
+    eventList.innerHTML = "";
+    emptyState.hidden = list.length !== 0;
+
+    list.forEach(function (ev) {
+      var li = document.createElement("li");
+      li.className = "event-item";
+
+      var timeBox = document.createElement("div");
+      timeBox.className = "event-time";
+      if (ev.time) {
+        timeBox.textContent = ev.time;
+        if (ev.sort) {
+          var small = document.createElement("small");
+          small.textContent = ev.sort;
+          timeBox.appendChild(small);
+        }
+      } else {
+        timeBox.textContent = ev.sort ? ev.sort : "All day";
+      }
+      li.appendChild(timeBox);
+
+      var body = document.createElement("div");
+      body.className = "event-body";
+      var title = document.createElement("b");
+      title.textContent = ev.title;
+      body.appendChild(title);
+      if (ev.note) {
+        var note = document.createElement("p");
+        note.textContent = ev.note;
+        body.appendChild(note);
+      }
+      li.appendChild(body);
+
+      var del = document.createElement("button");
+      del.type = "button";
+      del.className = "event-del";
+      del.textContent = "Delete";
+      del.setAttribute("aria-label", "Delete event: " + ev.title);
+      del.addEventListener("click", function () {
+        deleteEvent(selectedKey, ev.id);
+      });
+      li.appendChild(del);
+
+      eventList.appendChild(li);
+    });
+  }
+
+  function renderAll() {
+    renderCalendar();
+    renderEvents();
+  }
+
+  /* ---------- actions ---------- */
+
+  function deleteEvent(key, id) {
+    if (!Array.isArray(events[key])) return;
+    events[key] = events[key].filter(function (ev) { return ev.id !== id; });
+    if (events[key].length === 0) delete events[key];
+    saveEvents(events);
+    setMsg("Event deleted.", "ok");
+    renderAll();
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var title = titleInput.value.trim();
+    if (!title) {
+      setMsg("Please enter an event title first.", "error");
+      titleInput.focus();
+      return;
+    }
+    var ev = {
+      id: "ev-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e6).toString(36),
+      title: title,
+      time: timeInput.value || "",
+      sort: sortInput.value.trim(),
+      note: noteInput.value.trim(),
+      created: Date.now()
+    };
+    if (!Array.isArray(events[selectedKey])) events[selectedKey] = [];
+    events[selectedKey].push(ev);
+    if (!saveEvents(events)) {
+      setMsg("Could not save — this browser's storage may be full or blocked.", "error");
+      return;
+    }
+    form.reset();
+    setMsg("Event added to " + formatLong(selectedKey) + ".", "ok");
+    renderAll();
+    titleInput.focus();
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    form.reset();
+    setMsg("");
+    titleInput.focus();
+  });
+
+  document.getElementById("prevBtn").addEventListener("click", function () {
+    viewMonth -= 1;
+    if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+    renderCalendar();
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", function () {
+    viewMonth += 1;
+    if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+    renderCalendar();
+  });
+
+  document.getElementById("todayBtn").addEventListener("click", function () {
+    var now = new Date();
+    viewYear = now.getFullYear();
+    viewMonth = now.getMonth();
+    selectedKey = dateKey(now);
+    todayKey = selectedKey;
+    setMsg("");
+    renderAll();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
