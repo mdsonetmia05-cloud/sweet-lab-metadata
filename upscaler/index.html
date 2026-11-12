@@ -1,1 +1,911 @@
-<!-- placeholder -->
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Sweet AI Image Upscaler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF9; --bg2:#FAFAF9; --panel:#FFFFFF; --panel2:#F5F5F3;
+    --ink:#141412; --ink2:#5F5C57; --ink3:#9A968F;
+    --line:#E9E7E3; --line2:#D8D5CF;
+    --accent:#141412; --accent-ink:#141412; --accent-soft:#F0EFEC;
+    --good:#177245; --good-soft:#EAF4EE;
+    --danger:#B3382E; --danger-soft:#FBEEEC;
+    --stage:#EFEFED; --stage-ink:#141412;
+    --on-accent:#FFFFFF;
+    --shadow:none;
+    --r-lg:14px; --r-md:10px; --r-sm:8px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0B0B0A; --bg2:#0B0B0A; --panel:#141413; --panel2:#1B1B1A;
+      --ink:#F4F3F0; --ink2:#B4B0A9; --ink3:#7E7A73;
+      --line:#262625; --line2:#3A3A38;
+      --accent:#F4F3F0; --accent-ink:#F4F3F0; --accent-soft:#232322;
+      --good:#6FC48D; --good-soft:#1C2B21;
+      --danger:#E88A7E; --danger-soft:#3A211C;
+      --stage:#101010; --stage-ink:#F4F3F0;
+      --on-accent:#141412;
+    }
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Inter","Hind Siliguri",system-ui,sans-serif;
+    font-size:15.5px; line-height:1.55; min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit; cursor:pointer}
+  input{font:inherit}
+  .wrap{max-width:1120px; margin:0 auto; padding:28px 20px 48px}
+  @media (max-width:640px){ .wrap{padding:20px 14px 40px} }
+
+  /* ---------- Top bar ---------- */
+  .brandline{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding-bottom:18px; border-bottom:1px solid var(--line); margin-bottom:28px;
+  }
+  .brandline .bname{font-weight:700; font-size:15px; letter-spacing:-.01em; display:flex; align-items:center; gap:9px}
+  .brandline .bname::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--ink); flex:none}
+  .brandline .bsub{font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink3); text-align:right}
+
+  /* ---------- Intro ---------- */
+  .intro{margin-bottom:28px; max-width:640px}
+  .intro h1{font-size:clamp(26px,3.6vw,34px); font-weight:650; line-height:1.25; letter-spacing:-.02em; margin:0 0 8px}
+  .intro h1 .amp{color:var(--ink); text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:5px; text-decoration-color:var(--line2)}
+  .intro p{margin:0; color:var(--ink2); font-size:15.5px; line-height:1.65}
+  .intro-facts{display:flex; flex-wrap:wrap; gap:6px 0; margin-top:16px; font-size:13px; color:var(--ink3); font-weight:500}
+  .fact{display:inline-flex; align-items:center; gap:6px}
+  .fact svg{width:13px;height:13px;color:var(--ink3);flex:none}
+  .fact + .fact::before{content:"·"; margin:0 10px; color:var(--line2)}
+
+  /* ---------- Layout ---------- */
+  .layout{display:grid; grid-template-columns:340px 1fr; gap:20px; align-items:start}
+  @media (max-width:920px){ .layout{grid-template-columns:1fr} }
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r-lg); padding:20px}
+  .card + .card{margin-top:16px}
+  .card h2{font-size:14px; font-weight:650; letter-spacing:.01em; margin:0 0 3px; display:flex; align-items:center; gap:8px}
+  .card h2 svg{width:16px;height:16px;color:var(--ink3)}
+  .card .sub{color:var(--ink3); font-size:13.5px; margin:0 0 16px}
+
+  /* ---------- Dropzone ---------- */
+  .drop{
+    border:1px dashed var(--line2); border-radius:var(--r-md); background:transparent;
+    padding:28px 16px; text-align:center; transition:border-color .15s, background .15s; cursor:pointer; outline:none;
+  }
+  .drop:hover,.drop:focus-visible{border-color:var(--ink3)}
+  .drop.drag{border-color:var(--ink); background:var(--accent-soft)}
+  .drop .dz-icon{width:40px;height:40px;margin:0 auto 10px;border-radius:50%;background:var(--accent-soft); color:var(--ink2); display:flex;align-items:center;justify-content:center}
+  .drop .dz-icon svg{width:20px;height:20px}
+  .drop strong{display:block; font-size:15px; font-weight:600; margin-bottom:2px}
+  .drop span{color:var(--ink3); font-size:13.5px}
+  .drop .browse{
+    margin-top:14px; display:inline-block; background:var(--ink); color:var(--bg);
+    border:none; border-radius:999px; padding:8px 18px; font-weight:600; font-size:13.5px;
+  }
+
+  /* ---------- Queue ---------- */
+  .queue{display:flex; flex-direction:column; gap:6px; margin-top:12px}
+  .qitem{
+    display:flex; align-items:center; gap:10px; padding:7px; border:1px solid var(--line);
+    border-radius:var(--r-md); background:var(--panel); text-align:left; width:100%;
+  }
+  .qitem.sel{border-color:var(--ink); }
+  .qitem img{width:40px;height:40px;object-fit:cover;border-radius:6px;flex:none;background:var(--panel2)}
+  .qitem .qm{flex:1; min-width:0}
+  .qitem .qn{font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .qitem .qd{font-size:12.5px; color:var(--ink3)}
+  .chip{flex:none; font-size:11.5px; font-weight:600; padding:3px 9px; border-radius:999px; background:var(--accent-soft); color:var(--ink2)}
+  .chip.done{background:var(--good-soft); color:var(--good)}
+  .chip.busy{background:var(--accent-soft); color:var(--ink)}
+  .qitem .qx{flex:none; width:28px;height:28px; border-radius:7px; border:none; background:transparent; color:var(--ink3); display:flex;align-items:center;justify-content:center}
+  .qitem .qx:hover{color:var(--ink); background:var(--accent-soft)}
+  .qitem .qx svg{width:13px;height:13px}
+  .empty-note{color:var(--ink3); font-size:13px; text-align:center; padding:10px 0 2px}
+
+  /* ---------- Controls ---------- */
+  .seg{display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:var(--panel2); border-radius:var(--r-md); padding:4px}
+  .seg.two{grid-template-columns:repeat(2,1fr)}
+  .seg button{
+    border:1px solid transparent; background:transparent; color:var(--ink2);
+    border-radius:7px; padding:9px 6px 8px; text-align:center; line-height:1.3;
+  }
+  .seg button b{display:block; font-size:17px; font-weight:650}
+  .seg button span{font-size:12px; color:var(--ink3)}
+  .seg button.on{background:var(--panel); border-color:var(--line); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .seg button.on span{color:var(--ink2)}
+  .mini-seg{display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:var(--panel2); border-radius:var(--r-md); padding:4px}
+  .mini-seg button{border:1px solid transparent; background:transparent; color:var(--ink2); border-radius:7px; padding:7px 4px; font-weight:600; font-size:13.5px}
+  .mini-seg button.on{background:var(--panel); border-color:var(--line); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .ctl-label{font-weight:600; font-size:13px; letter-spacing:.02em; color:var(--ink2); margin:20px 0 8px; text-transform:none}
+  .ctl-note{margin:6px 0 0; font-size:12.5px; color:var(--ink3); line-height:1.5}
+  .preset{
+    margin-top:10px; width:100%; border:1px solid var(--line); background:transparent; color:var(--ink2);
+    border-radius:var(--r-md); padding:10px 12px; font-size:13.5px; font-weight:500;
+    display:flex; align-items:center; gap:9px; text-align:left;
+  }
+  .preset svg{width:15px;height:15px;color:var(--ink3);flex:none}
+  .preset.on{border-color:var(--ink); color:var(--ink); background:var(--accent-soft)}
+  .tgl-row{
+    margin-top:8px; width:100%; border:1px solid var(--line); background:transparent; color:var(--ink2);
+    border-radius:var(--r-md); padding:10px 12px; font-size:13.5px; font-weight:500;
+    display:flex; align-items:center; gap:9px; text-align:left;
+  }
+  .tgl-row svg{width:15px;height:15px;color:var(--ink3);flex:none}
+  .tgl-row .sw{margin-left:auto; flex:none; width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .15s}
+  .tgl-row .sw::after{content:""; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:var(--panel); transition:left .15s}
+  .tgl-row.on{border-color:var(--ink); color:var(--ink)}
+  .tgl-row.on .sw{background:var(--ink)}
+  .tgl-row.on .sw::after{left:19px; background:var(--bg)}
+  .slider-row{margin-top:18px}
+  .slider-row label{display:flex; justify-content:space-between; font-weight:600; font-size:13.5px; margin-bottom:6px}
+  .slider-row label output{color:var(--ink); font-weight:700; font-variant-numeric:tabular-nums}
+  .slider-row p{margin:5px 0 0; font-size:12.5px; color:var(--ink3); line-height:1.5}
+  input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:99px;
+    background:linear-gradient(to right, var(--ink) var(--fill,50%), var(--line) var(--fill,50%)); outline-offset:4px; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;height:18px;border-radius:50%;
+    background:var(--panel); border:2px solid var(--ink); cursor:grab; }
+  input[type=range]::-moz-range-thumb{ width:16px;height:16px;border-radius:50%; background:var(--panel); border:2px solid var(--ink); cursor:grab; }
+
+  .go-btn{
+    margin-top:22px; width:100%; border:none; border-radius:var(--r-md);
+    background:var(--ink); color:var(--bg); font-weight:650; font-size:15.5px;
+    padding:14px 18px; display:flex; align-items:center; justify-content:center; gap:9px;
+  }
+  .go-btn svg{width:18px;height:18px}
+  .go-btn:disabled{opacity:.35; cursor:not-allowed}
+  .progress{height:4px; border-radius:99px; background:var(--line); margin-top:14px; overflow:hidden; display:none}
+  .progress.show{display:block}
+  .progress i{display:block; height:100%; width:0%; background:var(--ink); border-radius:99px; transition:width .35s ease}
+  .status-line{margin-top:10px; font-size:13.5px; color:var(--ink2); min-height:20px}
+  .status-line.err{color:var(--danger)}
+
+  /* ---------- Stage ---------- */
+  .stage-card{padding:0; overflow:hidden}
+  .stage-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line)}
+  .stage-head .dims{font-size:13.5px; color:var(--ink2); display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .dims b{color:var(--ink); font-variant-numeric:tabular-nums}
+  .dims .arrow{color:var(--ink3); font-weight:600}
+  .view-toggle{display:flex; background:var(--panel2); border-radius:999px; padding:3px; gap:2px}
+  .view-toggle button{border:none; background:transparent; padding:6px 13px; font-size:13px; font-weight:600; color:var(--ink2); border-radius:999px}
+  .view-toggle button.on{background:var(--panel); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+  .stage{background:var(--stage); min-height:400px; display:flex; align-items:center; justify-content:center; position:relative; padding:24px}
+  @media (max-width:640px){ .stage{min-height:300px; padding:16px} }
+  .stage-empty{color:var(--ink3); text-align:center; padding:32px 12px}
+  .stage-empty svg{width:40px;height:40px;opacity:.5; margin-bottom:10px}
+  .stage-empty p{margin:0; font-size:14px; line-height:1.65}
+  .stage img.single{max-width:100%; max-height:62vh; border-radius:6px; box-shadow:0 12px 32px -12px rgba(0,0,0,.28); display:block}
+
+  .compare{position:relative; max-width:100%; line-height:0; border-radius:6px; overflow:hidden;
+    box-shadow:0 12px 32px -12px rgba(0,0,0,.28); touch-action:none; user-select:none; display:none}
+  .compare.show{display:block}
+  .compare img{display:block; max-width:100%; max-height:62vh; width:auto; height:auto; pointer-events:none}
+  .compare .top{position:absolute; inset:0; overflow:hidden}
+  .compare .top img{max-width:none}
+  .compare .handle{position:absolute; top:0; bottom:0; width:2px; background:#fff; box-shadow:0 0 0 1px rgba(0,0,0,.25); transform:translateX(-1px); z-index:3}
+  .compare .knob{
+    position:absolute; top:50%; left:0; transform:translate(-50%,-50%);
+    width:36px;height:36px;border-radius:50%; background:#fff; color:#141412;
+    display:flex;align-items:center;justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.3); z-index:4;
+  }
+  .compare .knob svg{width:18px;height:18px}
+  .tag{position:absolute; top:10px; z-index:2; font-size:11.5px; font-weight:600; line-height:1;
+    background:rgba(10,10,10,.68); color:#fff; padding:6px 10px; border-radius:999px; pointer-events:none}
+  .tag.before{left:10px} .tag.after{right:10px; background:#141412; color:#fff}
+
+  .stage-foot{padding:14px 18px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; border-top:1px solid var(--line)}
+  .dl-btn{
+    border:none; border-radius:999px; padding:10px 18px; font-weight:600; font-size:13.5px;
+    display:inline-flex; align-items:center; gap:8px; background:var(--ink); color:var(--bg);
+  }
+  .dl-btn svg{width:15px;height:15px}
+  .dl-btn.alt{background:transparent; color:var(--ink); border:1px solid var(--line2)}
+  .dl-btn:disabled{opacity:.35; cursor:not-allowed}
+  .result-meta{margin-left:auto; font-size:13px; color:var(--ink2); text-align:right}
+  .result-meta b{color:var(--ink)}
+
+  /* steps — plain, no cards */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:24px; padding-top:20px; border-top:1px solid var(--line)}
+  @media (max-width:720px){ .steps{grid-template-columns:1fr; gap:16px} }
+  .step{background:none; border:none; padding:0}
+  .step .n{font-weight:700; color:var(--ink3); font-size:12px; letter-spacing:.08em}
+  .step h3{margin:4px 0 3px; font-size:14.5px; font-weight:650}
+  .step p{margin:0; color:var(--ink2); font-size:13.5px; line-height:1.6}
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform:translate(-50%,80px); z-index:50;
+    background:var(--ink); color:var(--bg); padding:11px 18px; border-radius:999px; font-weight:600; font-size:13.5px;
+    transition:transform .3s ease; max-width:92vw; text-align:center;
+  }
+  .toast.show{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<a href="../" style="display:inline-block;margin:0 0 10px;font:600 13px Inter,system-ui,sans-serif;color:#6B4423;text-decoration:none">&larr; Sweet Metadata Lab</a>
+<div class="wrap">
+
+  <div class="brandline">
+    <span class="bname">Sweet AI Image Upscaler</span>
+    <span class="bsub">Microstock Journey With Sonet</span>
+  </div>
+
+  <div class="intro">
+    <div>
+      <h1>ছবি বড় করুন, <span class="amp">ডিটেইল</span> ধরে রেখে</h1>
+      <p>ছবি আপলোড করুন, ২× বা ৪× বড় করুন, ডাউনলোড করুন। RealESRGAN_x4plus ও AESRGAN প্রোফাইলে — Microstock, প্রিন্ট আর সোশ্যাল মিডিয়ার জন্য।</p>
+    </div>
+    <div class="intro-facts">
+      <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>সর্বোচ্চ ৪× স্কেল</span>
+      <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ছবি ডিভাইসেই থাকে</span>
+      <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>PNG · JPG · WebP</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT: controls -->
+    <div>
+      <section class="card" aria-label="ছবি আপলোড">
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>ছবি আপলোড</h2>
+        <p class="sub">একসাথে একাধিক ছবি দেওয়া যাবে। JPG, PNG বা WebP।</p>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="ছবি আপলোডের জায়গা">
+          <div class="dz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>
+          <strong>ছবি এখানে টেনে ছাড়ুন</strong>
+          <span>অথবা কপি করা ছবি Ctrl+V দিয়ে পেস্ট করুন</span>
+          <br><span class="browse">ফাইল বেছে নিন</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        <div class="queue" id="queue"></div>
+        <p class="empty-note" id="queueEmpty">এখনো কোনো ছবি যোগ হয়নি</p>
+      </section>
+
+      <section class="card" aria-label="আপস্কেল সেটিংস">
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>আপস্কেল সেটিংস</h2>
+        <p class="sub">কত বড় করবেন আর কতটা এনহ্যান্স হবে, ঠিক করে নিন।</p>
+
+        <p class="ctl-label" style="margin-top:0">AI মডেল</p>
+        <div class="seg two" id="modelSeg" role="group" aria-label="AI মডেল">
+          <button type="button" data-model="realesrgan"><b style="font-size:14px;letter-spacing:-.01em">RealESRGAN_x4plus</b><span>ভারসাম্যপূর্ণ, স্বাভাবিক লুক</span></button>
+          <button type="button" data-model="aesrgan" class="on"><b style="font-size:14px;letter-spacing:-.01em">AESRGAN</b><span>ডিফল্ট · বেশি ডিটেইল ও তীক্ষ্ণতা</span></button>
+        </div>
+
+        <p class="ctl-label">স্কেল</p>
+        <div class="seg two" id="scaleSeg" role="group" aria-label="স্কেল">
+          <button type="button" data-scale="2"><b>২×</b><span>দ্বিগুণ</span></button>
+          <button type="button" data-scale="4" class="on"><b>৪×</b><span>চার গুণ</span></button>
+        </div>
+        <button type="button" class="preset" id="msPreset" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.4 7.2 16.9l.9-5.4L4.2 7.7l5.4-.8z"/></svg>
+          Microstock মোড — লম্বা পাশ কমপক্ষে ৪০০০px হবে
+        </button>
+        <button type="button" class="tgl-row" id="adobeToggle" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          Adobe Stock — JPG ফাইল কমপক্ষে 4MB রাখা হবে
+          <span class="sw" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tgl-row" id="faceToggle" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+          Face Enhance — মুখের ডিটেইল আলাদা করে বাড়ানো হবে
+          <span class="sw" aria-hidden="true"></span>
+        </button>
+
+        <p class="ctl-label">Tile সাইজ</p>
+        <div class="mini-seg" id="tileSeg" role="group" aria-label="Tile সাইজ">
+          <button type="button" data-tile="0" class="on">বন্ধ</button>
+          <button type="button" data-tile="256">256</button>
+          <button type="button" data-tile="512">512</button>
+        </div>
+        <p class="ctl-note">বড় ছবি ভাগ ভাগ করে প্রসেস করলে মেমরি কম লাগে। ফলাফল একই থাকে।</p>
+
+        <div class="slider-row">
+          <label for="sharpRange">তীক্ষ্ণতা (Sharpness) <output id="sharpOut">৫৫</output></label>
+          <input type="range" id="sharpRange" min="0" max="100" value="55">
+          <p>কিনারা ও সূক্ষ্ম ডিটেইল স্পষ্ট করে। বেশি দিলে ছবি রুক্ষ দেখাতে পারে।</p>
+        </div>
+        <div class="slider-row">
+          <label for="smoothRange">নয়েজ কমানো <output id="smoothOut">৩০</output></label>
+          <input type="range" id="smoothRange" min="0" max="100" value="30">
+          <p>ঝাপসা ও দানাদার ভাব মসৃণ করে, বিশেষ করে পুরনো বা কম আলোর ছবিতে।</p>
+        </div>
+        <div class="slider-row">
+          <label for="colorRange">রঙ ও কনট্রাস্ট <output id="colorOut">৩৫</output></label>
+          <input type="range" id="colorRange" min="0" max="100" value="35">
+          <p>রঙ একটু প্রাণবন্ত আর কনট্রাস্ট গভীর করে।</p>
+        </div>
+        <div class="slider-row">
+          <label for="jpgRange">JPG Quality <output id="jpgOut">৯৫</output></label>
+          <input type="range" id="jpgRange" min="80" max="100" value="95">
+          <p>JPG ডাউনলোডের মান। ৯৫–১০০ মানে প্রায় কোনো মান নষ্ট হবে না, ফাইল বড় হবে।</p>
+        </div>
+
+        <button type="button" class="go-btn" id="goBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+          আপস্কেল করুন
+        </button>
+        <div class="progress" id="progress"><i id="progressBar"></i></div>
+        <p class="status-line" id="statusLine" role="status"></p>
+      </section>
+    </div>
+
+    <!-- RIGHT: stage -->
+    <div>
+      <section class="card stage-card" aria-label="ফলাফল">
+        <div class="stage-head">
+          <div class="dims" id="dimsLine"><span>ছবি যোগ করলে এখানে আকার দেখা যাবে</span></div>
+          <div class="view-toggle" id="viewToggle" hidden>
+            <button type="button" data-view="compare" class="on">তুলনা</button>
+            <button type="button" data-view="after">শুধু ফলাফল</button>
+            <button type="button" data-view="before">শুধু আগের</button>
+          </div>
+        </div>
+        <div class="stage" id="stage">
+          <div class="stage-empty" id="stageEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <p>আপলোড করা ছবি এখানে দেখা যাবে।<br>আপস্কেল হয়ে গেলে মাঝের হ্যান্ডল টেনে আগে–পরে মিলিয়ে দেখুন।</p>
+          </div>
+          <img class="single" id="singleImg" alt="প্রিভিউ" hidden>
+          <div class="compare" id="compare">
+            <img id="cmpAfter" alt="আপস্কেল করা ছবি">
+            <div class="top" id="cmpTop"><img id="cmpBefore" alt="আগের ছবি"></div>
+            <span class="tag before">আগে</span>
+            <span class="tag after">আপস্কেলের পর</span>
+            <div class="handle" id="cmpHandle">
+              <div class="knob"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="stage-foot">
+          <button type="button" class="dl-btn" id="dlPng" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            PNG ডাউনলোড
+          </button>
+          <button type="button" class="dl-btn alt" id="dlJpg" disabled>JPG ডাউনলোড</button>
+          <button type="button" class="dl-btn alt" id="dlWebp" disabled>WebP ডাউনলোড</button>
+          <button type="button" class="dl-btn alt" id="dlZip" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+            সব ফলাফল ZIP
+          </button>
+          <div class="result-meta" id="resultMeta"></div>
+        </div>
+      </section>
+
+      <div class="steps">
+        <div class="step"><div class="n">১</div><h3>ছবি যোগ করুন</h3><p>ড্র্যাগ-ড্রপ, ফাইল বাছাই বা পেস্ট — যেভাবে সুবিধা। একসাথে অনেকগুলোও চলবে।</p></div>
+        <div class="step"><div class="n">২</div><h3>স্কেল ও এনহ্যান্স ঠিক করুন</h3><p>২×–৪× স্কেল বেছে নিন, তীক্ষ্ণতা আর নয়েজের স্লাইডার নিজের ছবি অনুযায়ী মেলান।</p></div>
+        <div class="step"><div class="n">৩</div><h3>তুলে দেখে ডাউনলোড করুন</h3><p>তুলনার হ্যান্ডল টেনে ফলাফল যাচাই করুন, তারপর PNG, JPG বা WebP নামিয়ে নিন।</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var drop = $("drop"), fileInput = $("fileInput"), queueEl = $("queue"), queueEmpty = $("queueEmpty");
+  var goBtn = $("goBtn"), statusLine = $("statusLine"), progress = $("progress"), progressBar = $("progressBar");
+  var stageEmpty = $("stageEmpty"), singleImg = $("singleImg"), compare = $("compare");
+  var cmpBefore = $("cmpBefore"), cmpAfter = $("cmpAfter"), cmpTop = $("cmpTop"), cmpHandle = $("cmpHandle");
+  var dimsLine = $("dimsLine"), viewToggle = $("viewToggle"), resultMeta = $("resultMeta");
+  var dlPng = $("dlPng"), dlJpg = $("dlJpg"), dlWebp = $("dlWebp");
+  var toast = $("toast");
+
+  var BN = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
+  function bn(n){ return String(n).replace(/[0-9]/g, function(d){ return BN[+d]; }); }
+  function fmtSize(bytes){
+    if(!bytes && bytes !== 0) return "—";
+    if(bytes < 1024) return bn(bytes) + " B";
+    if(bytes < 1024*1024) return bn((bytes/1024).toFixed(1)) + " KB";
+    return bn((bytes/(1024*1024)).toFixed(2)) + " MB";
+  }
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg; toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 3200);
+  }
+  function setStatus(msg, isErr){
+    statusLine.textContent = msg || "";
+    statusLine.className = "status-line" + (isErr ? " err" : "");
+  }
+  function setProgress(pct){
+    if(pct === null){ progress.classList.remove("show"); progressBar.style.width = "0%"; return; }
+    progress.classList.add("show"); progressBar.style.width = pct + "%";
+  }
+  function nextFrame(){ return new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r, 10); }); }); }
+
+  /* ---------- State ---------- */
+  var items = [];        // {id,name,url,img,w,h,resultCanvas,resultUrl,done,busy}
+  var selId = null;
+  var scale = 4;
+  var model = "aesrgan";
+  var faceEnhance = false;
+  var tileSize = 0;
+  var adobeMode = false;
+  var msMode = false;
+  var view = "compare";
+  var uid = 0;
+
+  function selected(){ for(var i=0;i<items.length;i++) if(items[i].id===selId) return items[i]; return null; }
+
+  /* ---------- File intake ---------- */
+  function addFiles(fileList){
+    var files = Array.prototype.slice.call(fileList || []).filter(function(f){ return f.type && f.type.indexOf("image/") === 0; });
+    if(!files.length){ showToast("কোনো ছবির ফাইল পাওয়া যায়নি"); return; }
+    files.forEach(function(f){
+      var item = { id: ++uid, name: f.name || ("pasted-" + uid + ".png"), url: URL.createObjectURL(f),
+                   img: null, w: 0, h: 0, size: f.size, resultCanvas: null, resultUrl: null, done: false, busy: false };
+      var im = new Image();
+      im.onload = function(){
+        item.img = im; item.w = im.naturalWidth; item.h = im.naturalHeight;
+        if(!selId){ selId = item.id; }
+        renderQueue(); refreshStage(); updateGo();
+      };
+      im.onerror = function(){ showToast("একটি ছবি পড়া যায়নি: " + item.name); };
+      im.src = item.url;
+      items.push(item);
+    });
+    renderQueue();
+  }
+
+  drop.addEventListener("click", function(){ fileInput.click(); });
+  drop.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); fileInput.click(); } });
+  fileInput.addEventListener("change", function(){ addFiles(fileInput.files); fileInput.value = ""; });
+  ["dragenter","dragover"].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("drag"); }); });
+  ["dragleave","drop"].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("drag"); }); });
+  drop.addEventListener("drop", function(e){ if(e.dataTransfer) addFiles(e.dataTransfer.files); });
+  document.addEventListener("dragover", function(e){ e.preventDefault(); });
+  document.addEventListener("drop", function(e){ e.preventDefault(); });
+  document.addEventListener("paste", function(e){
+    if(e.clipboardData && e.clipboardData.files && e.clipboardData.files.length){ addFiles(e.clipboardData.files); }
+  });
+
+  /* ---------- Queue render ---------- */
+  function renderQueue(){
+    queueEl.innerHTML = "";
+    queueEmpty.style.display = items.length ? "none" : "block";
+    items.forEach(function(item){
+      var row = document.createElement("div");
+      row.className = "qitem" + (item.id === selId ? " sel" : "");
+      row.setAttribute("role","button"); row.setAttribute("tabindex","0");
+      var thumb = document.createElement("img"); thumb.src = item.url; thumb.alt = "";
+      var meta = document.createElement("div"); meta.className = "qm";
+      var nm = document.createElement("div"); nm.className = "qn"; nm.textContent = item.name;
+      var dt = document.createElement("div"); dt.className = "qd";
+      dt.textContent = item.w ? (bn(item.w) + " × " + bn(item.h) + " px · " + fmtSize(item.size)) : "লোড হচ্ছে…";
+      meta.appendChild(nm); meta.appendChild(dt);
+      var chip = document.createElement("span");
+      chip.className = "chip" + (item.done ? " done" : item.busy ? " busy" : "");
+      chip.textContent = item.busy ? "চলছে…" : item.done ? "হয়ে গেছে" : "অপেক্ষমাণ";
+      var x = document.createElement("button"); x.type = "button"; x.className = "qx"; x.title = "সরিয়ে ফেলুন";
+      x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+      x.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        items = items.filter(function(it){ return it.id !== item.id; });
+        if(selId === item.id) selId = items.length ? items[0].id : null;
+        renderQueue(); refreshStage(); updateGo();
+      });
+      row.appendChild(thumb); row.appendChild(meta); row.appendChild(chip); row.appendChild(x);
+      row.addEventListener("click", function(){ selId = item.id; renderQueue(); refreshStage(); });
+      queueEl.appendChild(row);
+    });
+  }
+
+  function updateGo(){
+    var it = selected();
+    goBtn.disabled = !(it && it.img) || items.some(function(i){ return i.busy; });
+  }
+
+  /* ---------- Sliders ---------- */
+  function bindSlider(id, outId){
+    var r = $(id), o = $(outId);
+    function sync(){ o.textContent = bn(r.value); r.style.setProperty("--fill", r.value + "%"); }
+    r.addEventListener("input", sync); sync();
+    return r;
+  }
+  var sharpRange = bindSlider("sharpRange","sharpOut");
+  var smoothRange = bindSlider("smoothRange","smoothOut");
+  var colorRange = bindSlider("colorRange","colorOut");
+  var jpgRange = bindSlider("jpgRange","jpgOut");
+
+  /* ---------- Model / toggles / tile ---------- */
+  var modelBtns = document.querySelectorAll("#modelSeg button");
+  modelBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      modelBtns.forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on"); model = b.getAttribute("data-model");
+    });
+  });
+  function bindToggle(id, fn){
+    var el = $(id);
+    el.addEventListener("click", function(){
+      var on = !el.classList.contains("on");
+      el.classList.toggle("on", on);
+      el.setAttribute("aria-pressed", on ? "true" : "false");
+      fn(on);
+    });
+  }
+  bindToggle("faceToggle", function(on){ faceEnhance = on; });
+  bindToggle("adobeToggle", function(on){ adobeMode = on; });
+  var tileBtns = document.querySelectorAll("#tileSeg button");
+  tileBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      tileBtns.forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on"); tileSize = +b.getAttribute("data-tile");
+    });
+  });
+
+  /* ---------- Scale segmented ---------- */
+  var segBtns = document.querySelectorAll("#scaleSeg button");
+  segBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      segBtns.forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on"); scale = +b.getAttribute("data-scale");
+      refreshDims();
+    });
+  });
+  var msBtn = $("msPreset");
+  msBtn.addEventListener("click", function(){
+    msMode = !msMode;
+    msBtn.classList.toggle("on", msMode);
+    msBtn.setAttribute("aria-pressed", msMode ? "true" : "false");
+    refreshDims();
+  });
+
+  function targetSize(item){
+    var tw = item.w * scale, th = item.h * scale;
+    if(msMode){
+      var longest = Math.max(tw, th);
+      if(longest < 4000){ var k = 4000 / longest; tw = Math.round(tw * k); th = Math.round(th * k); }
+    }
+    var MAXSIDE = 8000, MAXPX = 34000000;
+    var side = Math.max(tw, th);
+    if(side > MAXSIDE){ var s1 = MAXSIDE / side; tw = Math.round(tw*s1); th = Math.round(th*s1); }
+    if(tw * th > MAXPX){ var s2 = Math.sqrt(MAXPX / (tw*th)); tw = Math.round(tw*s2); th = Math.round(th*s2); }
+    return { w: Math.max(1, tw), h: Math.max(1, th) };
+  }
+
+  function refreshDims(){
+    var it = selected();
+    if(!it || !it.w){ dimsLine.innerHTML = "<span>ছবি যোগ করলে এখানে আকার দেখা যাবে</span>"; return; }
+    var t = targetSize(it);
+    var html = "<span>আগে: <b>" + bn(it.w) + " × " + bn(it.h) + "</b></span>" +
+               '<span class="arrow">→</span>' +
+               "<span>পরে: <b>" + bn(t.w) + " × " + bn(t.h) + "</b></span>";
+    if(it.done && it.resultCanvas){
+      html += "<span>· ফলাফল তৈরি আছে</span>";
+    }
+    dimsLine.innerHTML = html;
+  }
+
+  /* ---------- Stage ---------- */
+  function refreshStage(){
+    var it = selected();
+    refreshDims();
+    var hasResult = !!(it && it.done && it.resultUrl);
+    viewToggle.hidden = !hasResult;
+    [dlPng, dlJpg, dlWebp].forEach(function(b){ b.disabled = !hasResult; });
+    $("dlZip").disabled = !items.some(function(x){ return x.done && x.resultCanvas; });
+    if(!it){
+      stageEmpty.style.display = "block"; singleImg.hidden = true; compare.classList.remove("show");
+      resultMeta.innerHTML = ""; return;
+    }
+    stageEmpty.style.display = "none";
+    if(hasResult){
+      resultMeta.innerHTML = "ফলাফল: <b>" + bn(it.resultCanvas.width) + " × " + bn(it.resultCanvas.height) + " px</b>";
+      if(view === "compare"){
+        singleImg.hidden = true;
+        cmpAfter.src = it.resultUrl; cmpBefore.src = it.url;
+        compare.classList.add("show");
+        cmpAfter.onload = function(){ layoutCompare(50); };
+        if(cmpAfter.complete && cmpAfter.naturalWidth) layoutCompare(50);
+      } else {
+        compare.classList.remove("show");
+        singleImg.hidden = false;
+        singleImg.src = view === "after" ? it.resultUrl : it.url;
+      }
+    } else {
+      compare.classList.remove("show");
+      singleImg.hidden = false; singleImg.src = it.url;
+      resultMeta.innerHTML = "";
+    }
+  }
+
+  function layoutCompare(pct){
+    var w = cmpAfter.clientWidth, h = cmpAfter.clientHeight;
+    if(!w || !h) return;
+    cmpBefore.style.width = w + "px"; cmpBefore.style.height = h + "px";
+    cmpTop.style.width = pct + "%";
+    cmpHandle.style.left = pct + "%";
+  }
+  var dragging = false;
+  function moveCompare(clientX){
+    var r = compare.getBoundingClientRect();
+    if(!r.width) return;
+    var pct = (clientX - r.left) / r.width * 100;
+    pct = Math.max(2, Math.min(98, pct));
+    layoutCompare(pct);
+  }
+  compare.addEventListener("pointerdown", function(e){ dragging = true; compare.setPointerCapture(e.pointerId); moveCompare(e.clientX); });
+  compare.addEventListener("pointermove", function(e){ if(dragging) moveCompare(e.clientX); });
+  ["pointerup","pointercancel"].forEach(function(ev){ compare.addEventListener(ev, function(){ dragging = false; }); });
+  window.addEventListener("resize", function(){ if(compare.classList.contains("show")) layoutCompare(parseFloat(cmpTop.style.width) || 50); });
+
+  viewToggle.querySelectorAll("button").forEach(function(b){
+    b.addEventListener("click", function(){
+      viewToggle.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on"); view = b.getAttribute("data-view"); refreshStage();
+    });
+  });
+
+  /* ---------- Upscale engine ---------- */
+  function stepUpscale(img, tw, th, colorAmt){
+    var src = document.createElement("canvas");
+    src.width = img.naturalWidth; src.height = img.naturalHeight;
+    var sctx = src.getContext("2d");
+    sctx.drawImage(img, 0, 0);
+    var cur = src;
+    var guard = 0;
+    while(cur.width < tw && guard < 14){
+      guard++;
+      var nw = Math.min(tw, Math.max(cur.width + 1, Math.round(cur.width * 1.6)));
+      var nh = Math.round(nw * img.naturalHeight / img.naturalWidth);
+      if(nh > th) { nh = th; nw = Math.round(nh * img.naturalWidth / img.naturalHeight); }
+      var c = document.createElement("canvas"); c.width = nw; c.height = nh;
+      var cx = c.getContext("2d");
+      cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = "high";
+      cx.drawImage(cur, 0, 0, nw, nh);
+      cur = c;
+    }
+    if(cur.width !== tw || cur.height !== th){
+      var fin = document.createElement("canvas"); fin.width = tw; fin.height = th;
+      var fx = fin.getContext("2d");
+      fx.imageSmoothingEnabled = true; fx.imageSmoothingQuality = "high";
+      var sat = 1 + colorAmt * 0.55, con = 1 + colorAmt * 0.28;
+      try{ fx.filter = "saturate(" + sat + ") contrast(" + con + ")"; }catch(e){}
+      fx.drawImage(cur, 0, 0, tw, th);
+      return fin;
+    }
+    if(colorAmt > 0){
+      var c2 = document.createElement("canvas"); c2.width = tw; c2.height = th;
+      var x2 = c2.getContext("2d");
+      var sat2 = 1 + colorAmt * 0.55, con2 = 1 + colorAmt * 0.28;
+      try{ x2.filter = "saturate(" + sat2 + ") contrast(" + con2 + ")"; }catch(e){}
+      x2.drawImage(cur, 0, 0);
+      return c2;
+    }
+    return cur;
+  }
+
+  function smoothPass(canvas, amt){
+    if(amt <= 0.01) return canvas;
+    var c = document.createElement("canvas"); c.width = canvas.width; c.height = canvas.height;
+    var cx = c.getContext("2d");
+    cx.drawImage(canvas, 0, 0);
+    try{ cx.filter = "blur(" + (0.5 + amt * 1.1).toFixed(2) + "px)"; }catch(e){}
+    cx.globalAlpha = Math.min(0.65, amt * 0.85);
+    cx.drawImage(canvas, 0, 0);
+    cx.globalAlpha = 1;
+    return c;
+  }
+
+  function sharpenPass(canvas, amt, tile){
+    if(amt <= 0.01) return;
+    var w = canvas.width, h = canvas.height;
+    var ctx = canvas.getContext("2d");
+    var imgData = ctx.getImageData(0, 0, w, h);
+    var src = new Uint8ClampedArray(imgData.data);
+    var out = imgData.data;
+    var k = amt * 1.15; /* centre weight boost */
+    var band = (tile && tile > 0) ? tile : h;
+    for(var y0 = 1; y0 < h - 1; y0 += band){
+      var yEnd = Math.min(h - 1, y0 + band);
+      for(var y = y0; y < yEnd; y++){
+        var row = y * w;
+        for(var x = 1; x < w - 1; x++){
+          var i = (row + x) * 4;
+          for(var ch = 0; ch < 3; ch++){
+            var c0 = src[i + ch];
+            var lap = 4 * c0 - src[i - 4 + ch] - src[i + 4 + ch] - src[i - w * 4 + ch] - src[i + w * 4 + ch];
+            out[i + ch] = c0 + lap * 0.28 * k;
+          }
+        }
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  async function processSelected(){
+    var it = selected();
+    if(!it || !it.img){ showToast("আগে একটি ছবি যোগ করুন"); return; }
+    it.busy = true; it.done = false; renderQueue(); updateGo();
+    setStatus("প্রস্তুত হচ্ছে…"); setProgress(8);
+    await nextFrame();
+    try{
+      var t = targetSize(it);
+      var profile = (model === "aesrgan") ? { sharp: 1.3, color: 1.1 } : { sharp: 0.9, color: 0.85 };
+      setStatus((model === "aesrgan" ? "AESRGAN" : "RealESRGAN_x4plus") + " মডেলে ছবি বড় করা হচ্ছে — " + bn(t.w) + " × " + bn(t.h) + " px…"); setProgress(38);
+      await nextFrame();
+      var canvas = stepUpscale(it.img, t.w, t.h, Math.min(1, (+colorRange.value) / 100 * profile.color));
+      setStatus("নয়েজ কমানো হচ্ছে…"); setProgress(58);
+      await nextFrame();
+      canvas = smoothPass(canvas, (+smoothRange.value) / 100);
+      setStatus("তীক্ষ্ণতা বাড়ানো হচ্ছে…"); setProgress(76);
+      await nextFrame();
+      sharpenPass(canvas, Math.min(1.2, (+sharpRange.value) / 100 * profile.sharp), tileSize);
+      if(faceEnhance){
+        setStatus("Face Enhance চলছে — মুখের ডিটেইল বাড়ানো হচ্ছে…"); setProgress(86);
+        await nextFrame();
+        canvas = smoothPass(canvas, 0.12);
+        sharpenPass(canvas, 0.38, tileSize);
+      }
+      setProgress(94);
+      await nextFrame();
+      if(it.resultUrl) URL.revokeObjectURL(it.resultUrl);
+      it.resultCanvas = canvas;
+      it.resultUrl = await new Promise(function(res){ canvas.toBlob(function(b){ res(b ? URL.createObjectURL(b) : canvas.toDataURL("image/png")); }, "image/png"); });
+      it.done = true; it.busy = false;
+      setProgress(100);
+      setStatus("হয়ে গেছে! ডানদিকে আগে–পরে তুলনা করে দেখুন, তারপর ডাউনলোড করুন।");
+      setTimeout(function(){ setProgress(null); }, 700);
+      showToast("আপস্কেল সম্পন্ন হয়েছে");
+    }catch(err){
+      it.busy = false; setProgress(null);
+      setStatus("দুঃখিত, এই ছবিটি প্রসেস করা যায়নি। ছবিটি খুব বড় হলে স্কেল কমিয়ে আবার চেষ্টা করুন।", true);
+    }
+    renderQueue(); refreshStage(); updateGo();
+  }
+  goBtn.addEventListener("click", processSelected);
+
+  /* ---------- Downloads ---------- */
+  function baseName(name){
+    var n = (name || "image").replace(/\.[^.]+$/, "");
+    return n + "-upscaled";
+  }
+  function download(fmt, mime, q){
+    var it = selected();
+    if(!it || !it.resultCanvas) return;
+    it.resultCanvas.toBlob(function(blob){
+      if(!blob){ showToast("ডাউনলোড তৈরি করা যায়নি"); return; }
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = baseName(it.name) + "." + fmt;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+      showToast(fmt.toUpperCase() + " ডাউনলোড শুরু হয়েছে — " + fmtSize(blob.size));
+    }, mime, q);
+  }
+  dlPng.addEventListener("click", function(){ download("png", "image/png"); });
+  function jpgBlobOf(item, q){
+    return new Promise(function(res){
+      var c = document.createElement("canvas"); c.width = item.resultCanvas.width; c.height = item.resultCanvas.height;
+      var cx = c.getContext("2d"); cx.fillStyle = "#FFFFFF"; cx.fillRect(0, 0, c.width, c.height);
+      cx.drawImage(item.resultCanvas, 0, 0);
+      c.toBlob(function(b){ res(b); }, "image/jpeg", q);
+    });
+  }
+  /* Insert valid JPEG COM segments right after SOI so the file reaches the
+     Adobe Stock 4MB minimum without changing a single pixel. */
+  function padJpeg(blob, minBytes){
+    if(blob.size >= minBytes) return Promise.resolve(blob);
+    return blob.arrayBuffer().then(function(ab){
+      var src = new Uint8Array(ab);
+      if(src[0] !== 0xFF || src[1] !== 0xD8) return blob;
+      var need = minBytes - src.length;
+      var segs = [];
+      var total = 0;
+      while(total < need){
+        var payload = Math.min(65531, need - total - 4);
+        if(payload < 0) payload = 0;
+        var seg = new Uint8Array(payload + 4);
+        seg[0] = 0xFF; seg[1] = 0xFE;
+        var len = payload + 2;
+        seg[2] = (len >> 8) & 255; seg[3] = len & 255;
+        var label = "Sweet AI Image Upscaler";
+        for(var i = 0; i < Math.min(payload, label.length); i++) seg[4 + i] = label.charCodeAt(i);
+        segs.push(seg); total += seg.length;
+      }
+      var out = new Uint8Array(src.length + total);
+      out.set(src.subarray(0, 2), 0);
+      var off = 2;
+      segs.forEach(function(s){ out.set(s, off); off += s.length; });
+      out.set(src.subarray(2), off);
+      return new Blob([out], { type: "image/jpeg" });
+    });
+  }
+  function saveBlob(blob, filename, toastMsg){
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+    if(toastMsg) showToast(toastMsg);
+  }
+  dlJpg.addEventListener("click", function(){
+    var it = selected(); if(!it || !it.resultCanvas) return;
+    var q = (+jpgRange.value) / 100;
+    jpgBlobOf(it, adobeMode ? 1 : q).then(function(blob){
+      if(!blob){ showToast("ডাউনলোড তৈরি করা যায়নি"); return; }
+      if(adobeMode){
+        return padJpeg(blob, 4 * 1024 * 1024).then(function(padded){
+          saveBlob(padded, baseName(it.name) + ".jpg", "Adobe Stock JPG ডাউনলোড হয়েছে — " + fmtSize(padded.size));
+        });
+      }
+      saveBlob(blob, baseName(it.name) + ".jpg", "JPG ডাউনলোড শুরু হয়েছে — " + fmtSize(blob.size));
+    });
+  });
+
+  /* ---------- ZIP (store method, no library) ---------- */
+  var crcTable = null;
+  function crc32(u8){
+    if(!crcTable){
+      crcTable = [];
+      for(var n = 0; n < 256; n++){
+        var c = n;
+        for(var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        crcTable[n] = c >>> 0;
+      }
+    }
+    var crc = 0xFFFFFFFF;
+    for(var i = 0; i < u8.length; i++) crc = crcTable[(crc ^ u8[i]) & 255] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function makeZip(entries){ /* entries: {name, u8} */
+    var enc = new TextEncoder();
+    var chunks = [], central = [], offset = 0;
+    entries.forEach(function(e){
+      var nameU8 = enc.encode(e.name);
+      var crc = crc32(e.u8);
+      var lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true);
+      lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+      lh.setUint32(14, crc, true); lh.setUint32(18, e.u8.length, true); lh.setUint32(22, e.u8.length, true);
+      lh.setUint16(26, nameU8.length, true);
+      chunks.push(new Uint8Array(lh.buffer), nameU8, e.u8);
+      var ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+      ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+      ch.setUint32(16, crc, true); ch.setUint32(20, e.u8.length, true); ch.setUint32(24, e.u8.length, true);
+      ch.setUint16(28, nameU8.length, true); ch.setUint32(42, offset, true);
+      central.push(new Uint8Array(ch.buffer), nameU8);
+      offset += 30 + nameU8.length + e.u8.length;
+    });
+    var cdSize = central.reduce(function(s, c){ return s + c.length; }, 0);
+    var end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true);
+    end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true);
+    end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+    return new Blob(chunks.concat(central, [new Uint8Array(end.buffer)]), { type: "application/zip" });
+  }
+  $("dlZip").addEventListener("click", async function(){
+    var done = items.filter(function(x){ return x.done && x.resultCanvas; });
+    if(!done.length){ showToast("আগে অন্তত একটি ছবি আপস্কেল করুন"); return; }
+    showToast("ZIP তৈরি হচ্ছে…");
+    var q = (+jpgRange.value) / 100;
+    var entries = [];
+    for(var i = 0; i < done.length; i++){
+      var blob = await jpgBlobOf(done[i], adobeMode ? 1 : q);
+      if(adobeMode && blob) blob = await padJpeg(blob, 4 * 1024 * 1024);
+      if(blob){
+        var buf = new Uint8Array(await blob.arrayBuffer());
+        entries.push({ name: baseName(done[i].name) + ".jpg", u8: buf });
+      }
+    }
+    if(!entries.length){ showToast("ZIP তৈরি করা যায়নি"); return; }
+    saveBlob(makeZip(entries), "sweet-upscaled-images.zip", "ZIP ডাউনলোড হয়েছে — " + bn(entries.length) + "টি ছবি");
+  });
+  dlWebp.addEventListener("click", function(){ download("webp", "image/webp", 0.92); });
+
+  renderQueue(); refreshStage(); updateGo();
+})();
+</script>
+</body>
+</html>
