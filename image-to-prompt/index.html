@@ -1,1 +1,355 @@
-<!-- placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image to Prompt — Sweet Metadata Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3ECDA; --panel:#FBF7EC; --ink:#2E2118; --bronze:#6B4423;
+    --bronze-light:#A67C52; --line:#D8C9A8; --muted:#6E5B47;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;min-height:100vh}
+  .topbar{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .topbar a.back{color:var(--bronze);text-decoration:none;font-weight:600;font-size:15px}
+  .topbar a.back:hover{text-decoration:underline}
+  .topbar h1{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--ink)}
+  main{max-width:760px;margin:0 auto;padding:28px 18px 60px}
+  .subtitle{font-family:'Playfair Display',Georgia,serif;font-size:17px;color:var(--muted);margin-bottom:24px}
+  .subtitle .bn{font-size:15px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(46,33,24,.06)}
+  .card h2{font-family:'Playfair Display',Georgia,serif;font-size:19px;margin-bottom:10px;color:var(--ink)}
+  .card p{font-size:14.5px;color:#4A3A2C;margin-bottom:10px}
+  .note{background:#F6ECD2;border:1px solid var(--line);border-left:4px solid var(--bronze);border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:20px}
+  .note strong{color:var(--bronze)}
+  .drop{border:2px dashed var(--bronze-light);border-radius:10px;padding:28px 16px;text-align:center;cursor:pointer;transition:background .15s,border-color .15s}
+  .drop:hover,.drop.over{background:#F6ECD2;border-color:var(--bronze)}
+  .drop p{margin-bottom:12px;color:var(--muted);font-size:14.5px}
+  .btn{display:inline-block;background:var(--bronze);color:#FBF7EC;border:none;border-radius:8px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#5A3719}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .btn.secondary{background:transparent;color:var(--bronze);border:1.5px solid var(--bronze)}
+  .btn.secondary:hover{background:#F6ECD2}
+  .btn.small{padding:7px 14px;font-size:14px}
+  input[type="password"],input[type="text"]{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:#FFFDF6;color:var(--ink);font-size:15px;font-family:inherit}
+  input:focus{outline:2px solid var(--bronze-light);border-color:var(--bronze)}
+  .key-row{display:flex;gap:10px;flex-wrap:wrap}
+  .key-row input{flex:1;min-width:220px}
+  .key-status{font-size:13.5px;color:var(--muted);margin-top:8px}
+  .key-status.saved{color:#3E6B34}
+  .preview-wrap{margin-top:16px;display:none}
+  .preview-wrap img{max-width:100%;max-height:360px;border-radius:8px;border:1px solid var(--line);display:block;margin:0 auto}
+  .file-meta{font-size:13.5px;color:var(--muted);text-align:center;margin-top:8px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  .status{font-size:14px;margin-top:12px;min-height:22px}
+  .status.error{color:#9B2C2C}
+  .status.info{color:var(--muted)}
+  .result{display:none}
+  .result pre{white-space:pre-wrap;word-wrap:break-word;background:#FFFDF6;border:1px solid var(--line);border-radius:8px;padding:16px;font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.7;color:var(--ink);margin:12px 0}
+  .empty{color:var(--muted);font-size:14.5px;font-style:italic}
+  footer{max-width:760px;margin:0 auto;padding:0 18px 40px;color:var(--muted);font-size:13px}
+  @media (max-width:600px){
+    .topbar h1{font-size:18px}
+    main{padding:20px 14px 48px}
+    .card{padding:16px}
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="../">← Sweet Metadata Lab</a>
+  <h1>Image to Prompt</h1>
+</header>
+
+<main>
+  <p class="subtitle">Turn any image into a detailed prompt for AI image generators.<br>
+  <span class="bn">ছবি থেকে বিস্তারিত প্রম্পট তৈরি করুন — আপনার নিজের Gemini API key দিয়ে।</span></p>
+
+  <div class="note">
+    <strong>A Gemini API key is required.</strong> This web version sends your image to Google Gemini
+    (cloud) using <em>your own</em> key. Your key is stored only in this browser's localStorage —
+    it is never sent to any Sweet Lab server (there is none). This web version does
+    <strong>not</strong> use the offline vision model from the Chrome extension; that model runs
+    only inside the extension.
+  </div>
+
+  <section class="card">
+    <h2>1 · Your Gemini API key</h2>
+    <p>Get a free key from <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">Google AI Studio — API keys</a>. Paste it below and save it in this browser.</p>
+    <div class="key-row">
+      <input type="password" id="apiKey" placeholder="Paste your Gemini API key here" autocomplete="off" spellcheck="false">
+      <button class="btn" id="saveKeyBtn" type="button">Save key</button>
+    </div>
+    <p class="key-status" id="keyStatus">No key saved in this browser yet.</p>
+  </section>
+
+  <section class="card">
+    <h2>2 · Upload an image</h2>
+    <div class="drop" id="dropZone" role="button" tabindex="0" aria-label="Upload an image">
+      <p>Drag &amp; drop a JPG or PNG image here,<br>or click to choose a file from your device.</p>
+      <button class="btn secondary" id="browseBtn" type="button">Choose image</button>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,.jpg,.jpeg,.png" hidden>
+    </div>
+    <div class="preview-wrap" id="previewWrap">
+      <img id="previewImg" alt="Uploaded image preview">
+      <p class="file-meta" id="fileMeta"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3 · Generate the prompt</h2>
+    <p>Gemini will describe the image and write a detailed image-generation prompt covering the subject, style, colours, composition, lighting and mood.</p>
+    <div class="actions">
+      <button class="btn" id="generateBtn" type="button">Generate prompt</button>
+      <span class="status info" id="status" role="status"></span>
+    </div>
+    <div class="result" id="resultBox">
+      <pre id="resultText"></pre>
+      <div class="actions">
+        <button class="btn small" id="copyBtn" type="button">Copy prompt</button>
+        <button class="btn small secondary" id="downloadBtn" type="button">Download .txt</button>
+      </div>
+    </div>
+    <p class="empty" id="emptyState">No prompt yet — upload an image and press “Generate prompt”.</p>
+  </section>
+</main>
+
+<footer>
+  Image to Prompt (web) — Sweet Metadata Lab. The only network calls this page makes are to Google Fonts
+  and to the Gemini API, using the key you enter. No image or key is sent anywhere else.
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var KEY_STORAGE = 'sweetlab_gemini_api_key';
+  var MODEL = 'gemini-2.0-flash';
+
+  var apiKeyInput = document.getElementById('apiKey');
+  var saveKeyBtn = document.getElementById('saveKeyBtn');
+  var keyStatus = document.getElementById('keyStatus');
+  var dropZone = document.getElementById('dropZone');
+  var browseBtn = document.getElementById('browseBtn');
+  var fileInput = document.getElementById('fileInput');
+  var previewWrap = document.getElementById('previewWrap');
+  var previewImg = document.getElementById('previewImg');
+  var fileMeta = document.getElementById('fileMeta');
+  var generateBtn = document.getElementById('generateBtn');
+  var statusEl = document.getElementById('status');
+  var resultBox = document.getElementById('resultBox');
+  var resultText = document.getElementById('resultText');
+  var emptyState = document.getElementById('emptyState');
+  var copyBtn = document.getElementById('copyBtn');
+  var downloadBtn = document.getElementById('downloadBtn');
+
+  var imageData = null; // { base64, mimeType, name, size }
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg || '';
+    statusEl.className = 'status ' + (kind || 'info');
+  }
+
+  // --- API key: localStorage only ---
+  function loadSavedKey() {
+    try {
+      var saved = localStorage.getItem(KEY_STORAGE);
+      if (saved) {
+        apiKeyInput.value = saved;
+        keyStatus.textContent = 'A key is saved in this browser (stored only in localStorage).';
+        keyStatus.classList.add('saved');
+      }
+    } catch (e) {
+      keyStatus.textContent = 'Could not read saved key: this browser may block localStorage.';
+    }
+  }
+
+  saveKeyBtn.addEventListener('click', function () {
+    var key = apiKeyInput.value.trim();
+    if (!key) {
+      keyStatus.textContent = 'Please paste your Gemini API key first.';
+      keyStatus.classList.remove('saved');
+      return;
+    }
+    try {
+      localStorage.setItem(KEY_STORAGE, key);
+      keyStatus.textContent = 'Key saved in this browser only (localStorage). It is never sent to any Sweet Lab server.';
+      keyStatus.classList.add('saved');
+    } catch (e) {
+      keyStatus.textContent = 'Could not save the key: this browser may block localStorage.';
+      keyStatus.classList.remove('saved');
+    }
+  });
+
+  // --- Image upload: picker + drag & drop ---
+  function handleFile(file) {
+    if (!file) return;
+    var okTypes = ['image/jpeg', 'image/png'];
+    var isJpgPng = okTypes.indexOf(file.type) !== -1 ||
+      /\.(jpe?g|png)$/i.test(file.name || '');
+    if (!isJpgPng) {
+      setStatus('Only JPG and PNG images are supported.', 'error');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+      var dataUrl = reader.result;
+      var comma = dataUrl.indexOf(',');
+      imageData = {
+        base64: dataUrl.slice(comma + 1),
+        mimeType: file.type || 'image/jpeg',
+        name: file.name,
+        size: file.size
+      };
+      previewImg.src = dataUrl;
+      fileMeta.textContent = file.name + ' — ' + (file.size / 1024).toFixed(1) + ' KB';
+      previewWrap.style.display = 'block';
+      setStatus('', 'info');
+    };
+    reader.onerror = function () {
+      setStatus('Could not read that file. Please try another image.', 'error');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  browseBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropZone.addEventListener('click', function () { fileInput.click(); });
+  dropZone.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+  });
+  fileInput.addEventListener('change', function () {
+    handleFile(fileInput.files && fileInput.files[0]);
+  });
+  ['dragenter', 'dragover'].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) {
+      e.preventDefault();
+      dropZone.classList.add('over');
+    });
+  });
+  ['dragleave', 'drop'].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) {
+      e.preventDefault();
+      dropZone.classList.remove('over');
+    });
+  });
+  dropZone.addEventListener('drop', function (e) {
+    var files = e.dataTransfer && e.dataTransfer.files;
+    handleFile(files && files[0]);
+  });
+
+  // --- Generate via Gemini (browser fetch, user's own key) ---
+  generateBtn.addEventListener('click', function () {
+    var key = apiKeyInput.value.trim();
+    if (!key) {
+      setStatus('No API key: paste your Gemini API key above and press “Save key”. Get one free at Google AI Studio (link above).', 'error');
+      apiKeyInput.focus();
+      return;
+    }
+    if (!imageData) {
+      setStatus('No image yet: upload a JPG or PNG image first.', 'error');
+      return;
+    }
+
+    generateBtn.disabled = true;
+    resultBox.style.display = 'none';
+    setStatus('Sending the image to Gemini…', 'info');
+
+    var promptText = 'Look at this image carefully and write ONE detailed image-generation prompt ' +
+      'that someone could paste into an AI image generator to recreate a similar image. ' +
+      'Cover: the main subject and what it is doing, the artistic style and medium, the colours ' +
+      'and colour palette, the composition and framing, the lighting, and the mood or atmosphere. ' +
+      'Write it as a single flowing prompt (one paragraph, plus a short comma-separated list of ' +
+      'style keywords at the end if useful). Do not add any explanation, headings, or commentary ' +
+      'outside the prompt itself.';
+
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + MODEL +
+      ':generateContent?key=' + encodeURIComponent(key);
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: promptText },
+            { inline_data: { mime_type: imageData.mimeType, data: imageData.base64 } }
+          ]
+        }]
+      })
+    })
+    .then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) {
+          var msg = (data && data.error && data.error.message) ||
+            ('Gemini API error (HTTP ' + response.status + ').');
+          throw new Error(msg);
+        }
+        return data;
+      });
+    })
+    .then(function (data) {
+      var text = '';
+      try {
+        text = data.candidates[0].content.parts.map(function (p) { return p.text || ''; }).join('');
+      } catch (e) { text = ''; }
+      text = (text || '').trim();
+      if (!text) {
+        throw new Error('Gemini returned an empty response. Please try again.');
+      }
+      resultText.textContent = text;
+      resultBox.style.display = 'block';
+      emptyState.style.display = 'none';
+      setStatus('Prompt ready.', 'info');
+    })
+    .catch(function (err) {
+      var msg = (err && err.message) ? err.message : 'Something went wrong.';
+      if (err && err.name === 'TypeError') {
+        msg = 'Network error: could not reach the Gemini API. Check your internet connection and try again.';
+      }
+      setStatus('Error: ' + msg, 'error');
+    })
+    .finally(function () {
+      generateBtn.disabled = false;
+    });
+  });
+
+  // --- Copy + TXT download ---
+  copyBtn.addEventListener('click', function () {
+    var text = resultText.textContent;
+    function done() { setStatus('Prompt copied to clipboard.', 'info'); }
+    function failed() { setStatus('Copy failed — select the text and copy it manually.', 'error'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, failed);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { failed(); }
+      document.body.removeChild(ta);
+    }
+  });
+
+  downloadBtn.addEventListener('click', function () {
+    var blob = new Blob([resultText.textContent], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'image-prompt.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  loadSavedKey();
+})();
+</script>
+</body>
+</html>
