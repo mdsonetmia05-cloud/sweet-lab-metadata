@@ -1,1 +1,560 @@
-<!-- placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Checker — Sweet Metadata Lab</title>
+<meta name="description" content="Check whether an image meets Adobe Stock's minimum size requirements and run through a readiness checklist before you submit. A checklist only — not a guarantee of acceptance.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3ECDA;
+    --panel:#FBF7EC;
+    --panel-edge:#E3D9BE;
+    --ink:#2E2118;
+    --ink-soft:#5C4A38;
+    --bronze:#6B4423;
+    --bronze-light:#A67C52;
+    --pass:#2E6B34;
+    --pass-bg:#E4EEDF;
+    --fail:#9B2C1E;
+    --fail-bg:#F6E3DE;
+    --warn-bg:#F6ECD4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hind Siliguri",Georgia,"Times New Roman",serif;
+    font-size:17px;line-height:1.6;
+    min-height:100vh;
+  }
+  a{color:var(--bronze)}
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:14px 20px;
+    border-bottom:1px solid var(--panel-edge);
+    background:var(--panel);
+  }
+  .topbar .back{
+    text-decoration:none;font-weight:600;color:var(--bronze);
+    font-size:16px;white-space:nowrap;
+  }
+  .topbar .back:hover{text-decoration:underline}
+  .topbar h1{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:26px;font-weight:700;letter-spacing:.2px;
+  }
+  .topbar .tag{
+    margin-left:auto;font-size:14px;color:var(--ink-soft);
+    border:1px solid var(--panel-edge);border-radius:999px;
+    padding:3px 12px;background:var(--paper);white-space:nowrap;
+  }
+  main{max-width:860px;margin:0 auto;padding:24px 18px 64px}
+  /* ---------- disclaimer ---------- */
+  .disclaimer{
+    border:2px solid var(--bronze);
+    background:var(--warn-bg);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:24px;
+  }
+  .disclaimer strong{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:19px;display:block;margin-bottom:4px;
+  }
+  .disclaimer p{font-size:15.5px;color:var(--ink)}
+  /* ---------- sections ---------- */
+  section{
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    border-radius:12px;
+    padding:22px 20px;
+    margin-bottom:20px;
+  }
+  h2{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:22px;font-weight:700;margin-bottom:4px;
+  }
+  .subtitle{color:var(--ink-soft);font-size:15px;margin-bottom:16px}
+  .bn{color:var(--bronze);font-weight:500}
+  /* ---------- drop zone ---------- */
+  .dropzone{
+    border:2px dashed var(--bronze-light);
+    border-radius:10px;
+    padding:30px 18px;text-align:center;
+    cursor:pointer;
+    transition:background .15s,border-color .15s;
+    background:var(--paper);
+  }
+  .dropzone:hover,.dropzone.drag{border-color:var(--bronze);background:#EFE6CF}
+  .dropzone .big{font-family:"Playfair Display",Georgia,serif;font-size:20px;font-weight:600}
+  .dropzone p{color:var(--ink-soft);font-size:15px;margin-top:4px}
+  .dropzone input{display:none}
+  .btn{
+    display:inline-block;margin-top:14px;
+    background:var(--bronze);color:#FBF7EC;border:none;
+    font-family:inherit;font-size:16px;font-weight:600;
+    padding:10px 22px;border-radius:8px;cursor:pointer;
+  }
+  .btn:hover{background:#57371C}
+  .btn.ghost{
+    background:transparent;color:var(--bronze);
+    border:1.5px solid var(--bronze);margin-left:8px;
+  }
+  .btn.ghost:hover{background:#EFE6CF}
+  /* ---------- results ---------- */
+  .empty{
+    text-align:center;color:var(--ink-soft);
+    border:1px dashed var(--panel-edge);border-radius:10px;
+    padding:26px 16px;font-size:16px;
+  }
+  .preview-wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+  .preview-wrap img{
+    max-width:260px;max-height:260px;width:auto;height:auto;
+    border:1px solid var(--panel-edge);border-radius:8px;
+    background:#fff;display:block;
+  }
+  .facts{flex:1;min-width:240px}
+  .facts dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:16px}
+  .facts dt{color:var(--ink-soft)}
+  .facts dd{font-weight:600}
+  .checklist{list-style:none;margin-top:16px}
+  .checklist li{
+    display:flex;gap:10px;align-items:flex-start;
+    padding:12px 12px;border-radius:8px;margin-bottom:8px;
+    border:1px solid var(--panel-edge);background:var(--paper);
+  }
+  .badge{
+    flex-shrink:0;font-weight:700;font-size:13px;letter-spacing:.4px;
+    padding:3px 10px;border-radius:999px;margin-top:1px;
+  }
+  .badge.pass{background:var(--pass-bg);color:var(--pass)}
+  .badge.fail{background:var(--fail-bg);color:var(--fail)}
+  .badge.info{background:var(--warn-bg);color:var(--bronze)}
+  .checklist .text strong{display:block;font-size:16.5px}
+  .checklist .text span{font-size:15px;color:var(--ink-soft)}
+  .verdict{
+    margin-top:16px;padding:14px 16px;border-radius:8px;
+    font-size:17px;font-weight:600;
+  }
+  .verdict.pass{background:var(--pass-bg);color:var(--pass)}
+  .verdict.fail{background:var(--fail-bg);color:var(--fail)}
+  .verdict p{font-weight:400;font-size:15px;color:var(--ink);margin-top:4px}
+  /* ---------- vector note ---------- */
+  .note{
+    border-left:4px solid var(--bronze);
+    background:var(--warn-bg);
+    padding:14px 16px;border-radius:0 8px 8px 0;
+    font-size:15.5px;
+  }
+  .note strong{font-family:"Playfair Display",Georgia,serif;font-size:17px}
+  /* ---------- readiness checklist ---------- */
+  .ready-list{list-style:none}
+  .ready-list li{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:13px 6px;border-bottom:1px solid var(--panel-edge);
+  }
+  .ready-list li:last-child{border-bottom:none}
+  .ready-list input[type="checkbox"]{
+    width:22px;height:22px;flex-shrink:0;margin-top:2px;
+    accent-color:var(--bronze);cursor:pointer;
+  }
+  .ready-list label{cursor:pointer;font-size:16.5px}
+  .ready-list label strong{display:block}
+  .ready-list label span{color:var(--ink-soft);font-size:15px}
+  .ready-list li.done label strong{color:var(--pass)}
+  .progress{
+    margin-top:14px;font-weight:600;font-size:16px;
+  }
+  .progress-bar{
+    height:10px;background:#E7DCC2;border-radius:999px;overflow:hidden;margin-top:6px;
+  }
+  .progress-bar div{height:100%;background:var(--bronze);width:0%;transition:width .25s}
+  .honest-note{
+    margin-top:14px;font-size:14.5px;color:var(--ink-soft);
+    border:1px dashed var(--panel-edge);border-radius:8px;padding:10px 12px;
+  }
+  /* ---------- metadata helpers ---------- */
+  .field{margin-top:16px}
+  .field label{display:block;font-weight:600;margin-bottom:6px;font-size:16px}
+  .field label span{font-weight:400;color:var(--ink-soft);font-size:14.5px}
+  .field textarea,.field select{
+    width:100%;font-family:inherit;font-size:16px;color:var(--ink);
+    background:#fff;border:1px solid var(--panel-edge);border-radius:8px;
+    padding:10px 12px;
+  }
+  .field textarea{min-height:74px;resize:vertical}
+  .counter{font-size:14.5px;color:var(--ink-soft);margin-top:4px}
+  .counter b{color:var(--ink)}
+  .counter .over{color:var(--fail);font-weight:700}
+  .counter .first70{color:var(--bronze);font-weight:600}
+  footer{
+    text-align:center;color:var(--ink-soft);font-size:14.5px;
+    padding:0 18px 32px;max-width:860px;margin:0 auto;
+  }
+  footer a{color:var(--bronze)}
+  @media (max-width:600px){
+    .topbar h1{font-size:22px}
+    .topbar .tag{display:none}
+    main{padding:18px 12px 48px}
+    section{padding:18px 14px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="back" href="../">← Sweet Metadata Lab</a>
+  <h1>Stock Checker</h1>
+  <span class="tag">Adobe Stock readiness</span>
+</header>
+
+<main>
+
+  <!-- Prominent honesty notice -->
+  <div class="disclaimer" role="note">
+    <strong>⚠ Readiness checklist only — not a guarantee</strong>
+    <p>This page checks your image's size against Adobe Stock's published minimums and reminds you of the metadata and release checks contributors must do themselves. <strong>It does not guarantee that Adobe Stock — or any marketplace — will accept your image.</strong> Adobe reviews every submission on its own technical and content standards, and those standards can change. Always re-check Adobe's current contributor requirements before you submit.</p>
+    <p class="bn" style="margin-top:6px">এই টুলটি শুধু একটি প্রস্তুতি চেকলিস্ট — এটি অ্যাডোবি স্টক গ্রহণের নিশ্চয়তা দেয় না।</p>
+  </div>
+
+  <!-- 1. Upload + automatic size checks -->
+  <section aria-labelledby="upload-title">
+    <h2 id="upload-title">1 · Check your image size</h2>
+    <p class="subtitle">Upload a JPG or PNG. Your file is read <strong>in your browser only</strong> — it is never uploaded to any server. <span class="bn">ছবি আপলোড করুন — ফাইলটি আপনার ব্রাউজারেই পড়া হয়।</span></p>
+
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose an image file or drag one here">
+      <div class="big">Drop your image here</div>
+      <p>or click to choose a file · JPG or PNG only</p>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,.jpg,.jpeg,.png">
+      <button class="btn" type="button" id="browseBtn">Choose image</button>
+    </div>
+
+    <div id="resultArea" style="margin-top:18px">
+      <div class="empty" id="emptyState">No image loaded yet. Choose a JPG or PNG to see its real dimensions, megapixels and file size — measured from the file itself.</div>
+    </div>
+  </section>
+
+  <!-- Vector note -->
+  <section aria-labelledby="vector-title">
+    <h2 id="vector-title">2 · Submitting a vector?</h2>
+    <p class="subtitle">The checker above measures raster images (JPG / PNG). It cannot verify a vector file.</p>
+    <div class="note">
+      <strong>Adobe Stock vector rule: minimum 15 megapixel artboard.</strong><br>
+      For vector artwork, Adobe requires an artboard of at least 15 megapixels — for example 5000 × 3000 px (15 MP). A raster check cannot verify a vector artboard, so check your artboard size in your vector app (for example Adobe Illustrator: <em>File → Document Setup</em>, or check the artboard dimensions) and make sure your EPS / AI file meets the 15 MP minimum before submitting. A JPG preview exported from the vector does not prove the artboard size.
+    </div>
+  </section>
+
+  <!-- 3. Readiness checklist (self-ticked) -->
+  <section aria-labelledby="ready-title">
+    <h2 id="ready-title">3 · Readiness checklist</h2>
+    <p class="subtitle">Tick each item yourself when it is truly done. This tool cannot verify these for you — it only reminds you what Adobe asks for. <span class="bn">নিজে যাচাই করে টিক দিন।</span></p>
+
+    <ul class="ready-list" id="readyList">
+      <li>
+        <input type="checkbox" id="c-title">
+        <label for="c-title"><strong>Title ready</strong>
+        <span>Up to 200 characters. Put the most important buyer-intended, SEO-friendly keywords in the first 70 characters — only about the first 70 show in Adobe search results.</span></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c-keywords">
+        <label for="c-keywords"><strong>Keywords ready — maximum 49</strong>
+        <span>Up to 49 keywords, most relevant first. No keyword stuffing, no irrelevant or misleading words.</span></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c-category">
+        <label for="c-category"><strong>Category chosen — one of Adobe's 21</strong>
+        <span>Pick the single most specific category for this image from the list below.</span></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c-trademark">
+        <label for="c-trademark"><strong>No visible trademarks, logos or brand names</strong>
+        <span>Check the whole frame — signs, packaging, clothing logos, car badges. Remove or avoid them, or the image can be refused.</span></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c-people">
+        <label for="c-people"><strong>People: no recognisable person without a release</strong>
+        <span>If any person is recognisable, you need a signed model release for them. If there is no release, do not submit an image with a recognisable person.</span></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c-quality">
+        <label for="c-quality"><strong>Image is sharp, clean and correctly exposed</strong>
+        <span>Check at 100% zoom: no blur, heavy noise, compression artefacts or sensor dust. Adobe rejects technically weak images.</span></label>
+      </li>
+    </ul>
+
+    <div class="progress" id="progressText">0 of 6 items ticked</div>
+    <div class="progress-bar" aria-hidden="true"><div id="progressFill"></div></div>
+
+    <div class="honest-note">Honest note: ticking every box does not mean Adobe will accept the file. These are self-checks — Adobe makes the final decision, and it reviews content, quality and legal requirements that no browser tool can judge.</div>
+
+    <!-- Title helper: live character count, counted locally -->
+    <div class="field">
+      <label for="titleDraft">Draft your title here <span>(optional — counted in your browser, nothing is saved or sent)</span></label>
+      <textarea id="titleDraft" maxlength="400" placeholder="Type the title you plan to submit…"></textarea>
+      <div class="counter" id="titleCounter">0 / 200 characters</div>
+    </div>
+
+    <!-- Keywords helper: live keyword count, counted locally -->
+    <div class="field">
+      <label for="keywordDraft">Draft your keywords here <span>(optional — separate with commas, counted in your browser)</span></label>
+      <textarea id="keywordDraft" placeholder="sunset, beach, ocean, travel…"></textarea>
+      <div class="counter" id="keywordCounter">0 / 49 keywords</div>
+    </div>
+
+    <!-- Category picker: Adobe's 21 categories, verified against Adobe's published list -->
+    <div class="field">
+      <label for="categorySelect">Choose your category <span>(Adobe's 21 categories — pick one)</span></label>
+      <select id="categorySelect">
+        <option value="" selected>— Select a category —</option>
+        <option value="1">1 · Animals</option>
+        <option value="2">2 · Buildings and Architecture</option>
+        <option value="3">3 · Business</option>
+        <option value="4">4 · Drinks</option>
+        <option value="5">5 · The Environment</option>
+        <option value="6">6 · States of Mind</option>
+        <option value="7">7 · Food</option>
+        <option value="8">8 · Graphic Resources</option>
+        <option value="9">9 · Hobbies and Leisure</option>
+        <option value="10">10 · Industry</option>
+        <option value="11">11 · Landscapes</option>
+        <option value="12">12 · Lifestyle</option>
+        <option value="13">13 · People</option>
+        <option value="14">14 · Plants and Flowers</option>
+        <option value="15">15 · Culture and Religion</option>
+        <option value="16">16 · Science</option>
+        <option value="17">17 · Social Issues</option>
+        <option value="18">18 · Sports</option>
+        <option value="19">19 · Technology</option>
+        <option value="20">20 · Transport</option>
+        <option value="21">21 · Travel</option>
+      </select>
+      <div class="counter" id="categoryNote">No category chosen yet.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Stock Checker · Sweet Metadata Lab · Works fully offline in your browser once loaded — no image or text ever leaves your device.<br>
+  Size rules shown are Adobe Stock's published minimums (photos 4 MP; vector artboard 15 MP). Adobe's requirements can change — check the <a href="https://helpx.adobe.com/stock/contributor/help.html" target="_blank" rel="noopener">Adobe Stock Contributor Help</a> before submitting.
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var PHOTO_MIN_MP = 4;      /* Adobe Stock minimum for photos */
+  var VECTOR_MIN_MP = 15;    /* Adobe Stock minimum artboard for vectors */
+  var TITLE_MAX = 200;
+  var TITLE_SEO = 70;        /* only ~first 70 chars show in Adobe search */
+  var KEYWORD_MAX = 49;
+
+  var dropzone = document.getElementById("dropzone");
+  var fileInput = document.getElementById("fileInput");
+  var browseBtn = document.getElementById("browseBtn");
+  var resultArea = document.getElementById("resultArea");
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+  }
+
+  function formatMP(width, height) {
+    var mp = (width * height) / 1000000;
+    return mp.toFixed(2) + " MP";
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function checkRow(pass, title, detail) {
+    return '<li><span class="badge ' + (pass ? "pass" : "fail") + '">' +
+      (pass ? "PASS" : "FAIL") + '</span><div class="text"><strong>' +
+      escapeHtml(title) + '</strong><span>' + escapeHtml(detail) + "</span></div></li>";
+  }
+
+  function infoRow(title, detail) {
+    return '<li><span class="badge info">INFO</span><div class="text"><strong>' +
+      escapeHtml(title) + '</strong><span>' + escapeHtml(detail) + "</span></div></li>";
+  }
+
+  function showError(message) {
+    resultArea.innerHTML =
+      '<div class="empty" style="border-color:#9B2C1E;color:#9B2C1E">' +
+      escapeHtml(message) + "</div>";
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+
+    var isJpeg = file.type === "image/jpeg" || /\.jpe?g$/i.test(file.name);
+    var isPng = file.type === "image/png" || /\.png$/i.test(file.name);
+    if (!isJpeg && !isPng) {
+      showError("That file is not a JPG or PNG. This checker only reads JPG and PNG images — please choose one of those.");
+      return;
+    }
+
+    var objectUrl = URL.createObjectURL(file);
+    var img = new Image();
+
+    img.onload = function () {
+      var width = img.naturalWidth;
+      var height = img.naturalHeight;
+      URL.revokeObjectURL(objectUrl);
+      if (!width || !height) {
+        showError("The image could not be read — its dimensions are missing. Try a different JPG or PNG file.");
+        return;
+      }
+      renderResult(file, width, height, objectUrl);
+    };
+
+    img.onerror = function () {
+      URL.revokeObjectURL(objectUrl);
+      showError("That file could not be opened as an image. It may be damaged or in a format this browser cannot read. Try a different JPG or PNG file.");
+    };
+
+    img.src = objectUrl;
+  }
+
+  function renderResult(file, width, height, objectUrl) {
+    var mp = (width * height) / 1000000;
+    var typeLabel = file.type === "image/png" ? "PNG" : "JPG";
+    var aspect = (width / height).toFixed(2) + ":1";
+    var orientation = width > height ? "Landscape" : (height > width ? "Portrait" : "Square");
+    var photoPass = mp >= PHOTO_MIN_MP;
+
+    var rows = "";
+    rows += checkRow(true, "File type: " + typeLabel,
+      "JPG and PNG are accepted image formats for Adobe Stock photo submissions.");
+    rows += checkRow(true, "Dimensions: " + width + " × " + height + " px",
+      orientation + " · aspect ratio " + aspect + " · dimensions read from the image itself.");
+    rows += checkRow(photoPass, "Size: " + formatMP(width, height),
+      photoPass
+        ? "Meets Adobe Stock's 4 megapixel minimum for photos."
+        : "Below Adobe Stock's 4 megapixel minimum for photos — this image is too small to submit as a photo. A larger original is needed; upscaling a small file does not fix it.");
+    rows += infoRow("Vector artboard: not checked here",
+      "This is a raster image (" + formatMP(width, height) + "). Vectors need a 15 MP artboard — see section 2 below. A raster size check cannot verify a vector artboard.");
+
+    var verdict = photoPass
+      ? '<div class="verdict pass">✓ Size check passed — this image meets the 4 MP photo minimum.<p>That only covers size. Work through the readiness checklist in section 3, then check Adobe\'s current requirements before submitting. Passing here is not an acceptance guarantee.</p></div>'
+      : '<div class="verdict fail">✕ Size check failed — this image is below the 4 MP photo minimum.<p>Adobe Stock requires photos of at least 4 megapixels. Submit a larger original instead.</p></div>';
+
+    resultArea.innerHTML =
+      '<div class="preview-wrap">' +
+        '<img src="' + objectUrl + '" alt="Preview of the uploaded image">' +
+        '<div class="facts"><dl>' +
+          "<dt>File name</dt><dd>" + escapeHtml(file.name) + "</dd>" +
+          "<dt>File type</dt><dd>" + typeLabel + "</dd>" +
+          "<dt>Dimensions</dt><dd>" + width + " × " + height + " px</dd>" +
+          "<dt>Megapixels</dt><dd>" + formatMP(width, height) + "</dd>" +
+          "<dt>File size</dt><dd>" + formatBytes(file.size) + "</dd>" +
+          "<dt>Orientation</dt><dd>" + orientation + "</dd>" +
+        "</dl></div>" +
+      "</div>" +
+      '<ul class="checklist">' + rows + "</ul>" +
+      verdict +
+      '<div style="margin-top:14px"><button class="btn ghost" type="button" id="clearBtn">Check another image</button></div>';
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      fileInput.value = "";
+      resultArea.innerHTML =
+        '<div class="empty" id="emptyState">No image loaded yet. Choose a JPG or PNG to see its real dimensions, megapixels and file size — measured from the file itself.</div>';
+      dropzone.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  /* ---- file picking / drag & drop ---- */
+  browseBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropzone.addEventListener("click", function (e) {
+    if (e.target !== browseBtn) fileInput.click();
+  });
+  dropzone.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); }
+  });
+  fileInput.addEventListener("change", function () {
+    if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+  ["dragenter", "dragover"].forEach(function (evt) {
+    dropzone.addEventListener(evt, function (e) { e.preventDefault(); dropzone.classList.add("drag"); });
+  });
+  ["dragleave", "drop"].forEach(function (evt) {
+    dropzone.addEventListener(evt, function (e) { e.preventDefault(); dropzone.classList.remove("drag"); });
+  });
+  dropzone.addEventListener("drop", function (e) {
+    var files = e.dataTransfer && e.dataTransfer.files;
+    if (files && files[0]) handleFile(files[0]);
+  });
+
+  /* ---- readiness checklist progress ---- */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("#readyList input[type='checkbox']"));
+  var progressText = document.getElementById("progressText");
+  var progressFill = document.getElementById("progressFill");
+  function updateProgress() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    progressText.textContent = done + " of " + boxes.length + " items ticked";
+    progressFill.style.width = (done / boxes.length * 100) + "%";
+  }
+  boxes.forEach(function (box) {
+    box.addEventListener("change", function () {
+      box.closest("li").classList.toggle("done", box.checked);
+      updateProgress();
+    });
+  });
+  updateProgress();
+
+  /* ---- title draft counter ---- */
+  var titleDraft = document.getElementById("titleDraft");
+  var titleCounter = document.getElementById("titleCounter");
+  titleDraft.addEventListener("input", function () {
+    var len = titleDraft.value.length;
+    var first70 = titleDraft.value.slice(0, TITLE_SEO);
+    titleCounter.innerHTML =
+      "<b>" + len + " / " + TITLE_MAX + " characters</b>" +
+      (len > TITLE_MAX
+        ? ' · <span class="over">over the 200-character limit — shorten it</span>'
+        : len > 0
+          ? ' · <span class="first70">first 70 (what buyers see):</span> ' + escapeHtml(first70)
+          : " · the first 70 characters carry the key buyer keywords");
+  });
+
+  /* ---- keyword draft counter ---- */
+  var keywordDraft = document.getElementById("keywordDraft");
+  var keywordCounter = document.getElementById("keywordCounter");
+  keywordDraft.addEventListener("input", function () {
+    var words = keywordDraft.value.split(",")
+      .map(function (w) { return w.trim(); })
+      .filter(function (w) { return w.length > 0; });
+    var n = words.length;
+    keywordCounter.innerHTML =
+      "<b>" + n + " / " + KEYWORD_MAX + " keywords</b>" +
+      (n > KEYWORD_MAX
+        ? ' · <span class="over">over the 49-keyword limit — remove ' + (n - KEYWORD_MAX) + "</span>"
+        : n > 0 ? " · most relevant first" : " · separate keywords with commas");
+  });
+
+  /* ---- category picker note ---- */
+  var categorySelect = document.getElementById("categorySelect");
+  var categoryNote = document.getElementById("categoryNote");
+  categorySelect.addEventListener("change", function () {
+    if (!categorySelect.value) {
+      categoryNote.textContent = "No category chosen yet.";
+      return;
+    }
+    var label = categorySelect.options[categorySelect.selectedIndex].textContent;
+    categoryNote.textContent = "Chosen: " + label + " (Adobe CSV category number " + categorySelect.value + ").";
+  });
+})();
+</script>
+</body>
+</html>
