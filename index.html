@@ -1776,6 +1776,21 @@ document.addEventListener('DOMContentLoaded', function () {
     el.style.boxShadow = '0 0 0 3px rgba(37,99,235,.55)';
     setTimeout(function () { el.style.boxShadow = prev; }, 1800);
   }
+  /* Upload button fallback: clicking anywhere in the drop zone (or its
+     Upload File button) opens the file picker. The invisible #files input
+     already covers the zone (z-index fix in dash-dark.css), but this
+     guarantees the picker opens even if another layer ever sits above it
+     again. The input has `multiple`, so bulk selection works. */
+  (function () {
+    var drop = document.getElementById('drop');
+    var files = document.getElementById('files');
+    if (!drop || !files) return;
+    if (!files.hasAttribute('multiple')) files.setAttribute('multiple', '');
+    drop.addEventListener('click', function (e) {
+      if (e.target === files) return; /* the input's own click already opens the picker */
+      files.click();
+    });
+  })();
   /* Workspace constants live at the top on purpose: syncWsCount() runs
      earlier (results block) and calls updateWsCounts(), which reads
      WS_TYPES — a `var` assigned later would still be undefined there
