@@ -1828,6 +1828,13 @@ function buildZip(entries){
   eocd.setUint32(12,cdSize,true);eocd.setUint32(16,cdStart,true);eocd.setUint16(20,0,true);
   return concatBytes([...parts,...central,new Uint8Array(eocd.buffer)]);
 }
+async function titleFileName(r){
+  const ext=(r.file.name.match(/\.[^.]+$/)||[''])[0];
+  let base=String((r.data&&r.data.title)||'').replace(/[<>:"/\\|?*\x00-\x1F]/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');
+  if(!base)return r.file.name;
+  if(base.length>100){base=base.slice(0,100).replace(/\s+\S*$/,'').replace(/[. ]+$/,'')||base.slice(0,100)}
+  return base+ext;
+}
 async function downloadEmbeddedZip(){
   syncEdits();
   const done=sortedResults().filter(x=>x.status==='done');
@@ -1847,7 +1854,7 @@ async function downloadEmbeddedZip(){
       else if(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4E&&bytes[3]===0x47)out=embedXmpPng(bytes,new TextEncoder().encode(buildXmpPacket(r.data)));
     }catch(e){out=null}
     if(out){bytes=out;embedded++}else unchanged++;
-    entries.push({name:uniqueZipName(r.file.name,used),data:bytes});
+    entries.push({name:uniqueZipName(titleFileName(r),used),data:bytes});
   }
   if(!entries.length){if(btn)btn.disabled=false;toast('No files could be read for embedding.');return}
   const zip=buildZip(entries);
