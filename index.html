@@ -1193,7 +1193,7 @@ body.paper .status-bad{color:#B91C1C!important}
       <div class="results-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span data-i18n="results-title">Generated Results</span></h3><div class="stats">
         <div id="totalStat" class="stat-pill">0 Files</div><div id="doneStat" class="stat-pill done">0 Success</div><div id="pendingStat" class="stat-pill pending">0 Pending</div><div id="errorStat" class="stat-pill error">0 Failed</div>
       </div></div>
-      <section class="workspace-toolbar"><div><h3>Asset Workspace</h3><p>Latest processed items move to the top automatically. Edit metadata directly inside each card.</p></div><div class="download-actions"><button id="copyAll" class="btn">ALL Copy</button><button id="downloadCsv" class="btn">ALL Download CSV</button><button id="downloadTxt" class="btn">ALL Download TXT</button><button id="downloadSheet" class="btn">ALL Download Sheet</button><button id="retryFailed" class="btn">Retry Failed</button></div></section>
+      <section class="workspace-toolbar"><div><h3>Asset Workspace</h3><p>Latest processed items move to the top automatically. Edit metadata directly inside each card.</p></div><div class="download-actions"><button id="copyAll" class="btn">ALL Copy</button><button id="downloadCsv" class="btn">ALL Download CSV</button><button id="downloadTxt" class="btn">ALL Download TXT</button><button id="downloadSheet" class="btn">ALL Download Sheet</button><button id="retryFailed" class="btn">Retry Failed</button><button id="embedDownload" class="btn">Embed file Download</button></div></section>
       <section id="workspaceList" class="workspace-list"><div class="workspace-empty"><div><div class="empty-orb">❤️</div><b data-i18n="empty-title">No metadata generated yet.</b><span data-i18n="empty-sub">Upload an image and click &ldquo;Generate Metadata&rdquo; to see results here.</span></div></div></section>
     </section>
   </div>
@@ -1209,7 +1209,7 @@ const el={
   apiKey:$("apiKey"),testKey:$("testKey"),saveKey:$("saveKey"),clearKey:$("clearKey"),model:$("model"),apiStatus:$("apiStatus"),
   marketplace:$("marketplace"),contentType:$("contentType"),category:$("category"),titleMin:$("titleMin"),titleMax:$("titleMax"),keywordMin:$("keywordMin"),keywordMax:$("keywordMax"),descMin:$("descMin"),descMax:$("descMax"),prefix:$("prefix"),suffix:$("suffix"),seo:$("seo"),singleWord:$("singleWord"),dedupe:$("dedupe"),commercial:$("commercial"),extra:$("extra"),
   titleStyle:$("titleStyle"),strictMode:$("strictMode"),detectText:$("detectText"),autoClassify:$("autoClassify"),batchDiversity:$("batchDiversity"),qualityCheck:$("qualityCheck"),primaryKeywords:$("primaryKeywords"),forbiddenWords:$("forbiddenWords"),
-  drop:$("drop"),files:$("files"),generate:$("generate"),stop:$("stop"),clear:$("clear"),workspaceList:$("workspaceList"),bar:$("bar"),progressText:$("progressText"),progressPct:$("progressPct"),totalStat:$("totalStat"),doneStat:$("doneStat"),errorStat:$("errorStat"),pendingStat:$("pendingStat"),copyAll:$("copyAll"),downloadCsv:$("downloadCsv"),downloadTxt:$("downloadTxt"),downloadSheet:$("downloadSheet"),retryFailed:$("retryFailed"),toast:$("toast"),
+  drop:$("drop"),files:$("files"),generate:$("generate"),stop:$("stop"),clear:$("clear"),workspaceList:$("workspaceList"),bar:$("bar"),progressText:$("progressText"),progressPct:$("progressPct"),totalStat:$("totalStat"),doneStat:$("doneStat"),errorStat:$("errorStat"),pendingStat:$("pendingStat"),copyAll:$("copyAll"),downloadCsv:$("downloadCsv"),downloadTxt:$("downloadTxt"),downloadSheet:$("downloadSheet"),retryFailed:$("retryFailed"),embedDownload:$("embedDownload"),toast:$("toast"),
   previewModal:$("previewModal"),previewTitle:$("previewTitle"),previewBody:$("previewBody"),closePreview:$("closePreview"),supportModal:$("supportModal"),supportClose:$("supportClose"),supportLater:$("supportLater")
 };
 const MARKETPLACES={
@@ -1699,7 +1699,7 @@ el.clear.addEventListener('click',()=>{if(state.running)return;state.files=[];st
 el.testKey.addEventListener('click',testKey);
 el.saveKey.addEventListener('click',()=>{if(!el.apiKey.value.trim()){toast('Enter an API key first.');return} localStorage.setItem('metadata_studio_gemini_key',el.apiKey.value.trim());toast('API key saved in this browser.')});
 el.clearKey.addEventListener('click',()=>{localStorage.removeItem('metadata_studio_gemini_key');el.apiKey.value='';setApiStatus('Saved key cleared.');toast('Saved key cleared.')});
-el.downloadCsv.addEventListener('click',downloadCSV); el.downloadTxt.addEventListener('click',downloadTXT); el.downloadSheet.addEventListener('click',downloadSheet);
+el.downloadCsv.addEventListener('click',downloadCSV); el.downloadTxt.addEventListener('click',downloadTXT); el.downloadSheet.addEventListener('click',downloadSheet); el.embedDownload.addEventListener('click',downloadEmbeddedZip);
 el.copyAll.addEventListener('click',async()=>{const t=allText();if(!t){toast('No completed metadata to copy.');return} await copyText(t);toast('All metadata copied.')});
 el.workspaceList.addEventListener('click',async e=>{const undo=e.target.closest('[data-undo-id]');if(undo){e.stopPropagation();undoMetadata(undo.dataset.undoId);return}const fix=e.target.closest('[data-smart-fix-id]');if(fix){e.stopPropagation();try{fix.disabled=true;fix.textContent='Fixing…';await smartFixMetadata(fix.dataset.smartFixId)}catch(err){toast(friendly(err))}finally{fix.disabled=false}return}const fieldRegen=e.target.closest('[data-field-regen]');if(fieldRegen){e.stopPropagation();try{await regenerateField(fieldRegen.dataset.actionId,fieldRegen.dataset.fieldRegen)}catch(err){toast(friendly(err))}return}const retry=e.target.closest('[data-single-retry-id]');if(retry){e.stopPropagation();retrySingle(retry.dataset.singleRetryId);return}const pv=e.target.closest('[data-preview-id]');if(pv&&!(e.target.closest('video')||e.target.closest('button'))){openPreviewForId(pv.dataset.previewId);return}const btn=e.target.closest('[data-copy]');if(!btn)return;syncEdits();const card=btn.closest('.asset-card'),r=getResultById(card.dataset.id);if(!r||r.status!=='done')return;const type=btn.dataset.copy;let text=type==='title'?r.data.title:type==='description'?r.data.description:type==='keywords'?r.data.keywords.join(', '):`Filename: ${r.file.name}
 Title: ${r.data.title}
@@ -1716,6 +1716,149 @@ ADVANCED_SETTING_IDS.forEach(id=>{const n=$(id);if(n)n.addEventListener(n.type==
 
 loadWorkspaceSettings();
 const saved=localStorage.getItem('metadata_studio_gemini_key'); if(saved) el.apiKey.value=saved; populateModelSelect(); renderWorkspace(); updateStats();
+
+/* ---- Embed file Download: embed generated XMP metadata into the original
+   files and download them as a ZIP (stored, no compression). JPEG gets an
+   XMP APP1 segment after SOI; PNG gets an iTXt chunk before the first IDAT.
+   Any other format, or a file that fails to parse, is included unchanged. */
+function xmlEsc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function buildXmpPacket(d){
+  const title=xmlEsc(d.title||''),desc=xmlEsc(d.description||'');
+  const kws=(Array.isArray(d.keywords)?d.keywords:[]).map(k=>'<rdf:li>'+xmlEsc(k)+'</rdf:li>').join('');
+  return '<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xmp="http://ns.adobe.com/xap/1.0/"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">'+title+'</rdf:li></rdf:Alt></dc:title><dc:description><rdf:Alt><rdf:li xml:lang="x-default">'+desc+'</rdf:li></rdf:Alt></dc:description><dc:subject><rdf:Bag>'+kws+'</rdf:Bag></dc:subject><xmp:CreatorTool>Sweet Metadata Lab</xmp:CreatorTool></rdf:Description></rdf:RDF></x:xmpmeta>';
+}
+function truncChars(s,n){const c=[...String(s||'')];return c.length>n?c.slice(0,n).join(''):s}
+function xmpPacketFit(d){
+  let desc=d.description||'',kws=Array.isArray(d.keywords)?[...d.keywords]:[],title=d.title||'';
+  let pkt=buildXmpPacket({title,description:desc,keywords:kws});
+  let bytes=new TextEncoder().encode(pkt);
+  while(bytes.length>65504&&desc){desc=truncChars(desc,Math.max(0,Math.floor([...desc].length*0.6)));pkt=buildXmpPacket({title,description:desc,keywords:kws});bytes=new TextEncoder().encode(pkt)}
+  while(bytes.length>65504&&kws.length){kws.pop();pkt=buildXmpPacket({title,description:desc,keywords:kws});bytes=new TextEncoder().encode(pkt)}
+  while(bytes.length>65504&&title){title=truncChars(title,Math.max(0,Math.floor([...title].length*0.6)));pkt=buildXmpPacket({title,description:desc,keywords:kws});bytes=new TextEncoder().encode(pkt)}
+  return bytes;
+}
+const XMP_NS_HEADER=new TextEncoder().encode('http://ns.adobe.com/xap/1.0/\0');
+function concatBytes(parts){let total=0;for(const p of parts)total+=p.length;const out=new Uint8Array(total);let o=0;for(const p of parts){out.set(p,o);o+=p.length}return out}
+const CRC32_TABLE=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0}return t})();
+function crc32(bytes){let c=0xFFFFFFFF;for(let i=0;i<bytes.length;i++)c=CRC32_TABLE[(c^bytes[i])&0xFF]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function embedXmpJpeg(bytes,xmpBytes){
+  if(bytes.length<2||bytes[0]!==0xFF||bytes[1]!==0xD8)return null;
+  const parts=[bytes.subarray(0,2)];
+  let pos=2;
+  while(pos+1<bytes.length){
+    if(bytes[pos]!==0xFF)return null;
+    const marker=bytes[pos+1];
+    if(marker===0xD9)return null;
+    if(marker===0xDA)break;
+    if(marker===0x01||(marker>=0xD0&&marker<=0xD7)){parts.push(bytes.subarray(pos,pos+2));pos+=2;continue}
+    if(pos+3>=bytes.length)return null;
+    const len=(bytes[pos+2]<<8)|bytes[pos+3];
+    if(len<2||pos+2+len>bytes.length)return null;
+    const isXmp=marker===0xE1&&len>=2+XMP_NS_HEADER.length&&(()=>{for(let i=0;i<XMP_NS_HEADER.length;i++)if(bytes[pos+4+i]!==XMP_NS_HEADER[i])return false;return true})();
+    if(!isXmp)parts.push(bytes.subarray(pos,pos+2+len));
+    pos+=2+len;
+  }
+  if(pos+1>=bytes.length||bytes[pos]!==0xFF||bytes[pos+1]!==0xDA)return null;
+  const segLen=2+XMP_NS_HEADER.length+xmpBytes.length;
+  if(segLen>65535)return null;
+  const seg=new Uint8Array(4+XMP_NS_HEADER.length+xmpBytes.length);
+  seg[0]=0xFF;seg[1]=0xE1;seg[2]=(segLen>>8)&0xFF;seg[3]=segLen&0xFF;
+  seg.set(XMP_NS_HEADER,4);seg.set(xmpBytes,4+XMP_NS_HEADER.length);
+  parts.push(seg,bytes.subarray(pos));
+  return concatBytes(parts);
+}
+function embedXmpPng(bytes,xmpBytes){
+  if(bytes.length<8||bytes[0]!==0x89||bytes[1]!==0x50||bytes[2]!==0x4E||bytes[3]!==0x47)return null;
+  const parts=[bytes.subarray(0,8)];
+  let pos=8,idatPos=-1;
+  const kw=new TextEncoder().encode('XML:com.adobe.xmp');
+  while(pos+8<=bytes.length){
+    const len=(bytes[pos]<<24)|(bytes[pos+1]<<16)|(bytes[pos+2]<<8)|bytes[pos+3];
+    if(len<0||pos+12+len>bytes.length)return null;
+    const type=String.fromCharCode(bytes[pos+4],bytes[pos+5],bytes[pos+6],bytes[pos+7]);
+    if(type==='IDAT'){idatPos=pos;break}
+    const isXmpItxt=type==='iTXt'&&len>=kw.length+5&&(()=>{for(let i=0;i<kw.length;i++)if(bytes[pos+8+i]!==kw[i])return false;return bytes[pos+8+kw.length]===0})();
+    if(!isXmpItxt)parts.push(bytes.subarray(pos,pos+12+len));
+    pos+=12+len;
+  }
+  if(idatPos===-1)return null;
+  const data=new Uint8Array(kw.length+5+xmpBytes.length);
+  let o=0;data.set(kw,o);o+=kw.length;data[o++]=0;data[o++]=0;data[o++]=0;data[o++]=0;data[o++]=0;data.set(xmpBytes,o);
+  const chunk=new Uint8Array(12+data.length);
+  const dv=new DataView(chunk.buffer);
+  dv.setUint32(0,data.length);
+  chunk.set([0x69,0x54,0x58,0x74],4);
+  chunk.set(data,8);
+  dv.setUint32(8+data.length,crc32(chunk.subarray(4,8+data.length)));
+  parts.push(chunk,bytes.subarray(idatPos));
+  return concatBytes(parts);
+}
+function uniqueZipName(name,used){
+  if(!used.has(name)){used.add(name);return name}
+  const dot=name.lastIndexOf('.');
+  const base=dot>0?name.slice(0,dot):name,ext=dot>0?name.slice(dot):'';
+  let n=2,cand;
+  do{cand=base+' ('+n+')'+ext;n++}while(used.has(cand));
+  used.add(cand);return cand;
+}
+function buildZip(entries){
+  const enc=new TextEncoder(),parts=[],central=[];
+  let offset=0;
+  for(const e of entries){
+    const nameBytes=enc.encode(e.name),crc=crc32(e.data);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);
+    lh.setUint16(8,0,true);lh.setUint16(10,0,true);lh.setUint16(12,0,true);
+    lh.setUint32(14,crc,true);lh.setUint32(18,e.data.length,true);lh.setUint32(22,e.data.length,true);
+    lh.setUint16(26,nameBytes.length,true);lh.setUint16(28,0,true);
+    parts.push(new Uint8Array(lh.buffer),nameBytes,e.data);
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);
+    ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,0,true);ch.setUint16(14,0,true);
+    ch.setUint32(16,crc,true);ch.setUint32(20,e.data.length,true);ch.setUint32(24,e.data.length,true);
+    ch.setUint16(28,nameBytes.length,true);ch.setUint16(30,0,true);ch.setUint16(32,0,true);
+    ch.setUint16(34,0,true);ch.setUint16(36,0,true);ch.setUint32(38,0,true);ch.setUint32(42,offset,true);
+    central.push(new Uint8Array(ch.buffer),nameBytes);
+    offset+=30+nameBytes.length+e.data.length;
+  }
+  const cdStart=offset;let cdSize=0;for(const p of central)cdSize+=p.length;
+  const eocd=new DataView(new ArrayBuffer(22));
+  eocd.setUint32(0,0x06054b50,true);eocd.setUint16(4,0,true);eocd.setUint16(6,0,true);
+  eocd.setUint16(8,entries.length,true);eocd.setUint16(10,entries.length,true);
+  eocd.setUint32(12,cdSize,true);eocd.setUint32(16,cdStart,true);eocd.setUint16(20,0,true);
+  return concatBytes([...parts,...central,new Uint8Array(eocd.buffer)]);
+}
+async function downloadEmbeddedZip(){
+  syncEdits();
+  const done=sortedResults().filter(x=>x.status==='done');
+  if(!done.length){toast('No completed metadata to embed.');return}
+  const btn=el.embedDownload;
+  if(btn)btn.disabled=true;
+  toast('Embedding metadata…');
+  let embedded=0,unchanged=0;
+  const entries=[],used=new Set();
+  for(const r of done){
+    let bytes=null;
+    try{bytes=new Uint8Array(await r.file.arrayBuffer())}catch(e){bytes=null}
+    if(!bytes){unchanged++;continue}
+    let out=null;
+    try{
+      if(bytes[0]===0xFF&&bytes[1]===0xD8)out=embedXmpJpeg(bytes,xmpPacketFit(r.data));
+      else if(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4E&&bytes[3]===0x47)out=embedXmpPng(bytes,new TextEncoder().encode(buildXmpPacket(r.data)));
+    }catch(e){out=null}
+    if(out){bytes=out;embedded++}else unchanged++;
+    entries.push({name:uniqueZipName(r.file.name,used),data:bytes});
+  }
+  if(!entries.length){if(btn)btn.disabled=false;toast('No files could be read for embedding.');return}
+  const zip=buildZip(entries);
+  const blob=new Blob([zip],{type:'application/zip'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`metadata-${el.marketplace.value}-${new Date().toISOString().slice(0,10)}.zip`;a.click();
+  URL.revokeObjectURL(url);
+  if(btn)btn.disabled=false;
+  toast(`Embedded metadata in ${embedded} file${embedded===1?'':'s'}, ${unchanged} included unchanged. ZIP downloaded.`);
+}
 </script>
 <script>
 /* Adobe Stock edition add-on: collapsible panels, buyer chips, Perfect Setup.
@@ -2153,6 +2296,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'Detect Visible Text / Typography': 'দৃশ্যমান টেক্সট / টাইপোগ্রাফি শনাক্ত করুন',
     'Download CSV': 'CSV ডাউনলোড',
     'Download Sheet': 'শিট ডাউনলোড',
+    'Embed file Download': 'এমবেড ফাইল ডাউনলোড',
     'Export & Format': 'এক্সপোর্ট ও ফরম্যাট',
     'Extra instruction': 'অতিরিক্ত নির্দেশনা',
     'First 10 keywords:': 'প্রথম ১০টি কিওয়ার্ড:',
