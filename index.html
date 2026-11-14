@@ -1723,13 +1723,13 @@ const saved=localStorage.getItem('metadata_studio_gemini_key'); if(saved) el.api
    Any other format, or a file that fails to parse, is included unchanged. */
 function xmlEsc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
 function buildXmpPacket(d){
-  const title=xmlEsc(d.title||''),desc=xmlEsc(d.description||'');
-  const kws=(Array.isArray(d.keywords)?d.keywords:[]).map(k=>'<rdf:li>'+xmlEsc(k)+'</rdf:li>').join('');
+  const title=xmlEsc(typeof d.title==='string'?d.title:''),desc=xmlEsc(typeof d.description==='string'?d.description:'');
+  const kws=(Array.isArray(d.keywords)?d.keywords:[]).filter(k=>typeof k==='string').map(k=>'<rdf:li>'+xmlEsc(k)+'</rdf:li>').join('');
   return '<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xmp="http://ns.adobe.com/xap/1.0/"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">'+title+'</rdf:li></rdf:Alt></dc:title><dc:description><rdf:Alt><rdf:li xml:lang="x-default">'+desc+'</rdf:li></rdf:Alt></dc:description><dc:subject><rdf:Bag>'+kws+'</rdf:Bag></dc:subject><xmp:CreatorTool>Sweet Metadata Lab</xmp:CreatorTool></rdf:Description></rdf:RDF></x:xmpmeta>';
 }
 function truncChars(s,n){const c=[...String(s||'')];return c.length>n?c.slice(0,n).join(''):s}
 function xmpPacketFit(d){
-  let desc=d.description||'',kws=Array.isArray(d.keywords)?[...d.keywords]:[],title=d.title||'';
+  let desc=typeof d.description==='string'?d.description:'',kws=Array.isArray(d.keywords)?d.keywords.filter(k=>typeof k==='string'):[],title=typeof d.title==='string'?d.title:'';
   let pkt=buildXmpPacket({title,description:desc,keywords:kws});
   let bytes=new TextEncoder().encode(pkt);
   while(bytes.length>65504&&desc){desc=truncChars(desc,Math.max(0,Math.floor([...desc].length*0.6)));pkt=buildXmpPacket({title,description:desc,keywords:kws});bytes=new TextEncoder().encode(pkt)}
@@ -1804,8 +1804,11 @@ function uniqueZipName(name,used){
 function buildZip(entries){
   const enc=new TextEncoder(),parts=[],central=[];
   let offset=0;
-  for(const e of entries){
-    const nameBytes=enc.encode(e.name),crc=crc32(e.data);
+  for(let ei=0;ei<entries.length;ei++){
+    const e=entries[ei];
+    let nm=String(e.name??'');
+    if(!nm||/^\[object [A-Za-z]+\]$/.test(nm))nm='file-'+(ei+1);
+    const nameBytes=enc.encode(nm),crc=crc32(e.data);
     const lh=new DataView(new ArrayBuffer(30));
     lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);
     lh.setUint16(8,0,true);lh.setUint16(10,0,true);lh.setUint16(12,0,true);
@@ -1828,11 +1831,16 @@ function buildZip(entries){
   eocd.setUint32(12,cdSize,true);eocd.setUint32(16,cdStart,true);eocd.setUint16(20,0,true);
   return concatBytes([...parts,...central,new Uint8Array(eocd.buffer)]);
 }
-async function titleFileName(r){
-  const ext=(r.file.name.match(/\.[^.]+$/)||[''])[0];
-  let base=String((r.data&&r.data.title)||'').replace(/[<>:"/\\|?*\x00-\x1F]/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');
-  if(!base)return r.file.name;
+async function titleFileName(r,idx,fallbackExt){
+  const rawName=(r&&r.file&&typeof r.file.name==='string')?r.file.name:'';
+  const ext=(rawName.match(/\.[^.]+$/)||[''])[0]||(typeof fallbackExt==='string'?fallbackExt:'');
+  const clean=s=>String(s||'').replace(/[<>:"/\\|?*\x00-\x1F]/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');
+  let base='';
+  const t=r&&r.data&&r.data.title;
+  if(typeof t==='string'&&t.trim())base=clean(t);
   if(base.length>100){base=base.slice(0,100).replace(/\s+\S*$/,'').replace(/[. ]+$/,'')||base.slice(0,100)}
+  if(!base)base=clean(rawName.replace(/\.[^.]+$/,''));
+  if(!base||/^\[object [A-Za-z]+\]$/.test(base))base='image-'+((typeof idx==='number'?idx:0)+1);
   return base+ext;
 }
 async function downloadEmbeddedZip(){
@@ -1854,7 +1862,8 @@ async function downloadEmbeddedZip(){
       else if(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4E&&bytes[3]===0x47)out=embedXmpPng(bytes,new TextEncoder().encode(buildXmpPacket(r.data)));
     }catch(e){out=null}
     if(out){bytes=out;embedded++}else unchanged++;
-    entries.push({name:uniqueZipName(titleFileName(r),used),data:bytes});
+    const fext=(bytes[0]===0xFF&&bytes[1]===0xD8)?'.jpg':(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4E&&bytes[3]===0x47)?'.png':'';
+    entries.push({name:uniqueZipName(titleFileName(r,entries.length,fext),used),data:bytes});
   }
   if(!entries.length){if(btn)btn.disabled=false;toast('No files could be read for embedding.');return}
   const zip=buildZip(entries);
