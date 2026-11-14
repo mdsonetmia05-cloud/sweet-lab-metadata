@@ -1831,7 +1831,7 @@ function buildZip(entries){
   eocd.setUint32(12,cdSize,true);eocd.setUint32(16,cdStart,true);eocd.setUint16(20,0,true);
   return concatBytes([...parts,...central,new Uint8Array(eocd.buffer)]);
 }
-async function titleFileName(r,idx,fallbackExt){
+function titleFileName(r,idx,fallbackExt){
   const rawName=(r&&r.file&&typeof r.file.name==='string')?r.file.name:'';
   const ext=(rawName.match(/\.[^.]+$/)||[''])[0]||(typeof fallbackExt==='string'?fallbackExt:'');
   const clean=s=>String(s||'').replace(/[<>:"/\\|?*\x00-\x1F]/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');
