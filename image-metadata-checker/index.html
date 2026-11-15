@@ -547,6 +547,15 @@
     return out;
   }
 
+  /* True when an XMP object actually carries data — an empty object means the
+     packet failed to parse, and must not be shown as "XMP ✓". */
+  function xmpHasData(xmp) {
+    if (!xmp) return false;
+    return !!(xmp.title || xmp.description || (xmp.keywords && xmp.keywords.length) ||
+      xmp.creator || xmp.rights || xmp.createDate || xmp.creatorTool || xmp.headline ||
+      xmp.rating || xmp.webStatement || (xmp.other && xmp.other.length));
+  }
+
   /* ---------- IPTC (IIM) ---------- */
 
   function parseIptcRecord(bytes) {
@@ -731,7 +740,11 @@
     var rdfEnd = text.indexOf("</rdf:RDF>");
     if (rdfStart >= 0 && rdfEnd > rdfStart) {
       var rdf = text.slice(rdfStart, rdfEnd + "</rdf:RDF>".length);
-      out.xmp = parseXmp('<x:xmpmeta xmlns:x="adobe:ns:meta/">' + rdf + "</x:xmpmeta>");
+      /* The RDF fragment alone has no namespace declarations (they live on the
+         <svg> root), so a real XML parser would reject it as "unbound prefix".
+         Declare the namespaces on the wrapper so the fragment parses. */
+      out.xmp = parseXmp('<x:xmpmeta xmlns:x="adobe:ns:meta/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/" xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">' + rdf + "</x:xmpmeta>");
+      if (out.xmp && !xmpHasData(out.xmp)) out.xmp = null;
       if (out.xmp) {
         if (!out.title) out.title = out.xmp.title;
         if (!out.description) out.description = out.xmp.description;
@@ -798,6 +811,7 @@
     var xe = text.indexOf("</x:xmpmeta>");
     if (xs >= 0 && xe > xs) {
       out.xmp = parseXmp(text.slice(xs, xe + "</x:xmpmeta>".length));
+      if (out.xmp && !xmpHasData(out.xmp)) out.xmp = null;
       if (out.xmp) {
         if (!out.title) out.title = out.xmp.title;
         if (!out.description) out.description = out.xmp.description;
@@ -824,6 +838,7 @@
       var xe = text.indexOf("</x:xmpmeta>");
       if (xs >= 0 && xe > xs) {
         out.xmp = parseXmp(text.slice(xs, xe + "</x:xmpmeta>".length));
+        if (out.xmp && !xmpHasData(out.xmp)) out.xmp = null;
         if (out.xmp) {
           out.title = out.xmp.title; out.description = out.xmp.description;
           out.keywords = out.xmp.keywords.slice(); out.creator = out.xmp.creator;
@@ -926,7 +941,10 @@
         } else if (type === "uuid") {
           var s = asciiAt(view, dataStart, Math.min(dataEnd - dataStart, 200000));
           var xs = s.indexOf("<x:xmpmeta");
-          if (xs >= 0) out.xmp = parseXmp(s.slice(xs));
+          if (xs >= 0) {
+            var x = parseXmp(s.slice(xs));
+            if (xmpHasData(x)) out.xmp = x;
+          }
         }
         off += size;
       }
@@ -937,7 +955,10 @@
       var xs = head.indexOf("<x:xmpmeta");
       if (xs >= 0) {
         var xe = head.indexOf("</x:xmpmeta>", xs);
-        if (xe > xs) out.xmp = parseXmp(head.slice(xs, xe + "</x:xmpmeta>".length));
+        if (xe > xs) {
+          var x2 = parseXmp(head.slice(xs, xe + "</x:xmpmeta>".length));
+          if (xmpHasData(x2)) out.xmp = x2;
+        }
       }
     }
     if (out.xmp) {
@@ -946,6 +967,15 @@
       if (out.xmp.keywords.length) out.keywords = out.xmp.keywords.slice();
       if (!out.encoder) out.encoder = out.xmp.creatorTool;
       if (!out.createDate) out.createDate = out.xmp.createDate;
+    }
+    /* The Comment field (©cmt) is where keywords usually live in an MP4 with no
+       XMP — use it as keywords when it really looks like a list (2+ short
+       comma/semicolon-separated parts), and say so in the UI. */
+    if (!out.keywords.length && out.comment) {
+      var parts = out.comment.split(/[,;]/).map(function (s) { return s.trim(); }).filter(Boolean);
+      var looksLikeList = parts.length >= 2 && parts.length <= 50 &&
+        parts.every(function (p) { return p.split(/\s+/).length <= 4; });
+      if (looksLikeList) { out.keywords = parts; out.keywordsFromComment = true; }
     }
     return out;
   }
@@ -1623,6 +1653,7 @@
     html += renderMetaCore(resolved);
     html += "<h3>Video details</h3><dl class=\"kv\">" +
       kvRow("Comment", vid.comment) +
+      kvRow("Keywords source", vid.keywordsFromComment ? "Comment field (comma-separated)" : null) +
       kvRow("Encoder", vid.encoder) +
       kvRow("Created", resolved.createDate) +
       "</dl>";
