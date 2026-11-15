@@ -174,6 +174,20 @@
     background:#fff;border:1px solid var(--panel-edge);border-radius:8px;
     padding:10px 12px;min-height:120px;resize:vertical;margin-top:8px;
   }
+  .summary-table{width:100%;border-collapse:collapse;font-size:15.5px;margin-bottom:18px}
+  .summary-table th,.summary-table td{border:1px solid var(--panel-edge);padding:8px 10px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+  .summary-table th{background:#EFE6CF;font-family:"Playfair Display",Georgia,serif}
+  .summary-table tbody tr{cursor:pointer}
+  .summary-table tbody tr:hover{background:#EFE6CF}
+  .score-pill{font-weight:700;white-space:nowrap}
+  .file-detail{border:1px solid var(--panel-edge);border-radius:10px;padding:16px;margin-bottom:16px;background:var(--paper)}
+  .file-detail summary{cursor:pointer;font-family:"Playfair Display",Georgia,serif;font-size:19px;font-weight:700;list-style:none}
+  .file-detail summary::-webkit-details-marker{display:none}
+  .file-detail summary::before{content:"▸ ";color:var(--bronze)}
+  .file-detail[open ] summary::before{content:"▾ "}
+  .preview-wrap video{max-width:280px;max-height:280px;border:1px solid var(--panel-edge);border-radius:8px;background:#000;display:block}
+  .nopreview{max-width:280px;border:1px dashed var(--panel-edge);border-radius:8px;padding:26px 16px;text-align:center;color:var(--ink-soft);font-size:15px}
+  .progress-line{font-weight:600;color:var(--bronze);margin-bottom:12px}
   footer{
     text-align:center;color:var(--ink-soft);font-size:14.5px;
     padding:0 18px 32px;max-width:920px;margin:0 auto;
@@ -206,40 +220,24 @@
   </div>
 
   <section aria-labelledby="upload-title">
-    <h2 id="upload-title">1 · Choose an image</h2>
-    <p class="subtitle">JPG, PNG, WebP or GIF. Drag it here or click to choose. <span class="bn">ছবি টেনে আনুন বা সিলেক্ট করুন।</span></p>
-    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose an image file or drag one here">
-      <div class="big">Drop your image here</div>
-      <p>or click to choose a file · JPG, PNG, WebP, GIF</p>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
-      <button class="btn" type="button" id="browseBtn">Choose image</button>
+    <h2 id="upload-title">1 · Choose your files</h2>
+    <p class="subtitle">JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV — choose as many as you like, all at once. <span class="bn">একসাথে অনেকগুলো ফাইল সিলেক্ট করুন।</span></p>
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose image or video files or drag them here">
+      <div class="big">Drop your files here</div>
+      <p>or click to choose files · JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM, MOV</p>
+      <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,.jpg,.jpeg,.png,.webp,.gif,.svg,.eps,.ai,.mp4,.webm,.mov,video/mp4,video/webm,video/quicktime">
+      <button class="btn" type="button" id="browseBtn">Choose files</button>
     </div>
     <div id="resultArea" style="margin-top:18px">
-      <div class="empty" id="emptyState">No image loaded yet. Choose an image to see its embedded metadata and its microstock quality check.</div>
+      <div class="empty" id="emptyState">No files loaded yet. Choose one or many files to see their embedded metadata and their microstock quality check.</div>
     </div>
   </section>
 
-  <section id="metaSection" aria-labelledby="meta-title" hidden>
-    <h2 id="meta-title">2 · Embedded metadata</h2>
-    <p class="subtitle">Everything found inside the file, grouped by type. Fields that are empty say so honestly — nothing is invented here. <span class="bn">ফাইলের ভেতরে যা যা পাওয়া গেছে।</span></p>
-    <div id="metaArea"></div>
-  </section>
-
-  <section id="qualitySection" aria-labelledby="quality-title" hidden>
-    <h2 id="quality-title">3 · Microstock quality check</h2>
-    <p class="subtitle">Checked against the usual Adobe Stock / Shutterstock photo rules. This is an estimate from the file itself — it cannot judge content, releases or legality. <span class="bn">মাইক্রোস্টকে দেওয়ার যোগ্য কি না — অনুমানভিত্তিক যাচাই।</span></p>
-    <div id="qualityArea"></div>
-  </section>
-
-  <section id="copySection" aria-labelledby="copy-title" hidden>
-    <h2 id="copy-title">4 · Copy the metadata</h2>
-    <p class="subtitle">All the metadata above as plain text — handy to paste into a submission form or a note. <span class="bn">সব মেটাডেটা একসাথে কপি করুন।</span></p>
-    <textarea class="copybox" id="copyBox" readonly></textarea>
-    <div>
-      <button class="btn" type="button" id="copyBtn">Copy metadata text</button>
-      <button class="btn ghost" type="button" id="clearBtn">Check another image</button>
-    </div>
-    <div class="honest-note" id="copyNote" hidden></div>
+  <section id="resultsSection" aria-labelledby="results-title" hidden>
+    <h2 id="results-title">2 · Results</h2>
+    <p class="subtitle">Every file you chose, checked. Click a row in the summary to open that file's full detail. <span class="bn">সব ফাইলের ফলাফল একসাথে।</span></p>
+    <div id="resultsArea"></div>
+    <div style="margin-top:14px"><button class="btn ghost" type="button" id="clearBtn">Check another batch</button></div>
   </section>
 
 </main>
@@ -718,6 +716,325 @@
     return out;
   }
 
+  /* ---------- SVG ---------- */
+
+  function parseSvg(text) {
+    var out = { title: null, description: null, keywords: [], creator: null, width: null, height: null, xmp: null };
+    var doc;
+    try { doc = new DOMParser().parseFromString(text, "image/svg+xml"); } catch (e) { return out; }
+    if (!doc || doc.getElementsByTagName("parsererror").length) return out;
+    var titles = doc.getElementsByTagName("title");
+    if (titles.length && titles[0].textContent) out.title = titles[0].textContent;
+    var descs = doc.getElementsByTagName("desc");
+    if (descs.length && descs[0].textContent) out.description = descs[0].textContent;
+    var rdfStart = text.indexOf("<rdf:RDF");
+    var rdfEnd = text.indexOf("</rdf:RDF>");
+    if (rdfStart >= 0 && rdfEnd > rdfStart) {
+      var rdf = text.slice(rdfStart, rdfEnd + "</rdf:RDF>".length);
+      out.xmp = parseXmp('<x:xmpmeta xmlns:x="adobe:ns:meta/">' + rdf + "</x:xmpmeta>");
+      if (out.xmp) {
+        if (!out.title) out.title = out.xmp.title;
+        if (!out.description) out.description = out.xmp.description;
+        if (out.xmp.keywords.length) out.keywords = out.xmp.keywords.slice();
+        if (out.xmp.creator) out.creator = out.xmp.creator;
+      }
+    }
+    function parseLen(s) {
+      if (!s) return null;
+      var m = /^\s*([\d.]+)\s*(px|pt|mm|cm|in|%)?\s*$/.exec(s);
+      if (!m) return null;
+      var v = parseFloat(m[1]), u = m[2] || "px";
+      if (u === "pt") return v * 96 / 72;
+      if (u === "mm") return v * 96 / 25.4;
+      if (u === "cm") return v * 96 / 2.54;
+      if (u === "in") return v * 96;
+      if (u === "%") return null;
+      return v;
+    }
+    /* Read width/height/viewBox off the raw <svg> tag (works in the browser and in tests). */
+    var svgTag = text.match(/<svg[\s\S]*?>/i);
+    if (svgTag) {
+      var tag = svgTag[0];
+      var attr = function (name) {
+        var re = new RegExp("\\b" + name + '\\s*=\\s*"([^"]*)"', "i");
+        var m = re.exec(tag);
+        return m ? m[1] : null;
+      };
+      out.width = parseLen(attr("width"));
+      out.height = parseLen(attr("height"));
+      var vb = attr("viewBox");
+      if ((!out.width || !out.height) && vb) {
+        var parts = vb.trim().split(/[\s,]+/);
+        if (parts.length === 4) {
+          if (!out.width) out.width = parseFloat(parts[2]);
+          if (!out.height) out.height = parseFloat(parts[3]);
+        }
+      }
+    }
+    return out;
+  }
+
+  /* ---------- EPS ---------- */
+
+  function parseEps(text) {
+    var out = { title: null, description: null, keywords: [], creator: null, createDate: null, width: null, height: null, xmp: null };
+    function comment(name) {
+      var re = new RegExp("^%%" + name + ":\\s*(.*)$", "m");
+      var m = re.exec(text);
+      return m ? m[1].trim() : null;
+    }
+    out.title = comment("Title");
+    out.creator = comment("Creator");
+    out.createDate = comment("CreationDate");
+    var bb = comment("HiResBoundingBox") || comment("BoundingBox");
+    if (bb) {
+      var parts = bb.trim().split(/\s+/);
+      if (parts.length >= 4) {
+        out.width = parseFloat(parts[2]) - parseFloat(parts[0]);
+        out.height = parseFloat(parts[3]) - parseFloat(parts[1]);
+      }
+    }
+    var xs = text.indexOf("<x:xmpmeta");
+    var xe = text.indexOf("</x:xmpmeta>");
+    if (xs >= 0 && xe > xs) {
+      out.xmp = parseXmp(text.slice(xs, xe + "</x:xmpmeta>".length));
+      if (out.xmp) {
+        if (!out.title) out.title = out.xmp.title;
+        if (!out.description) out.description = out.xmp.description;
+        if (out.xmp.keywords.length) out.keywords = out.xmp.keywords.slice();
+        if (!out.creator) out.creator = out.xmp.creator;
+      }
+    }
+    return out;
+  }
+
+  /* ---------- AI (PDF-based, or old PostScript) ---------- */
+
+  function parseAi(buffer) {
+    var out = { title: null, description: null, keywords: [], creator: null, width: null, height: null, xmp: null, pdf: false };
+    var text = decodeText(new Uint8Array(buffer, 0, Math.min(buffer.byteLength, 2000000)));
+    if (text.indexOf("%PDF-") === 0) {
+      out.pdf = true;
+      var mb = /\/MediaBox\s*\[\s*([\d.\-]+)\s+([\d.\-]+)\s+([\d.\-]+)\s+([\d.\-]+)\s*\]/.exec(text);
+      if (mb) {
+        out.width = parseFloat(mb[3]) - parseFloat(mb[1]);
+        out.height = parseFloat(mb[4]) - parseFloat(mb[2]);
+      }
+      var xs = text.indexOf("<x:xmpmeta");
+      var xe = text.indexOf("</x:xmpmeta>");
+      if (xs >= 0 && xe > xs) {
+        out.xmp = parseXmp(text.slice(xs, xe + "</x:xmpmeta>".length));
+        if (out.xmp) {
+          out.title = out.xmp.title; out.description = out.xmp.description;
+          out.keywords = out.xmp.keywords.slice(); out.creator = out.xmp.creator;
+        }
+      }
+    } else if (text.indexOf("%!PS-Adobe") === 0) {
+      var e = parseEps(text);
+      out.title = e.title; out.description = e.description; out.keywords = e.keywords;
+      out.creator = e.creator; out.createDate = e.createDate;
+      out.width = e.width; out.height = e.height; out.xmp = e.xmp;
+    }
+    return out;
+  }
+
+  /* ---------- MP4 / MOV (QuickTime boxes) ---------- */
+
+  function parseMp4(view) {
+    var out = { title: null, description: null, comment: null, encoder: null, createDate: null,
+      duration: null, width: null, height: null, keywords: [], xmp: null };
+    function parseIlst(start, end) {
+      var off = start;
+      while (off + 8 <= end) {
+        var size = view.getUint32(off, false);
+        var type = asciiAt(view, off + 4, 4);
+        if (size < 8 || off + size > end) break;
+        var inner = off + 8, innerEnd = off + size;
+        while (inner + 16 <= innerEnd) {
+          var dsize = view.getUint32(inner, false);
+          var dtype = asciiAt(view, inner + 4, 4);
+          if (dtype === "data" && dsize >= 16 && inner + dsize <= innerEnd) {
+            var val = asciiAt(view, inner + 16, dsize - 16);
+            if (type === "©nam") out.title = val;
+            else if (type === "desc") out.description = val;
+            else if (type === "©cmt") out.comment = val;
+            else if (type === "©too") out.encoder = val;
+            else if (type === "©day") out.createDate = val;
+            break;
+          }
+          if (dsize < 8 || inner + dsize > innerEnd) break;
+          inner += dsize;
+        }
+        off += size;
+      }
+    }
+    function parseMvhd(start, end) {
+      if (start + 4 > end) return;
+      var version = view.getUint8(start);
+      var p = start + 4;
+      function macToIso(mac) {
+        if (!mac) return null;
+        var d = new Date((mac - 2082844800) * 1000);
+        return isNaN(d.getTime()) ? null : d.toISOString();
+      }
+      if (version === 1) {
+        if (p + 28 > end) return;
+        out.createDate = macToIso(Number(view.getBigUint64(p, false)));
+        var timescale = view.getUint32(p + 16, false);
+        var dur = Number(view.getBigUint64(p + 20, false));
+        if (timescale) out.duration = dur / timescale;
+      } else {
+        if (p + 16 > end) return;
+        out.createDate = macToIso(view.getUint32(p, false));
+        var ts = view.getUint32(p + 8, false);
+        var d = view.getUint32(p + 12, false);
+        if (ts) out.duration = d / ts;
+      }
+    }
+    function parseTkhd(start, end) {
+      if (start + 4 > end) return;
+      var version = view.getUint8(start);
+      var p = start + 4;
+      var wOff = version === 1
+        ? p + 8 + 8 + 4 + 4 + 4 + 8 + 2 + 2 + 2 + 2 + 36
+        : p + 4 + 4 + 4 + 4 + 4 + 8 + 2 + 2 + 2 + 2 + 36;
+      if (wOff + 8 <= end) {
+        out.width = view.getUint32(wOff, false) / 65536;
+        out.height = view.getUint32(wOff + 4, false) / 65536;
+      }
+    }
+    function walkBoxes(start, end, depth) {
+      var off = start;
+      while (off + 8 <= end && depth < 6) {
+        var size = view.getUint32(off, false);
+        var type = asciiAt(view, off + 4, 4);
+        var header = 8;
+        if (size === 1) { size = Number(view.getBigUint64(off + 8, false)); header = 16; }
+        else if (size === 0) { size = end - off; }
+        if (size < header || off + size > end) break;
+        var dataStart = off + header, dataEnd = off + size;
+        if (type === "moov" || type === "udta" || type === "trak" || type === "mdia" || type === "minf" || type === "stbl") {
+          walkBoxes(dataStart, dataEnd, depth + 1);
+        } else if (type === "meta") {
+          walkBoxes(dataStart + 4, dataEnd, depth + 1);
+        } else if (type === "ilst") {
+          parseIlst(dataStart, dataEnd);
+        } else if (type === "mvhd") {
+          parseMvhd(dataStart, dataEnd);
+        } else if (type === "tkhd") {
+          parseTkhd(dataStart, dataEnd);
+        } else if (type === "uuid") {
+          var s = asciiAt(view, dataStart, Math.min(dataEnd - dataStart, 200000));
+          var xs = s.indexOf("<x:xmpmeta");
+          if (xs >= 0) out.xmp = parseXmp(s.slice(xs));
+        }
+        off += size;
+      }
+    }
+    walkBoxes(0, view.byteLength, 0);
+    if (!out.xmp) {
+      var head = asciiAt(view, 0, Math.min(view.byteLength, 2000000));
+      var xs = head.indexOf("<x:xmpmeta");
+      if (xs >= 0) {
+        var xe = head.indexOf("</x:xmpmeta>", xs);
+        if (xe > xs) out.xmp = parseXmp(head.slice(xs, xe + "</x:xmpmeta>".length));
+      }
+    }
+    if (out.xmp) {
+      if (!out.title) out.title = out.xmp.title;
+      if (!out.description) out.description = out.xmp.description;
+      if (out.xmp.keywords.length) out.keywords = out.xmp.keywords.slice();
+      if (!out.encoder) out.encoder = out.xmp.creatorTool;
+      if (!out.createDate) out.createDate = out.xmp.createDate;
+    }
+    return out;
+  }
+
+  /* ---------- WebM (EBML) ---------- */
+
+  function readEbmlVint(view, off, end) {
+    if (off >= end) return null;
+    var b = view.getUint8(off);
+    var mask = 0x80, len = 1;
+    while (len <= 8 && !(b & mask)) { mask >>= 1; len++; }
+    if (len > 8 || off + len > end) return null;
+    var unknown = (b & (mask - 1)) === (mask - 1);
+    for (var i = 1; i < len; i++) { if (view.getUint8(off + i) !== 0xFF) unknown = false; }
+    var value = b & (mask - 1);
+    for (var j = 1; j < len; j++) value = value * 256 + view.getUint8(off + j);
+    return { value: value, length: len, unknown: unknown };
+  }
+
+  function readEbmlId(view, off, end) {
+    if (off >= end) return null;
+    var b = view.getUint8(off);
+    var mask = 0x80, len = 1;
+    while (len <= 4 && !(b & mask)) { mask >>= 1; len++; }
+    if (len > 4 || off + len > end) return null;
+    var value = 0;
+    for (var i = 0; i < len; i++) value = value * 256 + view.getUint8(off + i);
+    return { value: value, length: len };
+  }
+
+  function parseWebm(view) {
+    var out = { title: null, description: null, keywords: [], duration: null, tags: {} };
+    var segStart = -1, segEnd = view.byteLength;
+    var off = 0;
+    while (off + 4 <= view.byteLength) {
+      var id = readEbmlId(view, off, view.byteLength);
+      if (!id) break;
+      var size = readEbmlVint(view, off + id.length, view.byteLength);
+      if (!size) break;
+      var dataStart = off + id.length + size.length;
+      var dataEnd = size.unknown ? view.byteLength : Math.min(view.byteLength, dataStart + size.value);
+      if (id.value === 0x18538067) { segStart = dataStart; segEnd = dataEnd; break; }
+      if (dataEnd <= off) break;
+      off = dataEnd;
+    }
+    if (segStart < 0) return out;
+    var pendingName = null;
+    var timescale = 1000000;
+    var durationRaw = null;
+    function walk(start, end, depth) {
+      var o = start;
+      while (o + 2 <= end && depth < 6) {
+        var eid = readEbmlId(view, o, end);
+        if (!eid) break;
+        var esz = readEbmlVint(view, o + eid.length, end);
+        if (!esz) break;
+        var dStart = o + eid.length + esz.length;
+        var dEnd = esz.unknown ? end : Math.min(end, dStart + esz.value);
+        if (dStart > end) break;
+        if (eid.value === 0x1549A966 || eid.value === 0x1254C367 || eid.value === 0x7373 || eid.value === 0x67C8) {
+          walk(dStart, dEnd, depth + 1);
+        } else if (eid.value === 0x2AD7B1) {
+          var ts = 0;
+          for (var i = dStart; i < dEnd; i++) ts = ts * 256 + view.getUint8(i);
+          if (ts) timescale = ts;
+        } else if (eid.value === 0x7BA9) {
+          /* Info > Title — where ffmpeg writes the WebM title */
+          out.title = asciiAt(view, dStart, dEnd - dStart) || null;
+        } else if (eid.value === 0x4489) {
+          if (dEnd - dStart === 8) durationRaw = view.getFloat64(dStart, false);
+          else if (dEnd - dStart === 4) durationRaw = view.getFloat32(dStart, false);
+        } else if (eid.value === 0x45A3) {
+          pendingName = asciiAt(view, dStart, dEnd - dStart);
+        } else if (eid.value === 0x4487) {
+          var val = asciiAt(view, dStart, dEnd - dStart);
+          if (pendingName) { out.tags[pendingName] = val; pendingName = null; }
+        }
+        o = dEnd;
+      }
+    }
+    walk(segStart, segEnd, 0);
+    if (durationRaw !== null && timescale) out.duration = durationRaw * timescale / 1000000000;
+    var t = out.tags;
+    if (!out.title) out.title = t.TITLE || t.Title || null;
+    out.description = t.DESCRIPTION || t.Description || t.COMMENT || null;
+    if (t.KEYWORDS) out.keywords = t.KEYWORDS.split(/[,;]/).map(function (s) { return s.trim(); }).filter(Boolean);
+    return out;
+  }
+
   /* ---------- resolve one value per field, XMP first ---------- */
 
   function exifField(meta, group, name) {
@@ -769,16 +1086,7 @@
 
   /* ---------- pixel analysis (estimates, measured in the browser) ---------- */
 
-  function analyzePixels(img) {
-    var MAX = 800;
-    var w = img.naturalWidth, h = img.naturalHeight;
-    var scale = Math.min(1, MAX / Math.max(w, h));
-    var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
-    var canvas = document.createElement("canvas");
-    canvas.width = cw; canvas.height = ch;
-    var ctx = canvas.getContext("2d", { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0, cw, ch);
-    var data = ctx.getImageData(0, 0, cw, ch).data;
+  function analyzeCanvasData(data, cw, ch) {
     var n = cw * ch;
     var gray = new Float32Array(n);
     var sumL = 0, clippedBlack = 0, clippedWhite = 0, sumSat = 0;
@@ -830,42 +1138,177 @@
     };
   }
 
+  function analyzePixels(img) {
+    var MAX = 800;
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if (!w || !h) return null;
+    var scale = Math.min(1, MAX / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+    var canvas = document.createElement("canvas");
+    canvas.width = cw; canvas.height = ch;
+    var ctx = canvas.getContext("2d", { willReadFrequently: true });
+    try { ctx.drawImage(img, 0, 0, cw, ch); } catch (e) { return null; }
+    try { return analyzeCanvasData(ctx.getImageData(0, 0, cw, ch).data, cw, ch); } catch (e) { return null; }
+  }
+
+  /* Draw one frame of a video to a canvas and analyse it. Returns null when the frame cannot be read. */
+  function analyzeVideoFrame(video) {
+    var MAX = 800;
+    var w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return null;
+    var scale = Math.min(1, MAX / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+    var canvas = document.createElement("canvas");
+    canvas.width = cw; canvas.height = ch;
+    var ctx = canvas.getContext("2d", { willReadFrequently: true });
+    try { ctx.drawImage(video, 0, 0, cw, ch); } catch (e) { return null; }
+    try { return analyzeCanvasData(ctx.getImageData(0, 0, cw, ch).data, cw, ch); } catch (e) { return null; }
+  }
+
   /* ---------- quality checks ---------- */
 
-  function buildQualityChecks(file, width, height, meta, resolved, analysis) {
+  var VECTOR_MIN_MP = 15;    /* Adobe Stock minimum artboard for vectors */
+  var VIDEO_MIN_W = 1920;    /* Adobe Stock wants at least Full HD video */
+  var VIDEO_MIN_H = 1080;
+  var VIDEO_MAX_GB = 3.9;    /* Adobe Stock video file-size limit */
+
+  /* One resolved shape for vector/video parsers, XMP merged the same way as resolveMeta. */
+  function resolveGeneric(parsed) {
+    var r = { title: parsed.title || null, description: parsed.description || null,
+      keywords: (parsed.keywords || []).slice(), creator: parsed.creator || null,
+      copyright: parsed.copyright || null, createDate: parsed.createDate || null,
+      software: parsed.software || parsed.encoder || null, headline: parsed.headline || null,
+      rating: null, webStatement: null };
+    if (parsed.xmp) {
+      if (!r.title) r.title = parsed.xmp.title;
+      if (!r.description) r.description = parsed.xmp.description;
+      if (!r.keywords.length) r.keywords = parsed.xmp.keywords.slice();
+      if (!r.creator) r.creator = parsed.xmp.creator;
+      if (!r.copyright) r.copyright = parsed.xmp.rights;
+      if (!r.createDate) r.createDate = parsed.xmp.createDate;
+      if (!r.software) r.software = parsed.xmp.creatorTool;
+      if (!r.headline) r.headline = parsed.xmp.headline;
+      r.rating = parsed.xmp.rating;
+      r.webStatement = parsed.xmp.webStatement;
+    }
+    return r;
+  }
+
+  function formatDuration(seconds) {
+    if (seconds === null || seconds === undefined || !isFinite(seconds)) return null;
+    if (seconds < 60) return seconds.toFixed(1) + "s";
+    var m = Math.floor(seconds / 60), s = Math.round(seconds % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  /* kind: "raster" | "vector" | "video". extra: { duration } for video.
+     When kind is omitted it defaults to "raster", so old callers keep working. */
+  function buildQualityChecks(file, width, height, meta, resolved, analysis, kind, extra) {
+    kind = kind || "raster";
+    extra = extra || {};
     var checks = [];
-    var mp = (width * height) / 1000000;
     var typeLabel = file.type === "image/png" ? "PNG"
       : file.type === "image/webp" ? "WebP"
-      : file.type === "image/gif" ? "GIF" : "JPG";
-    if (typeLabel === "JPG" || typeLabel === "PNG") {
-      checks.push({ status: "pass", scored: true, title: "Format: " + typeLabel,
-        detail: typeLabel + " is accepted by Adobe Stock and Shutterstock for photo submissions." });
-    } else if (typeLabel === "WebP") {
-      checks.push({ status: "fail", scored: true, title: "Format: WebP",
-        detail: "WebP is NOT accepted by Adobe Stock. Submit the same image as JPG or PNG instead — the metadata stays the same." });
+      : file.type === "image/gif" ? "GIF"
+      : file.type === "image/svg+xml" ? "SVG"
+      : file.type === "video/mp4" ? "MP4"
+      : file.type === "video/webm" ? "WEBM"
+      : file.type === "video/quicktime" ? "MOV"
+      : (file.name.split(".").pop() || "").toUpperCase() || "JPG";
+
+    if (kind === "vector") {
+      if (typeLabel === "AI" || typeLabel === "EPS") {
+        checks.push({ status: "pass", scored: true, title: "Format: " + typeLabel,
+          detail: typeLabel + " is an accepted vector format on Adobe Stock." });
+      } else {
+        checks.push({ status: "fail", scored: true, title: "Format: SVG",
+          detail: "SVG is NOT accepted as a vector submission on Adobe Stock. Export the artwork as AI or EPS and submit that instead." });
+      }
+      var amp = (width && height) ? (width * height) / 1000000 : 0;
+      if (amp >= VECTOR_MIN_MP) {
+        checks.push({ status: "pass", scored: true, title: "Artboard: " + amp.toFixed(2) + " megapixels",
+          detail: width + " × " + height + " pt — meets Adobe Stock's 15 megapixel minimum artboard for vectors." });
+      } else {
+        checks.push({ status: "fail", scored: true, title: "Artboard: only " + amp.toFixed(2) + " megapixels",
+          detail: (width && height ? width + " × " + height + " pt — " : "") + "below Adobe Stock's 15 megapixel minimum artboard for vectors. Enlarge the artboard in your vector app (for example 5000 × 3000 pt = 15 MP)." });
+      }
+      var vmb = file.size / (1024 * 1024);
+      if (vmb > ADOBE_MAX_MB) {
+        checks.push({ status: "fail", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Unusually large for a vector file. Adobe Stock's file-size limit is 45 MB — simplify the artwork or split it." });
+      } else {
+        checks.push({ status: "pass", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Within Adobe Stock's 45 MB file limit." });
+      }
+    } else if (kind === "video") {
+      if (typeLabel === "MP4" || typeLabel === "MOV") {
+        checks.push({ status: "pass", scored: true, title: "Format: " + typeLabel,
+          detail: typeLabel + " is an accepted video format on Adobe Stock." });
+      } else {
+        checks.push({ status: "fail", scored: true, title: "Format: WEBM",
+          detail: "WebM is NOT accepted by Adobe Stock. Submit the same video as MP4 or MOV instead." });
+      }
+      if (width && height && width >= VIDEO_MIN_W && height >= VIDEO_MIN_H) {
+        checks.push({ status: "pass", scored: true, title: "Resolution: " + width + " × " + height,
+          detail: "Meets Adobe Stock's Full HD minimum (1920 × 1080). 4K sells best." });
+      } else if (width && height && width >= 1280) {
+        checks.push({ status: "warn", scored: true, title: "Resolution: only " + width + " × " + height,
+          detail: "Below Adobe Stock's 1920 × 1080 Full HD minimum. Upscaling a small video does not fix it — submit a larger original." });
+      } else {
+        checks.push({ status: "fail", scored: true, title: "Resolution: " + (width && height ? width + " × " + height : "unknown"),
+          detail: "Below Adobe Stock's 1920 × 1080 Full HD minimum. Submit a larger original." });
+      }
+      var dur = extra.duration;
+      if (dur === null || dur === undefined) {
+        checks.push({ status: "info", scored: false, title: "Duration: could not be read",
+          detail: "The video's duration could not be read from the file. Adobe Stock videos are usually at least 5 seconds long." });
+      } else if (dur >= 5) {
+        checks.push({ status: "pass", scored: true, title: "Duration: " + formatDuration(dur),
+          detail: "Long enough for a stock video — Adobe Stock videos are usually at least 5 seconds." });
+      } else {
+        checks.push({ status: "warn", scored: true, title: "Duration: only " + formatDuration(dur),
+          detail: "Very short for a stock video — Adobe Stock videos are usually at least 5 seconds long." });
+      }
+      var gb = file.size / (1024 * 1024 * 1024);
+      if (gb > VIDEO_MAX_GB) {
+        checks.push({ status: "fail", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Above Adobe Stock's 3.9 GB video limit. Re-encode at a lower bitrate." });
+      } else {
+        checks.push({ status: "pass", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Within Adobe Stock's 3.9 GB video limit." });
+      }
     } else {
-      checks.push({ status: "fail", scored: true, title: "Format: " + typeLabel,
-        detail: "GIF is not accepted as a photo submission on Adobe Stock. Submit a JPG or PNG." });
+      if (typeLabel === "JPG" || typeLabel === "PNG") {
+        checks.push({ status: "pass", scored: true, title: "Format: " + typeLabel,
+          detail: typeLabel + " is accepted by Adobe Stock and Shutterstock for photo submissions." });
+      } else if (typeLabel === "WebP") {
+        checks.push({ status: "fail", scored: true, title: "Format: WebP",
+          detail: "WebP is NOT accepted by Adobe Stock. Submit the same image as JPG or PNG instead — the metadata stays the same." });
+      } else {
+        checks.push({ status: "fail", scored: true, title: "Format: " + typeLabel,
+          detail: "GIF is not accepted as a photo submission on Adobe Stock. Submit a JPG or PNG." });
+      }
+      var mp = (width * height) / 1000000;
+      if (mp >= PHOTO_MIN_MP) {
+        checks.push({ status: "pass", scored: true, title: "Size: " + mp.toFixed(2) + " megapixels",
+          detail: width + " × " + height + " px — meets the 4 megapixel minimum for Adobe Stock photos." });
+      } else {
+        checks.push({ status: "fail", scored: true, title: "Size: only " + mp.toFixed(2) + " megapixels",
+          detail: width + " × " + height + " px — below Adobe Stock's 4 megapixel minimum for photos. A larger original is needed; upscaling a small file does not fix it." });
+      }
+      var mb = file.size / (1024 * 1024);
+      if (mb > ADOBE_MAX_MB) {
+        checks.push({ status: "fail", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Above Adobe Stock's 45 MB photo limit. Re-save with a little more compression." });
+      } else if (file.size < 100 * 1024) {
+        checks.push({ status: "warn", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Very small for a photo — heavy compression can leave artefacts that reviewers reject. Check the image at 100% zoom." });
+      } else {
+        checks.push({ status: "pass", scored: true, title: "File size: " + formatBytes(file.size),
+          detail: "Within Adobe Stock's limits (under 45 MB) and large enough to avoid heavy-compression artefacts." });
+      }
     }
-    if (mp >= PHOTO_MIN_MP) {
-      checks.push({ status: "pass", scored: true, title: "Size: " + mp.toFixed(2) + " megapixels",
-        detail: width + " × " + height + " px — meets the 4 megapixel minimum for Adobe Stock photos." });
-    } else {
-      checks.push({ status: "fail", scored: true, title: "Size: only " + mp.toFixed(2) + " megapixels",
-        detail: width + " × " + height + " px — below Adobe Stock's 4 megapixel minimum for photos. A larger original is needed; upscaling a small file does not fix it." });
-    }
-    var mb = file.size / (1024 * 1024);
-    if (mb > ADOBE_MAX_MB) {
-      checks.push({ status: "fail", scored: true, title: "File size: " + formatBytes(file.size),
-        detail: "Above Adobe Stock's 45 MB photo limit. Re-save with a little more compression." });
-    } else if (file.size < 100 * 1024) {
-      checks.push({ status: "warn", scored: true, title: "File size: " + formatBytes(file.size),
-        detail: "Very small for a photo — heavy compression can leave artefacts that reviewers reject. Check the image at 100% zoom." });
-    } else {
-      checks.push({ status: "pass", scored: true, title: "File size: " + formatBytes(file.size),
-        detail: "Within Adobe Stock's limits (under 45 MB) and large enough to avoid heavy-compression artefacts." });
-    }
+
     if (!resolved.title) {
       checks.push({ status: "fail", scored: true, title: "Title: missing",
         detail: "No title is embedded in this file. Adobe Stock requires a title — add one (up to 200 characters, key keywords in the first 70)." });
@@ -878,7 +1321,7 @@
     }
     if (!resolved.description) {
       checks.push({ status: "fail", scored: true, title: "Description: missing",
-        detail: "No description is embedded. Adobe Stock asks for a description — write one that says what the image shows." });
+        detail: "No description is embedded. Adobe Stock asks for a description — write one that says what the file shows." });
     } else {
       var words = resolved.description.trim().split(/\s+/).length;
       checks.push({ status: "pass", scored: true, title: "Description: " + words + " words",
@@ -890,7 +1333,7 @@
         detail: "No keywords are embedded. Add relevant keywords — Adobe allows up to 200, and this lab uses up to 49, most relevant first." });
     } else if (kw < 10) {
       checks.push({ status: "warn", scored: true, title: "Keywords: only " + kw,
-        detail: "Fewer than 10 keywords. Add more relevant ones (up to 49 here) so buyers can find the image." });
+        detail: "Fewer than 10 keywords. Add more relevant ones (up to 49 here) so buyers can find the file." });
     } else if (kw <= KEYWORD_MAX_SITE) {
       checks.push({ status: "pass", scored: true, title: "Keywords: " + kw,
         detail: "A healthy number of keywords, most relevant first." });
@@ -908,51 +1351,87 @@
       checks.push({ status: "warn", scored: true, title: "Creator / copyright: missing",
         detail: "No creator name or copyright notice is embedded. Add your name so the work is credited to you." });
     }
-    var sh = analysis.sharpness;
-    if (sh < 60) {
-      checks.push({ status: "fail", scored: true, title: "Sharpness: low (score " + Math.round(sh) + ")",
-        detail: "The image measures soft or blurry. Adobe rejects unsharp photos — check at 100% zoom and use a sharper original." });
-    } else if (sh < 180) {
-      checks.push({ status: "warn", scored: true, title: "Sharpness: moderate (score " + Math.round(sh) + ")",
-        detail: "Not clearly sharp. Check the main subject at 100% zoom — if it looks soft, use a sharper original." });
+
+    if (kind === "vector") {
+      checks.push({ status: "info", scored: false, title: "Pixel checks do not apply to vector artwork",
+        detail: "Sharpness, noise and exposure are measured from pixels — a vector has no pixels. Judge the artwork by its paths: clean curves, no stray points, no raster effects." });
+    } else if (analysis) {
+      var frameNote = kind === "video" ? " (measured from one frame of the video)" : "";
+      var sh = analysis.sharpness;
+      if (sh < 60) {
+        checks.push({ status: "fail", scored: true, title: "Sharpness: low (score " + Math.round(sh) + ")",
+          detail: "The file measures soft or blurry" + frameNote + ". Adobe rejects unsharp work — check at 100% zoom and use a sharper original." });
+      } else if (sh < 180) {
+        checks.push({ status: "warn", scored: true, title: "Sharpness: moderate (score " + Math.round(sh) + ")",
+          detail: "Not clearly sharp" + frameNote + ". Check the main subject at 100% zoom — if it looks soft, use a sharper original." });
+      } else {
+        checks.push({ status: "pass", scored: true, title: "Sharpness: good (score " + Math.round(sh) + ")",
+          detail: "The file measures sharp" + frameNote + ". Still check the main subject at 100% zoom before submitting." });
+      }
+      var clipped = analysis.clippedBlackPct + analysis.clippedWhitePct;
+      if (analysis.meanLum < 25 || analysis.meanLum > 235 || clipped > 15) {
+        checks.push({ status: "fail", scored: true, title: "Exposure: " + (analysis.meanLum < 25 ? "too dark" : analysis.meanLum > 235 ? "too bright" : "heavy clipping"),
+          detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, " + analysis.clippedBlackPct.toFixed(1) + "% pure black, " + analysis.clippedWhitePct.toFixed(1) + "% pure white" + frameNote + ". Fix the exposure — detail lost in black or white cannot be recovered." });
+      } else if (analysis.meanLum < 40 || analysis.meanLum > 215 || clipped > 5) {
+        checks.push({ status: "warn", scored: true, title: "Exposure: check the brightness",
+          detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, " + analysis.clippedBlackPct.toFixed(1) + "% pure black, " + analysis.clippedWhitePct.toFixed(1) + "% pure white" + frameNote + ". Look at the darkest and brightest areas before submitting." });
+      } else {
+        checks.push({ status: "pass", scored: true, title: "Exposure: balanced",
+          detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, only " + clipped.toFixed(1) + "% clipped pixels" + frameNote + ". No obvious over- or under-exposure." });
+      }
+      if (analysis.noise > 8) {
+        checks.push({ status: "fail", scored: true, title: "Noise: high (score " + analysis.noise.toFixed(1) + ")",
+          detail: "Smooth areas measure noisy" + frameNote + ". Adobe rejects visibly noisy work — denoise gently or use a cleaner original." });
+      } else if (analysis.noise > 4) {
+        checks.push({ status: "warn", scored: true, title: "Noise: moderate (score " + analysis.noise.toFixed(1) + ")",
+          detail: "Some noise in smooth areas" + frameNote + ". Check dark regions at 100% zoom before submitting." });
+      } else {
+        checks.push({ status: "pass", scored: true, title: "Noise: low (score " + analysis.noise.toFixed(1) + ")",
+          detail: "Smooth areas measure clean" + frameNote + "." });
+      }
+      if (analysis.meanSat < 0.02) {
+        checks.push({ status: "info", scored: false, title: "Colour: grayscale",
+          detail: "The file has almost no colour. That is fine for stock if it is intentional — black-and-white sells too." });
+      } else {
+        checks.push({ status: "info", scored: false, title: "Colour: full colour",
+          detail: "Average saturation " + Math.round(analysis.meanSat * 100) + "%." });
+      }
     } else {
-      checks.push({ status: "pass", scored: true, title: "Sharpness: good (score " + Math.round(sh) + ")",
-        detail: "The image measures sharp. Still check the main subject at 100% zoom before submitting." });
+      checks.push({ status: "info", scored: false, title: "Frame analysis not available",
+        detail: "This file could not be read as an image, so sharpness, noise and exposure could not be measured. Check those yourself at 100% zoom." });
     }
-    var clipped = analysis.clippedBlackPct + analysis.clippedWhitePct;
-    if (analysis.meanLum < 25 || analysis.meanLum > 235 || clipped > 15) {
-      checks.push({ status: "fail", scored: true, title: "Exposure: " + (analysis.meanLum < 25 ? "too dark" : analysis.meanLum > 235 ? "too bright" : "heavy clipping"),
-        detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, " + analysis.clippedBlackPct.toFixed(1) + "% pure black, " + analysis.clippedWhitePct.toFixed(1) + "% pure white. Fix the exposure — detail lost in black or white cannot be recovered." });
-    } else if (analysis.meanLum < 40 || analysis.meanLum > 215 || clipped > 5) {
-      checks.push({ status: "warn", scored: true, title: "Exposure: check the brightness",
-        detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, " + analysis.clippedBlackPct.toFixed(1) + "% pure black, " + analysis.clippedWhitePct.toFixed(1) + "% pure white. Look at the darkest and brightest areas before submitting." });
-    } else {
-      checks.push({ status: "pass", scored: true, title: "Exposure: balanced",
-        detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, only " + clipped.toFixed(1) + "% clipped pixels. No obvious over- or under-exposure." });
-    }
-    if (analysis.noise > 8) {
-      checks.push({ status: "fail", scored: true, title: "Noise: high (score " + analysis.noise.toFixed(1) + ")",
-        detail: "Smooth areas measure noisy. Adobe rejects visibly noisy images — denoise gently or use a cleaner original." });
-    } else if (analysis.noise > 4) {
-      checks.push({ status: "warn", scored: true, title: "Noise: moderate (score " + analysis.noise.toFixed(1) + ")",
-        detail: "Some noise in smooth areas. Check dark regions at 100% zoom before submitting." });
-    } else {
-      checks.push({ status: "pass", scored: true, title: "Noise: low (score " + analysis.noise.toFixed(1) + ")",
-        detail: "Smooth areas measure clean." });
-    }
-    if (analysis.meanSat < 0.02) {
-      checks.push({ status: "info", scored: false, title: "Colour: grayscale",
-        detail: "The image has almost no colour. That is fine for stock if it is intentional — black-and-white sells too." });
-    } else {
-      checks.push({ status: "info", scored: false, title: "Colour: full colour",
-        detail: "Average saturation " + Math.round(analysis.meanSat * 100) + "%." });
-    }
-    var orientation = exifField(meta, "ifd0", "Orientation");
-    if (orientation && orientation.indexOf("Normal") !== 0) {
-      checks.push({ status: "info", scored: false, title: "EXIF orientation flag: " + orientation,
-        detail: "The pixels are stored rotated and the viewer rotates them. Most tools handle this, but check the preview looks right." });
+    if (kind === "raster" && meta) {
+      var orientation = exifField(meta, "ifd0", "Orientation");
+      if (orientation && orientation.indexOf("Normal") !== 0) {
+        checks.push({ status: "info", scored: false, title: "EXIF orientation flag: " + orientation,
+          detail: "The pixels are stored rotated and the viewer rotates them. Most tools handle this, but check the preview looks right." });
+      }
     }
     return checks;
+  }
+
+  /* Score + verdict from a checks array. Pure — no DOM. */
+  function computeQuality(checks) {
+    var scored = checks.filter(function (c) { return c.scored; });
+    var points = 0;
+    scored.forEach(function (c) {
+      if (c.status === "pass") points += 1;
+      else if (c.status === "warn") points += 0.5;
+    });
+    var score = scored.length ? Math.round(points / scored.length * 100) : 0;
+    var fails = scored.filter(function (c) { return c.status === "fail"; }).length;
+    var verdict, verdictClass;
+    if (fails === 0 && score >= 90) {
+      verdict = "✓ Ready to submit — this file passes every scored check.";
+      verdictClass = "pass";
+    } else if (score >= 70) {
+      verdict = "△ Almost ready — fix the failed items above, then submit.";
+      verdictClass = "warn";
+    } else {
+      verdict = "✕ Not ready yet — several checks failed. Fix them before submitting.";
+      verdictClass = "fail";
+    }
+    return { score: score, verdict: verdict, verdictClass: verdictClass, fails: fails, checks: checks, scoredCount: scored.length };
   }
 
   /* ---------- rendering ---------- */
@@ -964,29 +1443,9 @@
         : escapeHtml(String(value))) + "</dd>";
   }
 
-  function renderMeta(file, width, height, meta, resolved) {
-    var mp = (width * height) / 1000000;
-    var typeLabel = file.type === "image/png" ? "PNG"
-      : file.type === "image/webp" ? "WebP"
-      : file.type === "image/gif" ? "GIF" : "JPG";
-    var orientation = width > height ? "Landscape" : (height > width ? "Portrait" : "Square");
-    var blocks = [];
-    blocks.push(meta.exif ? "EXIF ✓" : "EXIF ✗");
-    blocks.push(meta.xmp ? "XMP ✓" : "XMP ✗");
-    blocks.push(meta.iptc ? "IPTC ✓" : "IPTC ✗");
+  /* Shared title / description / keywords / creator block. */
+  function renderMetaCore(resolved) {
     var html = "";
-    html += '<div class="preview-wrap">' +
-      '<img id="previewImg" src="' + previewUrl + '" alt="Preview of the uploaded image">' +
-      '<div class="facts"><dl>' +
-      kvRow("File name", file.name) +
-      kvRow("File type", typeLabel) +
-      kvRow("Dimensions", width + " × " + height + " px") +
-      kvRow("Megapixels", mp.toFixed(2) + " MP") +
-      kvRow("File size", formatBytes(file.size)) +
-      kvRow("Orientation", orientation) +
-      kvRow("Metadata blocks", blocks.join(" · ")) +
-      "</dl></div></div>";
-
     html += "<h3>Title</h3>";
     if (resolved.title) {
       html += "<p>" + escapeHtml(resolved.title) + "</p>" +
@@ -995,7 +1454,6 @@
     } else {
       html += '<p><span class="missing">No title embedded in this file.</span></p>';
     }
-
     html += "<h3>Description</h3>";
     if (resolved.description) {
       var words = resolved.description.trim().split(/\s+/).length;
@@ -1004,7 +1462,6 @@
     } else {
       html += '<p><span class="missing">No description embedded in this file.</span></p>';
     }
-
     html += "<h3>Keywords / tags</h3>";
     if (resolved.keywords.length) {
       html += '<div class="kw-chips">' + resolved.keywords.map(function (k, i) {
@@ -1014,7 +1471,6 @@
     } else {
       html += '<p><span class="missing">No keywords embedded in this file.</span></p>';
     }
-
     html += "<h3>Creator &amp; rights</h3><dl class=\"kv\">" +
       kvRow("Creator", resolved.creator) +
       kvRow("Copyright", resolved.copyright) +
@@ -1023,14 +1479,49 @@
       kvRow("Rating", resolved.rating ? resolved.rating + " / 5" : null) +
       kvRow("Web statement", resolved.webStatement) +
       "</dl>";
+    return html;
+  }
 
+  function previewHtmlFor(r) {
+    if (r.previewKind === "img" && r.previewUrl) return '<img src="' + r.previewUrl + '" alt="Preview of the uploaded file">';
+    if (r.previewKind === "video" && r.previewUrl) return '<video src="' + r.previewUrl + '" controls preload="metadata"></video>';
+    return '<div class="nopreview">No preview — this file type cannot be rendered in the browser.</div>';
+  }
+
+  function blocksLine(meta) {
+    var blocks = [];
+    if (!meta) return "—";
+    blocks.push(meta.exif ? "EXIF ✓" : "EXIF ✗");
+    blocks.push(meta.xmp ? "XMP ✓" : "XMP ✗");
+    blocks.push(meta.iptc ? "IPTC ✓" : "IPTC ✗");
+    return blocks.join(" · ");
+  }
+
+  function renderMetaRaster(r) {
+    var file = r.file, width = r.width, height = r.height, meta = r.meta, resolved = r.resolved;
+    var mp = (width * height) / 1000000;
+    var typeLabel = file.type === "image/png" ? "PNG"
+      : file.type === "image/webp" ? "WebP"
+      : file.type === "image/gif" ? "GIF" : "JPG";
+    var orientation = width > height ? "Landscape" : (height > width ? "Portrait" : "Square");
+    var html = "";
+    html += '<div class="preview-wrap">' + previewHtmlFor(r) +
+      '<div class="facts"><dl>' +
+      kvRow("File name", file.name) +
+      kvRow("File type", typeLabel) +
+      kvRow("Dimensions", width + " × " + height + " px") +
+      kvRow("Megapixels", mp.toFixed(2) + " MP") +
+      kvRow("File size", formatBytes(file.size)) +
+      kvRow("Orientation", orientation) +
+      kvRow("Metadata blocks", blocksLine(meta)) +
+      "</dl></div></div>";
+    html += renderMetaCore(resolved);
     html += "<h3>Dates</h3><dl class=\"kv\">" +
       kvRow("Created", resolved.createDate) +
       kvRow("Date taken", exifField(meta, "exif", "Date Taken")) +
       kvRow("Date digitized", exifField(meta, "exif", "Date Digitized")) +
       kvRow("Date & time (file)", exifField(meta, "ifd0", "Date & Time")) +
       "</dl>";
-
     var camRows = "";
     camRows += kvRow("Camera make", exifField(meta, "ifd0", "Camera Make"));
     camRows += kvRow("Camera model", exifField(meta, "ifd0", "Camera Model"));
@@ -1047,7 +1538,6 @@
     camRows += kvRow("Resolution", exifField(meta, "ifd0", "X Resolution"));
     camRows += kvRow("Resolution unit", exifField(meta, "ifd0", "Resolution Unit"));
     html += "<h3>Camera &amp; technical</h3><dl class=\"kv\">" + camRows + "</dl>";
-
     if (meta.exif && meta.exif.gps && Object.keys(meta.exif.gps).length) {
       var lat = gpsToDecimal(
         meta.exif.gps["Latitude Ref"] ? formatExifValue("Latitude Ref", meta.exif.gps["Latitude Ref"].value) : null,
@@ -1062,7 +1552,6 @@
         "</dl>" +
         '<p class="chip-legend">⚠ GPS coordinates are embedded in this file — they reveal exactly where the photo was taken. Remove them before sharing if that matters to you.</p>';
     }
-
     if (meta.iptc) {
       var iptcRows = "";
       Object.keys(meta.iptc).forEach(function (k) {
@@ -1086,51 +1575,94 @@
         (meta.phys ? kvRow("Print resolution", Math.round(meta.phys.x / (meta.phys.unit === 1 ? 39.3701 : 1)) + " dpi") : "") +
         "</dl>";
     }
-    document.getElementById("metaArea").innerHTML = html;
+    return html;
   }
 
-  function renderQuality(file, width, height, meta, resolved, analysis) {
-    var checks = buildQualityChecks(file, width, height, meta, resolved, analysis);
-    var scored = checks.filter(function (c) { return c.scored; });
-    var points = 0;
-    scored.forEach(function (c) {
-      if (c.status === "pass") points += 1;
-      else if (c.status === "warn") points += 0.5;
-    });
-    var score = scored.length ? Math.round(points / scored.length * 100) : 0;
-    var fails = scored.filter(function (c) { return c.status === "fail"; }).length;
-    var verdict, verdictClass;
-    if (fails === 0 && score >= 90) {
-      verdict = "✓ Ready to submit — this image passes every scored check.";
-      verdictClass = "pass";
-    } else if (score >= 70) {
-      verdict = "△ Almost ready — fix the failed items above, then submit.";
-      verdictClass = "warn";
-    } else {
-      verdict = "✕ Not ready yet — several checks failed. Fix them before submitting.";
-      verdictClass = "fail";
+  function renderMetaVector(r) {
+    var file = r.file, vec = r.vec, resolved = r.resolved;
+    var typeLabel = r.ext.toUpperCase();
+    var amp = (r.width && r.height) ? ((r.width * r.height) / 1000000).toFixed(2) + " MP" : null;
+    var html = "";
+    html += '<div class="preview-wrap">' + previewHtmlFor(r) +
+      '<div class="facts"><dl>' +
+      kvRow("File name", file.name) +
+      kvRow("File type", typeLabel + (vec.pdf ? " (PDF-based)" : "")) +
+      kvRow("Artboard", r.width && r.height ? Math.round(r.width) + " × " + Math.round(r.height) + " pt" : null) +
+      kvRow("Artboard size", amp) +
+      kvRow("File size", formatBytes(file.size)) +
+      kvRow("Metadata blocks", vec.xmp ? "XMP ✓" : "XMP ✗") +
+      "</dl></div></div>";
+    html += renderMetaCore(resolved);
+    html += "<h3>Vector details</h3><dl class=\"kv\">" +
+      kvRow("Created", resolved.createDate) +
+      kvRow("Artboard", r.width && r.height ? Math.round(r.width) + " × " + Math.round(r.height) + " pt (" + amp + ")" : null) +
+      "</dl>";
+    if (vec.xmp && vec.xmp.other.length) {
+      var otherRows = vec.xmp.other.map(function (o) { return kvRow(o.name, o.value); }).join("");
+      html += "<h3>Other XMP fields</h3><dl class=\"kv\">" + otherRows + "</dl>";
     }
-    var html = '<div class="score-line"><div class="score-num">' + score + '<span style="font-size:22px">/100</span></div>' +
-      '<div class="score-bar"><div style="width:' + score + '%"></div></div></div>' +
-      '<p class="chip-legend" style="margin-top:6px">' + scored.length + " scored checks · " +
-      scored.filter(function (c) { return c.status === "pass"; }).length + " passed · " +
-      scored.filter(function (c) { return c.status === "warn"; }).length + " warnings · " +
-      fails + " failed</p>" +
+    if (r.ext === "ai") {
+      html += '<p class="chip-legend">Note: this checker reads the XMP packet and the page size from an AI file. If the XMP is stored compressed inside the file, it cannot be read here — check the metadata in Illustrator instead.</p>';
+    }
+    return html;
+  }
+
+  function renderMetaVideo(r) {
+    var file = r.file, vid = r.vid, resolved = r.resolved;
+    var typeLabel = r.ext.toUpperCase();
+    var html = "";
+    html += '<div class="preview-wrap">' + previewHtmlFor(r) +
+      '<div class="facts"><dl>' +
+      kvRow("File name", file.name) +
+      kvRow("File type", typeLabel) +
+      kvRow("Dimensions", r.width && r.height ? r.width + " × " + r.height + " px" : null) +
+      kvRow("Duration", formatDuration(r.duration)) +
+      kvRow("File size", formatBytes(file.size)) +
+      kvRow("Metadata blocks", vid.xmp ? "XMP ✓" : "XMP ✗") +
+      "</dl></div></div>";
+    html += renderMetaCore(resolved);
+    html += "<h3>Video details</h3><dl class=\"kv\">" +
+      kvRow("Comment", vid.comment) +
+      kvRow("Encoder", vid.encoder) +
+      kvRow("Created", resolved.createDate) +
+      "</dl>";
+    if (vid.xmp && vid.xmp.other.length) {
+      var otherRows = vid.xmp.other.map(function (o) { return kvRow(o.name, o.value); }).join("");
+      html += "<h3>Other XMP fields</h3><dl class=\"kv\">" + otherRows + "</dl>";
+    }
+    return html;
+  }
+
+  function renderQualityHtml(quality, kind) {
+    var checks = quality.checks;
+    var note = kind === "vector"
+      ? "This check covers size and metadata only — vector quality (clean paths, no stray points, no raster effects) cannot be judged by a browser tool. Adobe reviews content, releases and legality too, which no browser tool can judge."
+      : kind === "video"
+        ? "Sharpness and noise are measured from one frame of the video — they depend on the subject too (a smooth sky scores low by nature). This check does not guarantee acceptance: Adobe reviews content, releases and legality, which no browser tool can judge."
+        : "Sharpness and noise are measured estimates — they depend on the subject too (a smooth sky scores low by nature). This check does not guarantee acceptance: Adobe reviews content, releases and legality, which no browser tool can judge.";
+    var html = '<div class="score-line"><div class="score-num">' + quality.score + '<span style="font-size:22px">/100</span></div>' +
+      '<div class="score-bar"><div style="width:' + quality.score + '%"></div></div></div>' +
+      '<p class="chip-legend" style="margin-top:6px">' + quality.scoredCount + " scored checks · " +
+      checks.filter(function (c) { return c.status === "pass"; }).length + " passed · " +
+      checks.filter(function (c) { return c.status === "warn"; }).length + " warnings · " +
+      quality.fails + " failed</p>" +
       '<ul class="checklist">' + checks.map(function (c) {
         var badge = c.status === "pass" ? "PASS" : c.status === "fail" ? "FAIL" : c.status === "warn" ? "WARN" : "INFO";
         return '<li><span class="badge ' + c.status + '">' + badge + '</span><div class="text"><strong>' +
           escapeHtml(c.title) + '</strong><span>' + escapeHtml(c.detail) + "</span></div></li>";
       }).join("") + "</ul>" +
-      '<div class="verdict ' + verdictClass + '">' + verdict +
-      "<p>Sharpness and noise are measured estimates — they depend on the subject too (a smooth sky scores low by nature). This check does not guarantee acceptance: Adobe reviews content, releases and legality, which no browser tool can judge.</p></div>";
-    document.getElementById("qualityArea").innerHTML = html;
-    return { score: score, verdict: verdict, checks: checks };
+      '<div class="verdict ' + quality.verdictClass + '">' + quality.verdict + "<p>" + note + "</p></div>";
+    return html;
   }
 
-  function buildCopyText(file, width, height, meta, resolved, quality) {
+  function buildCopyText(r) {
+    var file = r.file, resolved = r.resolved, quality = r.quality;
     var lines = [];
-    lines.push("Image: " + file.name);
-    lines.push("Type: " + file.type + " · " + width + " × " + height + " px · " + ((width * height) / 1000000).toFixed(2) + " MP · " + formatBytes(file.size));
+    lines.push("File: " + file.name);
+    var sizeLine = "Type: " + r.ext.toUpperCase() + " · " + formatBytes(file.size);
+    if (r.width && r.height) sizeLine += " · " + Math.round(r.width) + " × " + Math.round(r.height) + (r.kind === "vector" ? " pt" : " px") + " · " + ((r.width * r.height) / 1000000).toFixed(2) + " MP";
+    if (r.kind === "video" && r.duration) sizeLine += " · Duration " + formatDuration(r.duration);
+    lines.push(sizeLine);
     lines.push("");
     lines.push("Title: " + (resolved.title || "(none embedded)"));
     lines.push("Description: " + (resolved.description || "(none embedded)"));
@@ -1139,12 +1671,15 @@
     lines.push("Copyright: " + (resolved.copyright || "(none embedded)"));
     lines.push("Created: " + (resolved.createDate || "(none embedded)"));
     lines.push("Software: " + (resolved.software || "(none embedded)"));
-    lines.push("");
-    lines.push("Camera: " + (exifField(meta, "ifd0", "Camera Make") || "") + " " + (exifField(meta, "ifd0", "Camera Model") || "") + " (not embedded if blank)");
-    lines.push("ISO: " + (exifField(meta, "exif", "ISO Speed") || "(none)") +
-      " · Exposure: " + (exifField(meta, "exif", "Exposure Time") || "(none)") +
-      " · F-number: " + (exifField(meta, "exif", "F-Number") || "(none)") +
-      " · Focal length: " + (exifField(meta, "exif", "Focal Length") || "(none)"));
+    if (r.kind === "raster" && r.meta) {
+      lines.push("");
+      lines.push("Camera: " + (exifField(r.meta, "ifd0", "Camera Make") || "") + " " + (exifField(r.meta, "ifd0", "Camera Model") || "") + " (not embedded if blank)");
+      lines.push("ISO: " + (exifField(r.meta, "exif", "ISO Speed") || "(none)") +
+        " · Exposure: " + (exifField(r.meta, "exif", "Exposure Time") || "(none)") +
+        " · F-number: " + (exifField(r.meta, "exif", "F-Number") || "(none)") +
+        " · Focal length: " + (exifField(r.meta, "exif", "Focal Length") || "(none)"));
+    }
+    if (r.kind === "video" && r.vid && r.vid.comment) lines.push("Comment: " + r.vid.comment);
     lines.push("");
     lines.push("Quality score: " + quality.score + "/100 — " + quality.verdict);
     quality.checks.forEach(function (c) {
@@ -1153,103 +1688,270 @@
     return lines.join("\n");
   }
 
-  /* ---------- file handling ---------- */
+  function renderSummary(results) {
+    var ready = 0, almost = 0, notReady = 0, errors = 0;
+    var rows = results.map(function (r, idx) {
+      if (r.error) {
+        errors++;
+        return '<tr data-file="' + idx + '"><td>' + escapeHtml(r.file.name) + '</td><td>' + escapeHtml(r.ext.toUpperCase()) + '</td><td colspan="4"><span class="missing">' + escapeHtml(r.error) + '</span></td><td>—</td></tr>';
+      }
+      var q = r.quality;
+      var verdictShort = q.score >= 90 && q.fails === 0 ? "Ready" : q.score >= 70 ? "Almost" : "Not ready";
+      if (q.score >= 90 && q.fails === 0) ready++;
+      else if (q.score >= 70) almost++;
+      else notReady++;
+      var sizeText = (r.width && r.height)
+        ? Math.round(r.width) + "×" + Math.round(r.height) + " · " + ((r.width * r.height) / 1000000).toFixed(2) + " MP"
+        : "—";
+      if (r.kind === "video" && r.duration) sizeText += " · " + formatDuration(r.duration);
+      return '<tr data-file="' + idx + '"><td>' + escapeHtml(r.file.name) + '</td>' +
+        '<td>' + escapeHtml(r.ext.toUpperCase()) + '</td>' +
+        '<td>' + sizeText + '</td>' +
+        '<td>' + (r.resolved.title ? "✓" : "✗") + '</td>' +
+        '<td>' + r.resolved.keywords.length + '</td>' +
+        '<td><span class="score-pill">' + q.score + '/100</span></td>' +
+        '<td>' + verdictShort + '</td></tr>';
+    }).join("");
+    var summary = "<p><strong>" + results.length + " file" + (results.length > 1 ? "s" : "") + " checked</strong> · " +
+      ready + " ready · " + almost + " almost ready · " + notReady + " not ready" +
+      (errors ? " · " + errors + " could not be read" : "") + "</p>";
+    return summary +
+      '<table class="summary-table"><thead><tr><th>File</th><th>Type</th><th>Size</th><th>Title</th><th>Keywords</th><th>Score</th><th>Verdict</th></tr></thead><tbody>' +
+      rows + "</tbody></table>";
+  }
+
+  function renderFileBlock(r, idx) {
+    if (r.error) {
+      return '<details class="file-detail" id="file-' + idx + '" open><summary>' + escapeHtml(r.file.name) + ' — could not be checked</summary>' +
+        '<p style="margin-top:10px">' + escapeHtml(r.error) + '</p></details>';
+    }
+    var q = r.quality;
+    var summary = escapeHtml(r.file.name) + " — " + q.score + "/100 — " +
+      (q.score >= 90 && q.fails === 0 ? "Ready" : q.score >= 70 ? "Almost ready" : "Not ready");
+    var metaHtml = r.kind === "raster" ? renderMetaRaster(r)
+      : r.kind === "vector" ? renderMetaVector(r) : renderMetaVideo(r);
+    r.copyText = buildCopyText(r);
+    return '<details class="file-detail" id="file-' + idx + '"' + (idx === 0 ? " open" : "") + '><summary>' + summary + "</summary>" +
+      "<h3>Embedded metadata</h3>" + metaHtml +
+      "<h3>Microstock quality check</h3>" + renderQualityHtml(q, r.kind) +
+      "<h3>Copy the metadata</h3>" +
+      '<textarea class="copybox" readonly>' + escapeHtml(r.copyText) + "</textarea>" +
+      '<div><button class="btn" type="button" data-copy="' + idx + '">Copy metadata text</button> <span class="chip-legend" data-copynote="' + idx + '" hidden></span></div>' +
+      "</details>";
+  }
+
+  /* ---------- file handling (bulk) ---------- */
 
   var dropzone = document.getElementById("dropzone");
   var fileInput = document.getElementById("fileInput");
   var browseBtn = document.getElementById("browseBtn");
   var resultArea = document.getElementById("resultArea");
-  var metaSection = document.getElementById("metaSection");
-  var qualitySection = document.getElementById("qualitySection");
-  var copySection = document.getElementById("copySection");
-  var copyBox = document.getElementById("copyBox");
-  var copyNote = document.getElementById("copyNote");
-  var previewUrl = null;
+  var resultsSection = document.getElementById("resultsSection");
+  var resultsArea = document.getElementById("resultsArea");
+  var currentResults = [];
+  var currentUrls = [];
 
-  function showError(message) {
-    resultArea.innerHTML =
-      '<div class="empty" style="border-color:#9B2C1E;color:#9B2C1E">' + escapeHtml(message) + "</div>";
-    metaSection.hidden = true;
-    qualitySection.hidden = true;
-    copySection.hidden = true;
+  function classifyFile(file) {
+    var name = (file.name || "").toLowerCase();
+    var ext = name.indexOf(".") >= 0 ? name.split(".").pop() : "";
+    if (/^(jpe?g|png|webp|gif)$/.test(ext)) return { kind: "raster", ext: ext };
+    if (ext === "svg" || ext === "eps" || ext === "ai") return { kind: "vector", ext: ext };
+    if (ext === "mp4" || ext === "webm" || ext === "mov") return { kind: "video", ext: ext };
+    return { kind: "unsupported", ext: ext };
+  }
+
+  function readFileAsArrayBuffer(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(r.result); };
+      r.onerror = function () { reject(new Error("could not be read")); };
+      r.readAsArrayBuffer(file);
+    });
+  }
+
+  function readFileAsText(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(r.result); };
+      r.onerror = function () { reject(new Error("could not be read")); };
+      r.readAsText(file);
+    });
+  }
+
+  function loadImage(url) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () { resolve(img); };
+      img.onerror = function () { reject(new Error("could not be opened as an image")); };
+      img.src = url;
+    });
+  }
+
+  function loadVideo(url) {
+    return new Promise(function (resolve, reject) {
+      var v = document.createElement("video");
+      v.preload = "metadata";
+      v.muted = true;
+      var done = false;
+      function ok() { if (!done) { done = true; resolve(v); } }
+      function bad() { if (!done) { done = true; reject(new Error("could not be opened as a video")); } }
+      v.onloadedmetadata = ok;
+      v.onerror = bad;
+      v.src = url;
+      setTimeout(function () { if (!done) { done = true; reject(new Error("timed out reading the video")); } }, 15000);
+    });
+  }
+
+  function seekVideoFrame(video, seconds) {
+    return new Promise(function (resolve) {
+      var done = false;
+      function finish() { if (!done) { done = true; resolve(analyzeVideoFrame(video)); } }
+      video.onseeked = finish;
+      video.onerror = function () { finish(); };
+      try { video.currentTime = Math.min(seconds, Math.max(0, (video.duration || 1) - 0.1)); } catch (e) { finish(); return; }
+      setTimeout(finish, 5000);
+    });
+  }
+
+  /* One file through the whole pipeline. Always resolves (error is carried on the result). */
+  function processFile(file) {
+    var cls = classifyFile(file);
+    var base = { file: file, kind: cls.kind, ext: cls.ext, error: null,
+      previewUrl: null, previewKind: "none", width: null, height: null,
+      duration: null, meta: null, vec: null, vid: null, resolved: null, analysis: null, quality: null };
+    if (cls.kind === "unsupported") {
+      base.error = "This file type is not supported. Choose JPG, PNG, WEBP, GIF, SVG, EPS, AI, MP4, WEBM or MOV.";
+      return Promise.resolve(base);
+    }
+    if (cls.kind === "raster") {
+      return readFileAsArrayBuffer(file).then(function (buffer) {
+        var meta;
+        try { meta = parseImageMetadata(buffer, file.type); }
+        catch (e) { base.error = "This file's metadata could not be read (" + e.message + "). The file may be damaged."; return base; }
+        var url = URL.createObjectURL(file);
+        base.previewUrl = url; base.previewKind = "img";
+        currentUrls.push(url);
+        return loadImage(url).then(function (img) {
+          base.width = img.naturalWidth; base.height = img.naturalHeight;
+          base.meta = meta; base.resolved = resolveMeta(meta);
+          base.analysis = analyzePixels(img);
+          base.quality = computeQuality(buildQualityChecks(file, base.width, base.height, meta, base.resolved, base.analysis, "raster"));
+          return base;
+        }, function () {
+          base.error = "That file could not be opened as an image. It may be damaged or in a format this browser cannot read.";
+          return base;
+        });
+      }, function () {
+        base.error = "The file could not be read. Try choosing it again.";
+        return base;
+      });
+    }
+    if (cls.kind === "vector") {
+      var read = cls.ext === "svg" ? readFileAsText(file) : readFileAsArrayBuffer(file);
+      return read.then(function (data) {
+        var vec;
+        try {
+          if (cls.ext === "svg") vec = parseSvg(data);
+          else if (cls.ext === "eps") vec = parseEps(data);
+          else vec = parseAi(data);
+        } catch (e) {
+          base.error = "This file's metadata could not be read (" + e.message + ").";
+          return base;
+        }
+        base.vec = vec; base.width = vec.width; base.height = vec.height;
+        base.resolved = resolveGeneric(vec);
+        base.meta = vec.xmp ? { xmp: vec.xmp } : {};
+        base.quality = computeQuality(buildQualityChecks(file, base.width, base.height, base.meta, base.resolved, null, "vector"));
+        if (cls.ext === "svg") {
+          var url = URL.createObjectURL(file);
+          base.previewUrl = url; base.previewKind = "img";
+          currentUrls.push(url);
+          return loadImage(url).then(function (img) {
+            base.analysis = analyzePixels(img);
+            return base;
+          }, function () { base.analysis = null; return base; });
+        }
+        return base;
+      }, function () {
+        base.error = "The file could not be read. Try choosing it again.";
+        return base;
+      });
+    }
+    /* video */
+    return readFileAsArrayBuffer(file).then(function (buffer) {
+      var view = new DataView(buffer);
+      var vid;
+      try { vid = cls.ext === "webm" ? parseWebm(view) : parseMp4(view); }
+      catch (e) { base.error = "This file's metadata could not be read (" + e.message + ")."; return base; }
+      base.vid = vid;
+      base.resolved = resolveGeneric(vid);
+      base.meta = vid.xmp ? { xmp: vid.xmp } : {};
+      var url = URL.createObjectURL(file);
+      base.previewUrl = url; base.previewKind = "video";
+      currentUrls.push(url);
+      return loadVideo(url).then(function (video) {
+        base.width = video.videoWidth || vid.width;
+        base.height = video.videoHeight || vid.height;
+        base.duration = (video.duration && isFinite(video.duration)) ? video.duration : (vid.duration || null);
+        var frameAt = base.duration ? Math.min(1, base.duration * 0.1) : 0.5;
+        return seekVideoFrame(video, frameAt).then(function (analysis) {
+          base.analysis = analysis;
+          base.quality = computeQuality(buildQualityChecks(file, base.width, base.height, base.meta, base.resolved, base.analysis, "video", { duration: base.duration }));
+          return base;
+        });
+      }, function () {
+        base.width = vid.width; base.height = vid.height; base.duration = vid.duration || null;
+        base.analysis = null;
+        base.quality = computeQuality(buildQualityChecks(file, base.width, base.height, base.meta, base.resolved, null, "video", { duration: base.duration }));
+        return base;
+      });
+    }, function () {
+      base.error = "The file could not be read. Try choosing it again.";
+      return base;
+    });
   }
 
   function resetAll() {
-    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+    currentUrls.forEach(function (u) { URL.revokeObjectURL(u); });
+    currentUrls = [];
+    currentResults = [];
     fileInput.value = "";
     resultArea.innerHTML =
-      '<div class="empty" id="emptyState">No image loaded yet. Choose an image to see its embedded metadata and its microstock quality check.</div>';
-    document.getElementById("metaArea").innerHTML = "";
-    document.getElementById("qualityArea").innerHTML = "";
-    copyBox.value = "";
-    copyNote.hidden = true;
-    metaSection.hidden = true;
-    qualitySection.hidden = true;
-    copySection.hidden = true;
+      '<div class="empty" id="emptyState">No files loaded yet. Choose one or many files to see their embedded metadata and their microstock quality check.</div>';
+    resultsArea.innerHTML = "";
+    resultsSection.hidden = true;
     dropzone.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  function handleFile(file) {
-    if (!file) return;
-    var isImage = /^image\/(jpeg|png|webp|gif)$/.test(file.type) ||
-      /\.(jpe?g|png|webp|gif)$/i.test(file.name);
-    if (!isImage) {
-      showError("That file is not a JPG, PNG, WebP or GIF image. Please choose an image file.");
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function () {
-      var buffer = reader.result;
-      var meta;
-      try {
-        meta = parseImageMetadata(buffer, file.type);
-      } catch (e) {
-        showError("This file's metadata could not be read (" + e.message + "). The file may be damaged — try a different image.");
+  function handleFiles(list) {
+    var files = Array.prototype.slice.call(list || []);
+    if (!files.length) return;
+    var unsupported = files.filter(function (f) { return classifyFile(f).kind === "unsupported"; }).length;
+    resultsSection.hidden = true;
+    resultsArea.innerHTML = "";
+    currentResults = [];
+    resultArea.innerHTML = '<p class="progress-line" id="progressLine">Checking 0 of ' + files.length + " files…</p>";
+    var i = 0;
+    function next() {
+      if (i >= files.length) {
+        var pl = document.getElementById("progressLine");
+        if (pl) pl.textContent = files.length + " file" + (files.length > 1 ? "s" : "") + " checked." +
+          (unsupported ? " " + unsupported + " skipped (unsupported type)." : "");
+        resultsArea.innerHTML = renderSummary(currentResults) + currentResults.map(function (r, idx) { return renderFileBlock(r, idx); }).join("");
+        resultsSection.hidden = false;
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      previewUrl = URL.createObjectURL(file);
-      var img = new Image();
-      img.onload = function () {
-        var width = img.naturalWidth, height = img.naturalHeight;
-        if (!width || !height) {
-          showError("The image could not be read — its dimensions are missing. Try a different file.");
-          return;
-        }
-        var resolved = resolveMeta(meta);
-        var analysis;
-        try {
-          analysis = analyzePixels(img);
-        } catch (e) {
-          analysis = { meanLum: 128, clippedBlackPct: 0, clippedWhitePct: 0, sharpness: 0, noise: 0, meanSat: 0 };
-        }
-        resultArea.innerHTML =
-          '<div class="preview-wrap">' +
-          '<img src="' + previewUrl + '" alt="Preview of the uploaded image">' +
-          '<div class="facts"><dl>' +
-          kvRow("File name", file.name) +
-          kvRow("File type", file.type) +
-          kvRow("Dimensions", width + " × " + height + " px") +
-          kvRow("Megapixels", ((width * height) / 1000000).toFixed(2) + " MP") +
-          kvRow("File size", formatBytes(file.size)) +
-          "</dl></div></div>";
-        renderMeta(file, width, height, meta, resolved);
-        var quality = renderQuality(file, width, height, meta, resolved, analysis);
-        copyBox.value = buildCopyText(file, width, height, meta, resolved, quality);
-        metaSection.hidden = false;
-        qualitySection.hidden = false;
-        copySection.hidden = false;
-        metaSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      };
-      img.onerror = function () {
-        showError("That file could not be opened as an image. It may be damaged or in a format this browser cannot read. Try a different file.");
-      };
-      img.src = previewUrl;
-    };
-    reader.onerror = function () {
-      showError("The file could not be read. Try choosing it again.");
-    };
-    reader.readAsArrayBuffer(file);
+      var f = files[i];
+      var pl2 = document.getElementById("progressLine");
+      if (pl2) pl2.textContent = "Checking " + (i + 1) + " of " + files.length + " files… (" + f.name + ")";
+      processFile(f).then(function (res) {
+        currentResults.push(res);
+        i++;
+        next();
+      });
+    }
+    next();
   }
 
   browseBtn.addEventListener("click", function (e) {
@@ -1263,7 +1965,7 @@
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); }
   });
   fileInput.addEventListener("change", function () {
-    if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+    if (fileInput.files && fileInput.files.length) handleFiles(fileInput.files);
   });
   ["dragenter", "dragover"].forEach(function (evt) {
     dropzone.addEventListener(evt, function (e) { e.preventDefault(); dropzone.classList.add("drag"); });
@@ -1273,30 +1975,32 @@
   });
   dropzone.addEventListener("drop", function (e) {
     var files = e.dataTransfer && e.dataTransfer.files;
-    if (files && files[0]) handleFile(files[0]);
+    if (files && files.length) handleFiles(files);
   });
 
   document.getElementById("clearBtn").addEventListener("click", resetAll);
 
-  document.getElementById("copyBtn").addEventListener("click", function () {
-    copyBox.select();
-    var done = false;
-    try {
+  /* Summary rows open their file's detail; copy buttons copy that file's text. */
+  resultsArea.addEventListener("click", function (e) {
+    var row = e.target.closest ? e.target.closest("tr[data-file]") : null;
+    if (row) {
+      var det = document.getElementById("file-" + row.getAttribute("data-file"));
+      if (det) { det.open = true; det.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      return;
+    }
+    var btn = e.target.closest ? e.target.closest("button[data-copy]") : null;
+    if (btn) {
+      var idx = parseInt(btn.getAttribute("data-copy"), 10);
+      var res = currentResults[idx];
+      var note = document.querySelector('[data-copynote="' + idx + '"]');
+      function showNote(text) { if (note) { note.textContent = text; note.hidden = false; } }
+      if (!res || !res.copyText) { showNote("Nothing to copy yet."); return; }
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(copyBox.value).then(function () {
-          copyNote.textContent = "✓ Copied to clipboard.";
-          copyNote.hidden = false;
-        }, function () {
-          copyNote.textContent = "Copy did not work automatically — the text is selected above; press Ctrl+C / Cmd+C.";
-          copyNote.hidden = false;
-        });
-        done = true;
+        navigator.clipboard.writeText(res.copyText).then(function () { showNote("✓ Copied to clipboard."); },
+          function () { showNote("Copy did not work automatically — select the text above and press Ctrl+C / Cmd+C."); });
+      } else {
+        showNote("Select the text above and press Ctrl+C / Cmd+C to copy.");
       }
-    } catch (e) { done = false; }
-    if (!done) {
-      try { document.execCommand("copy"); } catch (e) {}
-      copyNote.textContent = "Text selected — press Ctrl+C / Cmd+C to copy.";
-      copyNote.hidden = false;
     }
   });
 })();
