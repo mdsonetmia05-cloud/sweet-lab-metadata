@@ -1720,7 +1720,9 @@ const saved=localStorage.getItem('metadata_studio_gemini_key'); if(saved) el.api
 
 /* ---- Embed file Download: embed generated XMP metadata into the original
    files and download them as a ZIP (stored, no compression). JPEG gets an
-   XMP APP1 segment after SOI; PNG gets an iTXt chunk before the first IDAT.
+   XMP APP1 segment after SOI; PNG gets an iTXt chunk before the first IDAT;
+   EPS gets a proper XMP packet (Adobe XMP Spec Part 3 §1.6.2, ExifTool
+   layout) with %ADO_ContainsXMP: MainFirst and %%Title: updated.
    Any other format, or a file that fails to parse, is included unchanged. */
 function xmlEsc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
 function buildXmpPacket(d){
@@ -1794,6 +1796,115 @@ function embedXmpPng(bytes,xmpBytes){
   parts.push(chunk,bytes.subarray(idatPos));
   return concatBytes(parts);
 }
+function latin1Bytes(s){const b=new Uint8Array(s.length);for(let i=0;i<s.length;i++)b[i]=s.charCodeAt(i)&0xFF;return b}
+function isEpsFile(bytes,name){
+  if(typeof name!=='string'||!/\.eps$/i.test(name))return false;
+  if(bytes.length>=30&&bytes[0]===0xC5&&bytes[1]===0xD0&&bytes[2]===0xD3&&bytes[3]===0xC6)return true;
+  if(bytes.length>=10){let h='';for(let i=0;i<10;i++)h+=String.fromCharCode(bytes[i]);if(h==='%!PS-Adobe')return true}
+  return false;
+}
+/* EPS: embed the generated XMP as a proper packet (Adobe XMP Spec Part 3
+   §1.6.2, same layout ExifTool writes): a %begin_xml_code block right
+   after %%EndComments, %ADO_ContainsXMP: MainFirst in the header comments,
+   and %%Title: updated, so packet scanners (Adobe Stock, Bridge, ExifTool)
+   find the main XMP first. A DOS binary EPS header gets its offsets
+   updated (checksum 0xFFFF = ignored, as ExifTool does). A file that
+   already has an XMP packet gets that packet replaced in place (length
+   numbers updated), never a second packet. Returns null when the bytes
+   are not a usable EPS file. */
+function embedXmpEps(bytes,d){
+  const enc=new TextEncoder();
+  const xmpStr=buildXmpPacket(d);
+  const title=typeof d.title==='string'?d.title.replace(/[^\x20-\x7E]/g,'').replace(/\s+/g,' ').trim():'';
+  let dos=false,psStart=0,psLen=bytes.length,wmfOff=0,tiffOff=0;
+  if(bytes.length>=30&&bytes[0]===0xC5&&bytes[1]===0xD0&&bytes[2]===0xD3&&bytes[3]===0xC6){
+    dos=true;
+    const dv=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+    psStart=dv.getUint32(4,true);psLen=dv.getUint32(8,true);
+    wmfOff=dv.getUint32(12,true);tiffOff=dv.getUint32(20,true);
+    if(psStart<30||psLen<10||psStart+psLen>bytes.length)return null;
+  }
+  const text=new TextDecoder('latin1').decode(bytes.subarray(psStart,psStart+psLen));
+  if(text.slice(0,10)!=='%!PS-Adobe')return null;
+  const nl=text.indexOf('\r\n')>=0?'\r\n':(text.indexOf('\r')>=0?'\r':'\n');
+  const packet='<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>'+nl+xmpStr+nl+'<?xpacket end="w"?>';
+  const pktBytes=enc.encode(packet);
+  const pktLen=pktBytes.length;
+  let before,after;
+  const xmpAt=text.indexOf('<x:xmpmeta');
+  if(xmpAt>=0){
+    let pktStart=text.lastIndexOf('<?xpacket begin',xmpAt);
+    if(pktStart<0)pktStart=xmpAt;
+    let pktEnd=text.indexOf('</x:xmpmeta>',xmpAt);
+    if(pktEnd<0)return null;
+    pktEnd+='</x:xmpmeta>'.length;
+    const endPi=text.indexOf('<?xpacket end=',pktEnd);
+    if(endPi>=0&&endPi<pktEnd+200){const c=text.indexOf('?>',endPi);if(c>=0)pktEnd=c+2}
+    before=text.slice(0,pktStart);
+    after=text.slice(pktEnd);
+    const inCode=before.lastIndexOf('%begin_xml_code')>before.lastIndexOf('%end_xml_code');
+    const hasLen=/%begin_xml_packet: \d+/.test(before)||/\/MetadataString \d+ string def/.test(before);
+    if(inCode&&!hasLen)return null;
+    before=before.replace(/%begin_xml_packet: \d+/,'%begin_xml_packet: '+pktLen);
+    before=before.replace(/\/MetadataString \d+ string def/,'/MetadataString '+pktLen+' string def');
+  }else{
+    const blockBefore=['%begin_xml_code',
+      '/pdfmark where {pop true} {false} ifelse',
+      '/currentdistillerparams where {pop currentdistillerparams /CoreDistVersion get 5000 ge } {false} ifelse',
+      'and not {userdict /pdfmark /cleartomark load put} if',
+      '[/NamespacePush pdfmark',
+      '[/_objdef {sweetlab_metadata_stream} /type /stream /OBJ pdfmark',
+      '[{sweetlab_metadata_stream} 2 dict begin /Type /Metadata def /Subtype /XML def currentdict end /PUT pdfmark',
+      '/MetadataString '+pktLen+' string def % exact length of metadata',
+      '/TempString 100 string def',
+      '/ConsumeMetadata {',
+      'currentfile TempString readline pop pop',
+      'currentfile MetadataString readstring pop pop',
+      '} bind def',
+      'ConsumeMetadata',
+      '%begin_xml_packet: '+pktLen,''].join(nl);
+    const blockAfter=['','%end_xml_packet',
+      '[{sweetlab_metadata_stream} MetadataString /PUT pdfmark',
+      '[/Document 1 dict begin /Metadata {sweetlab_metadata_stream} def currentdict end /BDC pdfmark',
+      '[/NamespacePop pdfmark',
+      '%end_xml_code',''].join(nl);
+    const ec=text.match(/%%EndComments(?:\r\n|\r|\n|$)/);
+    let ins;
+    if(ec)ins=ec.index+ec[0].length;
+    else{const f=text.search(/\r\n|\r|\n/);if(f<0)return null;ins=f+(text.slice(f,f+2)==='\r\n'?2:1)}
+    before=text.slice(0,ins)+blockBefore;
+    after=blockAfter+text.slice(ins);
+    const eofM=after.match(/(^|\r\n|\r|\n)%%EOF\b/);
+    if(eofM){const cut=eofM.index+eofM[1].length;after=after.slice(0,cut)+'[/EMC pdfmark'+nl+after.slice(cut)}
+    else after+=((after===''||/(\r\n|\r|\n)$/.test(after))?'':nl)+'[/EMC pdfmark'+nl;
+  }
+  if(/%ADO_ContainsXMP:/.test(before))before=before.replace(/%ADO_ContainsXMP:? *[^\r\n]*/,'%ADO_ContainsXMP: MainFirst');
+  else{
+    const ec2=before.match(/%%EndComments(?:\r\n|\r|\n|$)/);
+    if(ec2)before=before.slice(0,ec2.index)+'%ADO_ContainsXMP: MainFirst'+nl+before.slice(ec2.index);
+    else{const f=before.search(/\r\n|\r|\n/);if(f>=0){const l=before.slice(f,f+2)==='\r\n'?2:1;before=before.slice(0,f+l)+'%ADO_ContainsXMP: MainFirst'+nl+before.slice(f+l)}}
+  }
+  if(title){
+    if(/^%%Title:.*$/m.test(before))before=before.replace(/^%%Title:.*$/m,'%%Title: '+title);
+    else{const f=before.search(/\r\n|\r|\n/);if(f>=0){const l=before.slice(f,f+2)==='\r\n'?2:1;before=before.slice(0,f+l)+'%%Title: '+title+nl+before.slice(f+l)}}
+  }
+  const newPs=concatBytes([latin1Bytes(before),pktBytes,latin1Bytes(after)]);
+  if(newPs.length<10||newPs[0]!==0x25)return null;
+  const chk=new TextDecoder('latin1').decode(newPs);
+  const m1=chk.match(/%begin_xml_packet: (\d+)/),m2=chk.match(/\/MetadataString (\d+) string def/);
+  if(m1&&+m1[1]!==pktLen)return null;
+  if(m2&&+m2[1]!==pktLen)return null;
+  if(xmpAt<0&&(!m1||!m2))return null;
+  if(!dos)return newPs;
+  const delta=newPs.length-psLen;
+  const head=new Uint8Array(bytes.subarray(0,30));
+  const dv=new DataView(head.buffer);
+  dv.setUint32(8,psLen+delta,true);
+  if(wmfOff>psStart)dv.setUint32(12,wmfOff+delta,true);
+  if(tiffOff>psStart)dv.setUint32(20,tiffOff+delta,true);
+  dv.setUint16(28,0xFFFF,true);
+  return concatBytes([head,bytes.subarray(30,psStart),newPs,bytes.subarray(psStart+psLen)]);
+}
 function uniqueZipName(name,used){
   if(!used.has(name)){used.add(name);return name}
   const dot=name.lastIndexOf('.');
@@ -1861,6 +1972,7 @@ async function downloadEmbeddedZip(){
     try{
       if(bytes[0]===0xFF&&bytes[1]===0xD8)out=embedXmpJpeg(bytes,xmpPacketFit(r.data));
       else if(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4E&&bytes[3]===0x47)out=embedXmpPng(bytes,new TextEncoder().encode(buildXmpPacket(r.data)));
+      else if(isEpsFile(bytes,r.file&&r.file.name))out=embedXmpEps(bytes,r.data);
     }catch(e){out=null}
     if(out){bytes=out;embedded++}else unchanged++;
     const fext=(bytes[0]===0xFF&&bytes[1]===0xD8)?'.jpg':(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4E&&bytes[3]===0x47)?'.png':'';
