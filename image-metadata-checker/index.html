@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image &amp; Metadata Checker — Sweet Metadata Lab</title>
+<meta name="description" content="Drop an image to see all its embedded metadata — title, description, keywords, EXIF, XMP and IPTC — and check whether it is ready for microstock submission. Everything is read in your browser only.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3ECDA;
+    --panel:#FBF7EC;
+    --panel-edge:#E3D9BE;
+    --ink:#2E2118;
+    --ink-soft:#5C4A38;
+    --bronze:#6B4423;
+    --bronze-light:#A67C52;
+    --pass:#2E6B34;
+    --pass-bg:#E4EEDF;
+    --fail:#9B2C1E;
+    --fail-bg:#F6E3DE;
+    --warn:#7A5A12;
+    --warn-bg:#F6ECD4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hind Siliguri",Georgia,"Times New Roman",serif;
+    font-size:17px;line-height:1.6;
+    min-height:100vh;
+  }
+  a{color:var(--bronze)}
+  .topbar{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:14px 20px;
+    border-bottom:1px solid var(--panel-edge);
+    background:var(--panel);
+  }
+  .topbar .back{
+    text-decoration:none;font-weight:600;color:var(--bronze);
+    font-size:16px;white-space:nowrap;
+  }
+  .topbar .back:hover{text-decoration:underline}
+  .topbar h1{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:26px;font-weight:700;letter-spacing:.2px;
+  }
+  .topbar .tag{
+    margin-left:auto;font-size:14px;color:var(--ink-soft);
+    border:1px solid var(--panel-edge);border-radius:999px;
+    padding:3px 12px;background:var(--paper);white-space:nowrap;
+  }
+  main{max-width:920px;margin:0 auto;padding:24px 18px 64px}
+  .disclaimer{
+    border:2px solid var(--bronze);
+    background:var(--warn-bg);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:24px;
+  }
+  .disclaimer strong{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:19px;display:block;margin-bottom:4px;
+  }
+  .disclaimer p{font-size:15.5px;color:var(--ink)}
+  .bn{color:var(--bronze);font-weight:500}
+  section{
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    border-radius:12px;
+    padding:22px 20px;
+    margin-bottom:20px;
+  }
+  h2{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:22px;font-weight:700;margin-bottom:4px;
+  }
+  h3{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:18px;font-weight:700;margin:18px 0 8px;
+  }
+  .subtitle{color:var(--ink-soft);font-size:15px;margin-bottom:16px}
+  .dropzone{
+    border:2px dashed var(--bronze-light);
+    border-radius:10px;
+    padding:30px 18px;text-align:center;
+    cursor:pointer;
+    transition:background .15s,border-color .15s;
+    background:var(--paper);
+  }
+  .dropzone:hover,.dropzone.drag{border-color:var(--bronze);background:#EFE6CF}
+  .dropzone .big{font-family:"Playfair Display",Georgia,serif;font-size:20px;font-weight:600}
+  .dropzone p{color:var(--ink-soft);font-size:15px;margin-top:4px}
+  .dropzone input{display:none}
+  .btn{
+    display:inline-block;margin-top:14px;
+    background:var(--bronze);color:#FBF7EC;border:none;
+    font-family:inherit;font-size:16px;font-weight:600;
+    padding:10px 22px;border-radius:8px;cursor:pointer;
+  }
+  .btn:hover{background:#57371C}
+  .btn.ghost{
+    background:transparent;color:var(--bronze);
+    border:1.5px solid var(--bronze);margin-left:8px;
+  }
+  .btn.ghost:hover{background:#EFE6CF}
+  .empty{
+    text-align:center;color:var(--ink-soft);
+    border:1px dashed var(--panel-edge);border-radius:10px;
+    padding:26px 16px;font-size:16px;
+  }
+  .preview-wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+  .preview-wrap img{
+    max-width:280px;max-height:280px;width:auto;height:auto;
+    border:1px solid var(--panel-edge);border-radius:8px;
+    background:#fff;display:block;
+  }
+  .facts{flex:1;min-width:240px}
+  .facts dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:16px}
+  .facts dt{color:var(--ink-soft)}
+  .facts dd{font-weight:600;overflow-wrap:anywhere}
+  .missing{color:var(--ink-soft);font-weight:400;font-style:italic}
+  .kv{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:6px 14px;font-size:16px}
+  .kv dt{color:var(--ink-soft)}
+  .kv dd{overflow-wrap:anywhere}
+  .kv dd .missing{font-style:italic}
+  .kw-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .chip{
+    background:#EFE6CF;border:1px solid var(--panel-edge);
+    border-radius:999px;padding:2px 10px;font-size:14.5px;
+  }
+  .chip.first{border-color:var(--bronze);font-weight:600}
+  .chip-legend{font-size:14px;color:var(--ink-soft);margin-top:6px}
+  .score-line{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .score-num{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:44px;font-weight:700;line-height:1;
+  }
+  .score-bar{flex:1;min-width:180px;height:12px;background:#E7DCC2;border-radius:999px;overflow:hidden}
+  .score-bar div{height:100%;background:var(--bronze);width:0%;transition:width .3s}
+  .checklist{list-style:none;margin-top:16px}
+  .checklist li{
+    display:flex;gap:10px;align-items:flex-start;
+    padding:12px 12px;border-radius:8px;margin-bottom:8px;
+    border:1px solid var(--panel-edge);background:var(--paper);
+  }
+  .badge{
+    flex-shrink:0;font-weight:700;font-size:13px;letter-spacing:.4px;
+    padding:3px 10px;border-radius:999px;margin-top:1px;
+  }
+  .badge.pass{background:var(--pass-bg);color:var(--pass)}
+  .badge.fail{background:var(--fail-bg);color:var(--fail)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .badge.info{background:var(--warn-bg);color:var(--bronze)}
+  .checklist .text strong{display:block;font-size:16.5px}
+  .checklist .text span{font-size:15px;color:var(--ink-soft)}
+  .verdict{
+    margin-top:16px;padding:14px 16px;border-radius:8px;
+    font-size:17px;font-weight:600;
+  }
+  .verdict.pass{background:var(--pass-bg);color:var(--pass)}
+  .verdict.warn{background:var(--warn-bg);color:var(--warn)}
+  .verdict.fail{background:var(--fail-bg);color:var(--fail)}
+  .verdict p{font-weight:400;font-size:15px;color:var(--ink);margin-top:4px}
+  .honest-note{
+    margin-top:14px;font-size:14.5px;color:var(--ink-soft);
+    border:1px dashed var(--panel-edge);border-radius:8px;padding:10px 12px;
+  }
+  .copybox{
+    width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+    background:#fff;border:1px solid var(--panel-edge);border-radius:8px;
+    padding:10px 12px;min-height:120px;resize:vertical;margin-top:8px;
+  }
+  footer{
+    text-align:center;color:var(--ink-soft);font-size:14.5px;
+    padding:0 18px 32px;max-width:920px;margin:0 auto;
+  }
+  footer a{color:var(--bronze)}
+  @media (max-width:600px){
+    .topbar h1{font-size:22px}
+    .topbar .tag{display:none}
+    main{padding:18px 12px 48px}
+    section{padding:18px 14px}
+    .kv{grid-template-columns:1fr;gap:2px 0}
+    .kv dt{margin-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="back" href="../">← Sweet Metadata Lab</a>
+  <h1>Image &amp; Metadata Checker</h1>
+  <span class="tag">Metadata + quality</span>
+</header>
+
+<main>
+
+  <div class="disclaimer" role="note">
+    <strong>🔍 See what is really inside your image</strong>
+    <p>Drop an image to read every metadata field embedded in it — title, description, keywords, camera data, dates and more — and to check whether it meets the usual microstock submission rules. Your file is read <strong>in your browser only</strong> — it is never uploaded to any server.</p>
+    <p class="bn" style="margin-top:6px">ছবিতে কী কী মেটাডেটা আছে, আর মাইক্রোস্টকের জন্য ছবিটি ঠিক আছে কি না — সব এখানেই দেখা যাবে।</p>
+  </div>
+
+  <section aria-labelledby="upload-title">
+    <h2 id="upload-title">1 · Choose an image</h2>
+    <p class="subtitle">JPG, PNG, WebP or GIF. Drag it here or click to choose. <span class="bn">ছবি টেনে আনুন বা সিলেক্ট করুন।</span></p>
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose an image file or drag one here">
+      <div class="big">Drop your image here</div>
+      <p>or click to choose a file · JPG, PNG, WebP, GIF</p>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
+      <button class="btn" type="button" id="browseBtn">Choose image</button>
+    </div>
+    <div id="resultArea" style="margin-top:18px">
+      <div class="empty" id="emptyState">No image loaded yet. Choose an image to see its embedded metadata and its microstock quality check.</div>
+    </div>
+  </section>
+
+  <section id="metaSection" aria-labelledby="meta-title" hidden>
+    <h2 id="meta-title">2 · Embedded metadata</h2>
+    <p class="subtitle">Everything found inside the file, grouped by type. Fields that are empty say so honestly — nothing is invented here. <span class="bn">ফাইলের ভেতরে যা যা পাওয়া গেছে।</span></p>
+    <div id="metaArea"></div>
+  </section>
+
+  <section id="qualitySection" aria-labelledby="quality-title" hidden>
+    <h2 id="quality-title">3 · Microstock quality check</h2>
+    <p class="subtitle">Checked against the usual Adobe Stock / Shutterstock photo rules. This is an estimate from the file itself — it cannot judge content, releases or legality. <span class="bn">মাইক্রোস্টকে দেওয়ার যোগ্য কি না — অনুমানভিত্তিক যাচাই।</span></p>
+    <div id="qualityArea"></div>
+  </section>
+
+  <section id="copySection" aria-labelledby="copy-title" hidden>
+    <h2 id="copy-title">4 · Copy the metadata</h2>
+    <p class="subtitle">All the metadata above as plain text — handy to paste into a submission form or a note. <span class="bn">সব মেটাডেটা একসাথে কপি করুন।</span></p>
+    <textarea class="copybox" id="copyBox" readonly></textarea>
+    <div>
+      <button class="btn" type="button" id="copyBtn">Copy metadata text</button>
+      <button class="btn ghost" type="button" id="clearBtn">Check another image</button>
+    </div>
+    <div class="honest-note" id="copyNote" hidden></div>
+  </section>
+
+</main>
+
+<footer>
+  Image &amp; Metadata Checker · Sweet Metadata Lab · Works fully offline in your browser once loaded — no image or text ever leaves your device.<br>
+  Size rules shown are Adobe Stock's published minimums (photos 4 MP; vector artboard 15 MP). Adobe's requirements can change — check the <a href="https://helpx.adobe.com/stock/contributor/help.html" target="_blank" rel="noopener">Adobe Stock Contributor Help</a> before submitting.
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     Metadata parsers — pure synchronous functions.
+     They take an ArrayBuffer/DataView and return plain objects.
+     No file I/O here, so they can be unit-tested in Node.
+     ============================================================ */
+
+  var PHOTO_MIN_MP = 4;      /* Adobe Stock minimum for photos */
+  var TITLE_MAX = 200;
+  var TITLE_SEO = 70;
+  var KEYWORD_MAX_SITE = 49; /* this lab generates at most 49 */
+  var KEYWORD_MAX_ADOBE = 200;
+  var ADOBE_MAX_MB = 45;     /* Adobe Stock photo file-size limit */
+
+  /* ---------- small helpers ---------- */
+
+  function asciiAt(view, off, len) {
+    var s = "";
+    for (var i = 0; i < len; i++) {
+      var c = view.getUint8(off + i);
+      if (c === 0) break;
+      s += String.fromCharCode(c);
+    }
+    return s;
+  }
+
+  function startsWithStr(view, off, str) {
+    for (var i = 0; i < str.length; i++) {
+      if (view.getUint8(off + i) !== str.charCodeAt(i)) return false;
+    }
+    return true;
+  }
+
+  function findByte(view, from, end, b) {
+    for (var i = from; i < end; i++) {
+      if (view.getUint8(i) === b) return i;
+    }
+    return end;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+  }
+
+  function decodeUtf16LE(bytes) {
+    var s = "";
+    for (var i = 0; i + 1 < bytes.length; i += 2) {
+      var code = bytes[i] | (bytes[i + 1] << 8);
+      if (code === 0) break;
+      s += String.fromCharCode(code);
+    }
+    return s;
+  }
+
+  function decodeText(bytes) {
+    try {
+      return new TextDecoder("utf-8").decode(bytes);
+    } catch (e) {
+      var s = "";
+      for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+      return s;
+    }
+  }
+
+  /* ---------- EXIF (TIFF) ---------- */
+
+  var EXIF_IFD0_NAMES = {
+    0x010D: "Document Name", 0x010E: "Image Description", 0x010F: "Camera Make",
+    0x0110: "Camera Model", 0x0112: "Orientation", 0x011A: "X Resolution",
+    0x011B: "Y Resolution", 0x0128: "Resolution Unit", 0x0131: "Software",
+    0x0132: "Date & Time", 0x013B: "Artist", 0x013C: "Host Computer",
+    0x8298: "Copyright", 0x9C9B: "XP Title", 0x9C9C: "XP Comment",
+    0x9C9D: "XP Author", 0x9C9E: "XP Keywords", 0x9C9F: "XP Subject"
+  };
+  var EXIF_NAMES = {
+    0x9000: "EXIF Version", 0x9003: "Date Taken", 0x9004: "Date Digitized",
+    0x9201: "Shutter Speed", 0x9202: "Aperture", 0x9204: "Exposure Bias",
+    0x9209: "Flash", 0x920A: "Focal Length", 0x9286: "User Comment",
+    0x829A: "Exposure Time", 0x829D: "F-Number", 0x8822: "Exposure Program",
+    0x8827: "ISO Speed", 0xA001: "Colour Space", 0xA002: "Pixel Width",
+    0xA003: "Pixel Height", 0xA217: "Sensing Method", 0xA405: "Focal Length (35mm)",
+    0xA430: "Owner Name", 0xA431: "Camera Serial", 0xA434: "Lens Model"
+  };
+  var GPS_NAMES = {
+    0x0000: "GPS Version", 0x0001: "Latitude Ref", 0x0002: "Latitude",
+    0x0003: "Longitude Ref", 0x0004: "Longitude", 0x0005: "Altitude Ref",
+    0x0006: "Altitude", 0x0007: "GPS Time", 0x001D: "GPS Date"
+  };
+  var TYPE_SIZE = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 6: 1, 7: 1, 8: 2, 9: 4, 10: 8, 11: 4, 12: 8 };
+
+  function readTiffValue(view, tiffStart, little, type, count, valueOff) {
+    var size = TYPE_SIZE[type] || 1;
+    var total = size * count;
+    var off = total <= 4 ? valueOff : tiffStart + view.getUint32(valueOff, little);
+    if (type === 2) { /* ASCII */
+      return asciiAt(view, off, count).replace(/\0+$/, "");
+    }
+    if (type === 3) { /* SHORT */
+      if (count === 1) return view.getUint16(off, little);
+      var shorts = [];
+      for (var i = 0; i < count; i++) shorts.push(view.getUint16(off + i * 2, little));
+      return shorts;
+    }
+    if (type === 4) { /* LONG */
+      if (count === 1) return view.getUint32(off, little);
+      var longs = [];
+      for (var j = 0; j < count; j++) longs.push(view.getUint32(off + j * 4, little));
+      return longs;
+    }
+    if (type === 5) { /* RATIONAL */
+      var rats = [];
+      for (var k = 0; k < count; k++) {
+        var num = view.getUint32(off + k * 8, little);
+        var den = view.getUint32(off + k * 8 + 4, little);
+        rats.push(den === 0 ? num : num / den);
+      }
+      return count === 1 ? rats[0] : rats;
+    }
+    if (type === 9) { /* SLONG */
+      if (count === 1) return view.getInt32(off, little);
+      var sl = [];
+      for (var m = 0; m < count; m++) sl.push(view.getInt32(off + m * 4, little));
+      return sl;
+    }
+    if (type === 10) { /* SRATIONAL */
+      var sr = [];
+      for (var n = 0; n < count; n++) {
+        var sn = view.getInt32(off + n * 8, little);
+        var sd = view.getInt32(off + n * 8 + 4, little);
+        sr.push(sd === 0 ? sn : sn / sd);
+      }
+      return count === 1 ? sr[0] : sr;
+    }
+    /* BYTE / UNDEFINED / others: raw bytes */
+    var bytes = new Uint8Array(view.buffer, view.byteOffset + off, total);
+    return bytes;
+  }
+
+  function readIfd(view, tiffStart, little, ifdOff, names) {
+    var out = {};
+    var count = view.getUint16(tiffStart + ifdOff, little);
+    for (var i = 0; i < count; i++) {
+      var e = tiffStart + ifdOff + 2 + i * 12;
+      var tag = view.getUint16(e, little);
+      var type = view.getUint16(e + 2, little);
+      var cnt = view.getUint32(e + 4, little);
+      if (!TYPE_SIZE[type]) continue;
+      var val = readTiffValue(view, tiffStart, little, type, cnt, e + 8);
+      var name = names[tag] || ("Tag 0x" + tag.toString(16).toUpperCase());
+      out[name] = { tag: tag, value: val };
+    }
+    return out;
+  }
+
+  /* Returns { ifd0, exif, gps } or null when the TIFF header is bad. */
+  function parseExifTiff(view, tiffStart) {
+    if (tiffStart + 8 > view.byteLength) return null;
+    var little = view.getUint8(tiffStart) === 0x49; /* 'I' */
+    if (view.getUint8(tiffStart) !== 0x49 && view.getUint8(tiffStart) !== 0x4D) return null;
+    if (view.getUint16(tiffStart + 2, little) !== 0x002A) return null;
+    var ifd0Off = view.getUint32(tiffStart + 4, little);
+    if (tiffStart + ifd0Off + 2 > view.byteLength) return null;
+    var result = { ifd0: readIfd(view, tiffStart, little, ifd0Off, EXIF_IFD0_NAMES), exif: {}, gps: {} };
+    var ifd0Raw = {};
+    var count0 = view.getUint16(tiffStart + ifd0Off, little);
+    for (var i = 0; i < count0; i++) {
+      var e = tiffStart + ifd0Off + 2 + i * 12;
+      ifd0Raw[view.getUint16(e, little)] = view.getUint32(e + 8, little);
+    }
+    if (ifd0Raw[0x8769]) {
+      result.exif = readIfd(view, tiffStart, little, ifd0Raw[0x8769], EXIF_NAMES);
+    }
+    if (ifd0Raw[0x8825]) {
+      result.gps = readIfd(view, tiffStart, little, ifd0Raw[0x8825], GPS_NAMES);
+    }
+    return result;
+  }
+
+  function formatExifValue(name, val) {
+    if (val instanceof Uint8Array) {
+      /* XP tags are UTF-16LE; User Comment starts with "ASCII\0\0\0" */
+      if (name.indexOf("XP ") === 0) return decodeUtf16LE(val);
+      if (name === "User Comment") {
+        var head = decodeText(val.subarray(0, 8));
+        if (head.indexOf("ASCII") === 0) return decodeText(val.subarray(8));
+        return decodeText(val);
+      }
+      if (name === "EXIF Version") return decodeText(val);
+      return decodeText(val);
+    }
+    if (Array.isArray(val)) {
+      if (name === "GPS Version") return val.join(".");
+      return val.map(function (v) { return typeof v === "number" ? (Math.round(v * 100) / 100) : v; }).join(", ");
+    }
+    if (typeof val === "number") {
+      if (name === "Orientation") {
+        return { 1: "Normal (1)", 2: "Mirrored (2)", 3: "Rotated 180° (3)", 4: "Mirrored + 180° (4)",
+          5: "Mirrored + 90° CW (5)", 6: "Rotated 90° CW (6)", 7: "Mirrored + 90° CCW (7)",
+          8: "Rotated 90° CCW (8)" }[val] || String(val);
+      }
+      if (name === "Exposure Time") return val >= 1 ? val + " s" : "1/" + Math.round(1 / val) + " s";
+      if (name === "F-Number" || name === "Aperture") return "f/" + (Math.round(val * 10) / 10);
+      if (name === "Focal Length" || name === "Focal Length (35mm)") return val + " mm";
+      if (name === "Shutter Speed") return "1/" + Math.round(Math.pow(2, val)) + " s";
+      if (name === "X Resolution" || name === "Y Resolution") return Math.round(val) + " dpi";
+      if (name === "Resolution Unit") return { 1: "None", 2: "Inches", 3: "Centimetres" }[val] || String(val);
+      if (name === "Colour Space") return val === 1 ? "sRGB" : (val === 65535 ? "Uncalibrated" : String(val));
+      if (name === "Exposure Program") {
+        return { 0: "Not defined", 1: "Manual", 2: "Normal", 3: "Aperture priority",
+          4: "Shutter priority", 5: "Creative", 6: "Action", 7: "Portrait", 8: "Landscape" }[val] || String(val);
+      }
+      if (name === "Flash") return (val & 1) ? "Fired" : "Did not fire";
+      if (name === "ISO Speed") return "ISO " + val;
+      return String(val);
+    }
+    return String(val);
+  }
+
+  function gpsToDecimal(ref, rationals) {
+    if (!Array.isArray(rationals) || rationals.length < 3) return null;
+    var dec = rationals[0] + rationals[1] / 60 + rationals[2] / 3600;
+    if (ref === "S" || ref === "W") dec = -dec;
+    return Math.round(dec * 100000) / 100000;
+  }
+
+  /* ---------- XMP ---------- */
+
+  function parseXmp(xmlText) {
+    var out = { title: null, description: null, keywords: [], creator: null,
+      rights: null, createDate: null, creatorTool: null, headline: null,
+      rating: null, webStatement: null, other: [] };
+    if (!xmlText || xmlText.indexOf("<") < 0) return out;
+    var doc;
+    try {
+      doc = new DOMParser().parseFromString(xmlText, "text/xml");
+    } catch (e) { return out; }
+    if (!doc || doc.getElementsByTagName("parsererror").length) return out;
+    var DC = "http://purl.org/dc/elements/1.1/";
+    var XMP = "http://ns.adobe.com/xap/1.0/";
+    var PS = "http://ns.adobe.com/photoshop/1.0/";
+    var XR = "http://ns.adobe.com/xap/1.0/rights/";
+    function firstLiText(ns, local) {
+      var els = doc.getElementsByTagNameNS(ns, local);
+      if (!els.length) return null;
+      var lis = els[0].getElementsByTagName("rdf:li");
+      if (lis.length) return lis[0].textContent;
+      var t = els[0].textContent;
+      return t ? t : null;
+    }
+    function allLiText(ns, local) {
+      var els = doc.getElementsByTagNameNS(ns, local);
+      if (!els.length) return [];
+      var lis = els[0].getElementsByTagName("rdf:li");
+      var arr = [];
+      for (var i = 0; i < lis.length; i++) arr.push(lis[i].textContent);
+      return arr;
+    }
+    function plainText(ns, local) {
+      var els = doc.getElementsByTagNameNS(ns, local);
+      if (!els.length) return null;
+      var t = els[0].textContent;
+      return t ? t : null;
+    }
+    out.title = firstLiText(DC, "title");
+    out.description = firstLiText(DC, "description");
+    out.keywords = allLiText(DC, "subject");
+    out.creator = firstLiText(DC, "creator");
+    out.rights = firstLiText(DC, "rights");
+    out.createDate = plainText(XMP, "CreateDate");
+    out.creatorTool = plainText(XMP, "CreatorTool");
+    out.rating = plainText(XMP, "Rating");
+    out.headline = plainText(PS, "Headline");
+    out.webStatement = plainText(XR, "WebStatement");
+    var known = { title: 1, description: 1, subject: 1, creator: 1, rights: 1,
+      CreateDate: 1, CreatorTool: 1, Rating: 1, Headline: 1, WebStatement: 1 };
+    var descs = doc.getElementsByTagName("rdf:Description");
+    for (var d = 0; d < descs.length && out.other.length < 30; d++) {
+      var kids = descs[d].childNodes;
+      for (var k = 0; k < kids.length && out.other.length < 30; k++) {
+        var node = kids[k];
+        if (node.nodeType !== 1) continue;
+        var local = node.localName || node.nodeName.split(":").pop();
+        if (known[local]) continue;
+        var text = node.textContent;
+        if (text) out.other.push({ name: local, value: text.length > 200 ? text.slice(0, 200) + "…" : text });
+      }
+    }
+    return out;
+  }
+
+  /* ---------- IPTC (IIM) ---------- */
+
+  function parseIptcRecord(bytes) {
+    var out = { keywords: [] };
+    var i = 0;
+    while (i + 5 <= bytes.length) {
+      if (bytes[i] !== 0x1C) break;
+      var rec = bytes[i + 1], ds = bytes[i + 2];
+      var len = (bytes[i + 3] << 8) | bytes[i + 4];
+      var hlen = 5;
+      if (len & 0x8000) {
+        var n = len & 0x7FFF;
+        len = 0;
+        for (var k = 0; k < n && i + 5 + k < bytes.length; k++) len = (len << 8) | bytes[i + 5 + k];
+        hlen = 5 + n;
+      }
+      if (i + hlen + len > bytes.length) break;
+      var val = decodeText(bytes.subarray(i + hlen, i + hlen + len));
+      var key = rec + ":" + (ds < 10 ? "00" + ds : ds < 100 ? "0" + ds : ds);
+      var names = {
+        "2:005": "Object Name", "2:007": "Edit Status", "2:015": "Category",
+        "2:025": "Keyword", "2:055": "Date Created", "2:060": "Time Created",
+        "2:080": "By-line", "2:085": "By-line Title", "2:105": "Headline",
+        "2:110": "Credit", "2:115": "Source", "2:116": "Copyright Notice",
+        "2:120": "Caption", "2:121": "Writer / Editor", "2:122": "Rasterized Caption",
+        "2:130": "Image Orientation"
+      };
+      if (key === "2:025") out.keywords.push(val);
+      else out[names[key] || ("Dataset " + key)] = val;
+      i += hlen + len;
+    }
+    return out;
+  }
+
+  function parsePhotoshopIrb(view, start, len) {
+    var end = start + len, off = start;
+    while (off + 8 <= end) {
+      if (!startsWithStr(view, off, "8BIM")) break;
+      var id = view.getUint16(off + 4, false);
+      var nameLen = view.getUint8(off + 6);
+      /* The name is a Pascal string padded to an even total length — but
+         many writers (including this lab's own embedder, which wrote a
+         bare 0x00 for an empty name) skip the pad byte. Try the padded
+         offset first, fall back to the unpadded one. */
+      var pPad = off + 7 + nameLen + (((1 + nameLen) % 2 === 1) ? 1 : 0);
+      var pNoPad = off + 7 + nameLen;
+      function sizeAt(p) { return (p + 4 <= end) ? view.getUint32(p, false) : 0xFFFFFFFF; }
+      function plausible(p) {
+        var sz = sizeAt(p);
+        if (sz > end - (p + 4)) return false;
+        if (id === 0x0404 && view.getUint8(p + 4) !== 0x1C) return false;
+        return true;
+      }
+      var p = plausible(pPad) ? pPad : (plausible(pNoPad) ? pNoPad : pPad);
+      var size = sizeAt(p);
+      var dataStart = p + 4;
+      if (id === 0x0404) {
+        return parseIptcRecord(new Uint8Array(view.buffer, view.byteOffset + dataStart, Math.min(size, end - dataStart)));
+      }
+      off = dataStart + size + (size % 2);
+    }
+    return null;
+  }
+
+  /* ---------- Containers ---------- */
+
+  function parseJpeg(view) {
+    var out = { exif: null, xmp: null, iptc: null };
+    if (view.byteLength < 4 || view.getUint8(0) !== 0xFF || view.getUint8(1) !== 0xD8) return out;
+    var off = 2;
+    while (off + 4 <= view.byteLength) {
+      if (view.getUint8(off) !== 0xFF) break;
+      var marker = view.getUint8(off + 1);
+      if (marker === 0xD9 || marker === 0xDA) break;
+      if (marker === 0x01 || (marker >= 0xD0 && marker <= 0xD7)) { off += 2; continue; }
+      var len = view.getUint16(off + 2, false);
+      if (len < 2 || off + 2 + len > view.byteLength) break;
+      var dataStart = off + 4, dataLen = len - 2;
+      if (marker === 0xE1) {
+        if (startsWithStr(view, dataStart, "Exif\0\0")) {
+          out.exif = parseExifTiff(view, dataStart + 6);
+        } else if (startsWithStr(view, dataStart, "http://ns.adobe.com/xap/1.0/\0")) {
+          out.xmp = parseXmp(asciiAt(view, dataStart + 29, dataLen - 29));
+        }
+      } else if (marker === 0xED) {
+        if (startsWithStr(view, dataStart, "Photoshop 3.0\0")) {
+          out.iptc = parsePhotoshopIrb(view, dataStart + 14, dataLen - 14);
+        }
+      }
+      off += 2 + len;
+    }
+    return out;
+  }
+
+  function parsePng(view) {
+    var out = { exif: null, xmp: null, text: {}, ihdr: null, phys: null };
+    if (view.byteLength < 8 || asciiAt(view, 1, 3) !== "PNG") return out;
+    var off = 8;
+    while (off + 12 <= view.byteLength) {
+      var len = view.getUint32(off, false);
+      var type = asciiAt(view, off + 4, 4);
+      var dataStart = off + 8, dataEnd = dataStart + len;
+      if (dataEnd + 4 > view.byteLength) break;
+      if (type === "IHDR") {
+        out.ihdr = { width: view.getUint32(dataStart, false), height: view.getUint32(dataStart + 4, false),
+          bitDepth: view.getUint8(dataStart + 8), colorType: view.getUint8(dataStart + 9) };
+      } else if (type === "tEXt") {
+        var s = asciiAt(view, dataStart, len);
+        var nul = s.indexOf("\0");
+        if (nul > 0) out.text[s.slice(0, nul)] = s.slice(nul + 1);
+      } else if (type === "iTXt") {
+        var nul1 = findByte(view, dataStart, dataEnd, 0);
+        var kw = asciiAt(view, dataStart, nul1 - dataStart);
+        var langEnd = findByte(view, nul1 + 3, dataEnd, 0);
+        var transEnd = findByte(view, langEnd + 1, dataEnd, 0);
+        var text = asciiAt(view, transEnd + 1, dataEnd - transEnd - 1);
+        if (kw === "XML:com.adobe.xmp") out.xmp = parseXmp(text);
+        else out.text[kw] = text;
+      } else if (type === "eXIf") {
+        out.exif = parseExifTiff(view, dataStart);
+      } else if (type === "pHYs") {
+        out.phys = { x: view.getUint32(dataStart, false), y: view.getUint32(dataStart + 4, false),
+          unit: view.getUint8(dataStart + 8) };
+      } else if (type === "IEND") break;
+      off = dataEnd + 4;
+    }
+    return out;
+  }
+
+  function parseWebp(view) {
+    var out = { exif: null, xmp: null, vp8x: null };
+    if (view.byteLength < 12 || asciiAt(view, 0, 4) !== "RIFF" || asciiAt(view, 8, 4) !== "WEBP") return out;
+    var off = 12;
+    while (off + 8 <= view.byteLength) {
+      var type = asciiAt(view, off, 4);
+      var size = view.getUint32(off + 4, true);
+      var dataStart = off + 8, dataEnd = dataStart + size;
+      if (dataEnd > view.byteLength) break;
+      if (type === "VP8X") {
+        out.vp8x = { width: 1 + (view.getUint8(dataStart + 4) | (view.getUint8(dataStart + 5) << 8) | (view.getUint8(dataStart + 6) << 16)),
+          height: 1 + (view.getUint8(dataStart + 7) | (view.getUint8(dataStart + 8) << 8) | (view.getUint8(dataStart + 9) << 16)) };
+      } else if (type === "EXIF") {
+        if (startsWithStr(view, dataStart, "Exif\0\0")) out.exif = parseExifTiff(view, dataStart + 6);
+        else out.exif = parseExifTiff(view, dataStart);
+      } else if (type === "XMP ") {
+        out.xmp = parseXmp(asciiAt(view, dataStart, size));
+      }
+      off = dataEnd + (size % 2);
+    }
+    return out;
+  }
+
+  /* Parse any supported image buffer. Returns { exif, xmp, iptc, pngText, ihdr, phys, vp8x }. */
+  function parseImageMetadata(buffer, fileType) {
+    var view = new DataView(buffer);
+    var out = { exif: null, xmp: null, iptc: null, pngText: {}, ihdr: null, phys: null, vp8x: null };
+    if (fileType === "image/jpeg" || (view.byteLength >= 2 && view.getUint8(0) === 0xFF && view.getUint8(1) === 0xD8)) {
+      var j = parseJpeg(view);
+      out.exif = j.exif; out.xmp = j.xmp; out.iptc = j.iptc;
+    } else if (fileType === "image/png" || asciiAt(view, 1, 3) === "PNG") {
+      var p = parsePng(view);
+      out.exif = p.exif; out.xmp = p.xmp; out.pngText = p.text; out.ihdr = p.ihdr; out.phys = p.phys;
+    } else if (fileType === "image/webp" || (asciiAt(view, 0, 4) === "RIFF" && asciiAt(view, 8, 4) === "WEBP")) {
+      var w = parseWebp(view);
+      out.exif = w.exif; out.xmp = w.xmp; out.vp8x = w.vp8x;
+    }
+    return out;
+  }
+
+  /* ---------- resolve one value per field, XMP first ---------- */
+
+  function exifField(meta, group, name) {
+    if (!meta.exif || !meta.exif[group]) return null;
+    var f = meta.exif[group][name];
+    if (!f) return null;
+    return formatExifValue(name, f.value);
+  }
+
+  function resolveMeta(meta) {
+    var r = { title: null, description: null, keywords: [], creator: null,
+      copyright: null, createDate: null, software: null, headline: null,
+      rating: null, webStatement: null };
+    if (meta.xmp) {
+      r.title = meta.xmp.title;
+      r.description = meta.xmp.description;
+      r.keywords = meta.xmp.keywords.slice();
+      r.creator = meta.xmp.creator;
+      r.copyright = meta.xmp.rights;
+      r.createDate = meta.xmp.createDate;
+      r.software = meta.xmp.creatorTool;
+      r.headline = meta.xmp.headline;
+      r.rating = meta.xmp.rating;
+      r.webStatement = meta.xmp.webStatement;
+    }
+    if (meta.iptc) {
+      if (!r.title && meta.iptc["Object Name"]) r.title = meta.iptc["Object Name"];
+      if (!r.description && meta.iptc["Caption"]) r.description = meta.iptc["Caption"];
+      if (!r.keywords.length && meta.iptc.keywords.length) r.keywords = meta.iptc.keywords.slice();
+      if (!r.creator && meta.iptc["By-line"]) r.creator = meta.iptc["By-line"];
+      if (!r.copyright && meta.iptc["Copyright Notice"]) r.copyright = meta.iptc["Copyright Notice"];
+      if (!r.createDate && meta.iptc["Date Created"]) r.createDate = meta.iptc["Date Created"];
+      if (!r.headline && meta.iptc["Headline"]) r.headline = meta.iptc["Headline"];
+    }
+    if (meta.exif) {
+      if (!r.title) r.title = exifField(meta, "ifd0", "Document Name") || exifField(meta, "ifd0", "XP Title");
+      if (!r.description) r.description = exifField(meta, "ifd0", "Image Description") || exifField(meta, "ifd0", "XP Comment");
+      if (!r.keywords.length) {
+        var xpk = exifField(meta, "ifd0", "XP Keywords");
+        if (xpk) r.keywords = xpk.split(/[;,]/).map(function (s) { return s.trim(); }).filter(Boolean);
+      }
+      if (!r.creator) r.creator = exifField(meta, "ifd0", "Artist") || exifField(meta, "ifd0", "XP Author");
+      if (!r.copyright) r.copyright = exifField(meta, "ifd0", "Copyright");
+      if (!r.software) r.software = exifField(meta, "ifd0", "Software");
+      if (!r.createDate) r.createDate = exifField(meta, "ifd0", "Date & Time");
+    }
+    return r;
+  }
+
+  /* ---------- pixel analysis (estimates, measured in the browser) ---------- */
+
+  function analyzePixels(img) {
+    var MAX = 800;
+    var w = img.naturalWidth, h = img.naturalHeight;
+    var scale = Math.min(1, MAX / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+    var canvas = document.createElement("canvas");
+    canvas.width = cw; canvas.height = ch;
+    var ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, cw, ch);
+    var data = ctx.getImageData(0, 0, cw, ch).data;
+    var n = cw * ch;
+    var gray = new Float32Array(n);
+    var sumL = 0, clippedBlack = 0, clippedWhite = 0, sumSat = 0;
+    for (var i = 0; i < n; i++) {
+      var r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2];
+      var lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      gray[i] = lum; sumL += lum;
+      if (lum < 8) clippedBlack++;
+      if (lum > 247) clippedWhite++;
+      sumSat += (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
+    }
+    var lapSum = 0, lapSum2 = 0, lapN = 0;
+    for (var y = 1; y < ch - 1; y++) {
+      for (var x = 1; x < cw - 1; x++) {
+        var idx = y * cw + x;
+        var lap = -gray[idx - cw - 1] - gray[idx - cw] - gray[idx - cw + 1] - gray[idx - 1]
+          + 8 * gray[idx] - gray[idx + 1] - gray[idx + cw - 1] - gray[idx + cw] - gray[idx + cw + 1];
+        lapSum += lap; lapSum2 += lap * lap; lapN++;
+      }
+    }
+    var lapMean = lapN ? lapSum / lapN : 0;
+    var lapVar = lapN ? Math.max(0, lapSum2 / lapN - lapMean * lapMean) : 0;
+    var blockStd = [];
+    for (var by = 0; by + 8 <= ch; by += 8) {
+      for (var bx = 0; bx + 8 <= cw; bx += 8) {
+        var m = 0, m2 = 0, cnt = 0;
+        for (var yy = 0; yy < 8; yy++) {
+          for (var xx = 0; xx < 8; xx++) {
+            var v = gray[(by + yy) * cw + bx + xx];
+            m += v; m2 += v * v; cnt++;
+          }
+        }
+        var mean = m / cnt;
+        blockStd.push(Math.sqrt(Math.max(0, m2 / cnt - mean * mean)));
+      }
+    }
+    blockStd.sort(function (a, b) { return a - b; });
+    var smoothCount = Math.max(1, Math.floor(blockStd.length / 4));
+    var noise = 0;
+    for (var s = 0; s < smoothCount; s++) noise += blockStd[s];
+    noise = blockStd.length ? noise / smoothCount : 0;
+    return {
+      meanLum: sumL / n,
+      clippedBlackPct: 100 * clippedBlack / n,
+      clippedWhitePct: 100 * clippedWhite / n,
+      sharpness: lapVar,
+      noise: noise,
+      meanSat: sumSat / n
+    };
+  }
+
+  /* ---------- quality checks ---------- */
+
+  function buildQualityChecks(file, width, height, meta, resolved, analysis) {
+    var checks = [];
+    var mp = (width * height) / 1000000;
+    var typeLabel = file.type === "image/png" ? "PNG"
+      : file.type === "image/webp" ? "WebP"
+      : file.type === "image/gif" ? "GIF" : "JPG";
+    if (typeLabel === "JPG" || typeLabel === "PNG") {
+      checks.push({ status: "pass", scored: true, title: "Format: " + typeLabel,
+        detail: typeLabel + " is accepted by Adobe Stock and Shutterstock for photo submissions." });
+    } else if (typeLabel === "WebP") {
+      checks.push({ status: "fail", scored: true, title: "Format: WebP",
+        detail: "WebP is NOT accepted by Adobe Stock. Submit the same image as JPG or PNG instead — the metadata stays the same." });
+    } else {
+      checks.push({ status: "fail", scored: true, title: "Format: " + typeLabel,
+        detail: "GIF is not accepted as a photo submission on Adobe Stock. Submit a JPG or PNG." });
+    }
+    if (mp >= PHOTO_MIN_MP) {
+      checks.push({ status: "pass", scored: true, title: "Size: " + mp.toFixed(2) + " megapixels",
+        detail: width + " × " + height + " px — meets the 4 megapixel minimum for Adobe Stock photos." });
+    } else {
+      checks.push({ status: "fail", scored: true, title: "Size: only " + mp.toFixed(2) + " megapixels",
+        detail: width + " × " + height + " px — below Adobe Stock's 4 megapixel minimum for photos. A larger original is needed; upscaling a small file does not fix it." });
+    }
+    var mb = file.size / (1024 * 1024);
+    if (mb > ADOBE_MAX_MB) {
+      checks.push({ status: "fail", scored: true, title: "File size: " + formatBytes(file.size),
+        detail: "Above Adobe Stock's 45 MB photo limit. Re-save with a little more compression." });
+    } else if (file.size < 100 * 1024) {
+      checks.push({ status: "warn", scored: true, title: "File size: " + formatBytes(file.size),
+        detail: "Very small for a photo — heavy compression can leave artefacts that reviewers reject. Check the image at 100% zoom." });
+    } else {
+      checks.push({ status: "pass", scored: true, title: "File size: " + formatBytes(file.size),
+        detail: "Within Adobe Stock's limits (under 45 MB) and large enough to avoid heavy-compression artefacts." });
+    }
+    if (!resolved.title) {
+      checks.push({ status: "fail", scored: true, title: "Title: missing",
+        detail: "No title is embedded in this file. Adobe Stock requires a title — add one (up to 200 characters, key keywords in the first 70)." });
+    } else if (resolved.title.length > TITLE_MAX) {
+      checks.push({ status: "fail", scored: true, title: "Title: " + resolved.title.length + " characters",
+        detail: "Over Adobe's 200-character title limit. Shorten it — keep the most important buyer keywords in the first 70 characters." });
+    } else {
+      checks.push({ status: "pass", scored: true, title: "Title: " + resolved.title.length + " characters",
+        detail: "Within the 200-character limit. " + (resolved.title.length >= 40 ? "Long enough to carry good keywords." : "A little short — a longer, keyword-rich title ranks better.") });
+    }
+    if (!resolved.description) {
+      checks.push({ status: "fail", scored: true, title: "Description: missing",
+        detail: "No description is embedded. Adobe Stock asks for a description — write one that says what the image shows." });
+    } else {
+      var words = resolved.description.trim().split(/\s+/).length;
+      checks.push({ status: "pass", scored: true, title: "Description: " + words + " words",
+        detail: "A description is embedded and will travel with the file." });
+    }
+    var kw = resolved.keywords.length;
+    if (kw === 0) {
+      checks.push({ status: "fail", scored: true, title: "Keywords: none",
+        detail: "No keywords are embedded. Add relevant keywords — Adobe allows up to 200, and this lab uses up to 49, most relevant first." });
+    } else if (kw < 10) {
+      checks.push({ status: "warn", scored: true, title: "Keywords: only " + kw,
+        detail: "Fewer than 10 keywords. Add more relevant ones (up to 49 here) so buyers can find the image." });
+    } else if (kw <= KEYWORD_MAX_SITE) {
+      checks.push({ status: "pass", scored: true, title: "Keywords: " + kw,
+        detail: "A healthy number of keywords, most relevant first." });
+    } else if (kw <= KEYWORD_MAX_ADOBE) {
+      checks.push({ status: "warn", scored: true, title: "Keywords: " + kw,
+        detail: "More than 49 — fine for Adobe (up to 200), but keep the most relevant 10 first, as those carry the most weight." });
+    } else {
+      checks.push({ status: "fail", scored: true, title: "Keywords: " + kw,
+        detail: "Over Adobe's 200-keyword limit. Remove the least relevant ones." });
+    }
+    if (resolved.creator || resolved.copyright) {
+      checks.push({ status: "pass", scored: true, title: "Creator / copyright: present",
+        detail: (resolved.creator ? "Creator: " + resolved.creator + ". " : "") + (resolved.copyright ? "Copyright notice embedded." : "") });
+    } else {
+      checks.push({ status: "warn", scored: true, title: "Creator / copyright: missing",
+        detail: "No creator name or copyright notice is embedded. Add your name so the work is credited to you." });
+    }
+    var sh = analysis.sharpness;
+    if (sh < 60) {
+      checks.push({ status: "fail", scored: true, title: "Sharpness: low (score " + Math.round(sh) + ")",
+        detail: "The image measures soft or blurry. Adobe rejects unsharp photos — check at 100% zoom and use a sharper original." });
+    } else if (sh < 180) {
+      checks.push({ status: "warn", scored: true, title: "Sharpness: moderate (score " + Math.round(sh) + ")",
+        detail: "Not clearly sharp. Check the main subject at 100% zoom — if it looks soft, use a sharper original." });
+    } else {
+      checks.push({ status: "pass", scored: true, title: "Sharpness: good (score " + Math.round(sh) + ")",
+        detail: "The image measures sharp. Still check the main subject at 100% zoom before submitting." });
+    }
+    var clipped = analysis.clippedBlackPct + analysis.clippedWhitePct;
+    if (analysis.meanLum < 25 || analysis.meanLum > 235 || clipped > 15) {
+      checks.push({ status: "fail", scored: true, title: "Exposure: " + (analysis.meanLum < 25 ? "too dark" : analysis.meanLum > 235 ? "too bright" : "heavy clipping"),
+        detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, " + analysis.clippedBlackPct.toFixed(1) + "% pure black, " + analysis.clippedWhitePct.toFixed(1) + "% pure white. Fix the exposure — detail lost in black or white cannot be recovered." });
+    } else if (analysis.meanLum < 40 || analysis.meanLum > 215 || clipped > 5) {
+      checks.push({ status: "warn", scored: true, title: "Exposure: check the brightness",
+        detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, " + analysis.clippedBlackPct.toFixed(1) + "% pure black, " + analysis.clippedWhitePct.toFixed(1) + "% pure white. Look at the darkest and brightest areas before submitting." });
+    } else {
+      checks.push({ status: "pass", scored: true, title: "Exposure: balanced",
+        detail: "Average brightness " + Math.round(analysis.meanLum) + "/255, only " + clipped.toFixed(1) + "% clipped pixels. No obvious over- or under-exposure." });
+    }
+    if (analysis.noise > 8) {
+      checks.push({ status: "fail", scored: true, title: "Noise: high (score " + analysis.noise.toFixed(1) + ")",
+        detail: "Smooth areas measure noisy. Adobe rejects visibly noisy images — denoise gently or use a cleaner original." });
+    } else if (analysis.noise > 4) {
+      checks.push({ status: "warn", scored: true, title: "Noise: moderate (score " + analysis.noise.toFixed(1) + ")",
+        detail: "Some noise in smooth areas. Check dark regions at 100% zoom before submitting." });
+    } else {
+      checks.push({ status: "pass", scored: true, title: "Noise: low (score " + analysis.noise.toFixed(1) + ")",
+        detail: "Smooth areas measure clean." });
+    }
+    if (analysis.meanSat < 0.02) {
+      checks.push({ status: "info", scored: false, title: "Colour: grayscale",
+        detail: "The image has almost no colour. That is fine for stock if it is intentional — black-and-white sells too." });
+    } else {
+      checks.push({ status: "info", scored: false, title: "Colour: full colour",
+        detail: "Average saturation " + Math.round(analysis.meanSat * 100) + "%." });
+    }
+    var orientation = exifField(meta, "ifd0", "Orientation");
+    if (orientation && orientation.indexOf("Normal") !== 0) {
+      checks.push({ status: "info", scored: false, title: "EXIF orientation flag: " + orientation,
+        detail: "The pixels are stored rotated and the viewer rotates them. Most tools handle this, but check the preview looks right." });
+    }
+    return checks;
+  }
+
+  /* ---------- rendering ---------- */
+
+  function kvRow(label, value) {
+    return "<dt>" + escapeHtml(label) + "</dt><dd>" +
+      (value === null || value === undefined || value === ""
+        ? '<span class="missing">Not embedded</span>'
+        : escapeHtml(String(value))) + "</dd>";
+  }
+
+  function renderMeta(file, width, height, meta, resolved) {
+    var mp = (width * height) / 1000000;
+    var typeLabel = file.type === "image/png" ? "PNG"
+      : file.type === "image/webp" ? "WebP"
+      : file.type === "image/gif" ? "GIF" : "JPG";
+    var orientation = width > height ? "Landscape" : (height > width ? "Portrait" : "Square");
+    var blocks = [];
+    blocks.push(meta.exif ? "EXIF ✓" : "EXIF ✗");
+    blocks.push(meta.xmp ? "XMP ✓" : "XMP ✗");
+    blocks.push(meta.iptc ? "IPTC ✓" : "IPTC ✗");
+    var html = "";
+    html += '<div class="preview-wrap">' +
+      '<img id="previewImg" src="' + previewUrl + '" alt="Preview of the uploaded image">' +
+      '<div class="facts"><dl>' +
+      kvRow("File name", file.name) +
+      kvRow("File type", typeLabel) +
+      kvRow("Dimensions", width + " × " + height + " px") +
+      kvRow("Megapixels", mp.toFixed(2) + " MP") +
+      kvRow("File size", formatBytes(file.size)) +
+      kvRow("Orientation", orientation) +
+      kvRow("Metadata blocks", blocks.join(" · ")) +
+      "</dl></div></div>";
+
+    html += "<h3>Title</h3>";
+    if (resolved.title) {
+      html += "<p>" + escapeHtml(resolved.title) + "</p>" +
+        '<p class="chip-legend">' + resolved.title.length + " / " + TITLE_MAX + " characters · " +
+        "first 70 (what buyers see): <strong>" + escapeHtml(resolved.title.slice(0, TITLE_SEO)) + "</strong></p>";
+    } else {
+      html += '<p><span class="missing">No title embedded in this file.</span></p>';
+    }
+
+    html += "<h3>Description</h3>";
+    if (resolved.description) {
+      var words = resolved.description.trim().split(/\s+/).length;
+      html += "<p>" + escapeHtml(resolved.description) + "</p>" +
+        '<p class="chip-legend">' + words + " words · " + resolved.description.length + " characters</p>";
+    } else {
+      html += '<p><span class="missing">No description embedded in this file.</span></p>';
+    }
+
+    html += "<h3>Keywords / tags</h3>";
+    if (resolved.keywords.length) {
+      html += '<div class="kw-chips">' + resolved.keywords.map(function (k, i) {
+        return '<span class="chip' + (i < 10 ? " first" : "") + '">' + escapeHtml(k) + "</span>";
+      }).join("") + "</div>" +
+        '<p class="chip-legend">' + resolved.keywords.length + " keywords · the first 10 (outlined) carry the most weight on Adobe Stock</p>";
+    } else {
+      html += '<p><span class="missing">No keywords embedded in this file.</span></p>';
+    }
+
+    html += "<h3>Creator &amp; rights</h3><dl class=\"kv\">" +
+      kvRow("Creator", resolved.creator) +
+      kvRow("Copyright", resolved.copyright) +
+      kvRow("Software", resolved.software) +
+      kvRow("Headline", resolved.headline) +
+      kvRow("Rating", resolved.rating ? resolved.rating + " / 5" : null) +
+      kvRow("Web statement", resolved.webStatement) +
+      "</dl>";
+
+    html += "<h3>Dates</h3><dl class=\"kv\">" +
+      kvRow("Created", resolved.createDate) +
+      kvRow("Date taken", exifField(meta, "exif", "Date Taken")) +
+      kvRow("Date digitized", exifField(meta, "exif", "Date Digitized")) +
+      kvRow("Date & time (file)", exifField(meta, "ifd0", "Date & Time")) +
+      "</dl>";
+
+    var camRows = "";
+    camRows += kvRow("Camera make", exifField(meta, "ifd0", "Camera Make"));
+    camRows += kvRow("Camera model", exifField(meta, "ifd0", "Camera Model"));
+    camRows += kvRow("Lens", exifField(meta, "exif", "Lens Model"));
+    camRows += kvRow("ISO", exifField(meta, "exif", "ISO Speed"));
+    camRows += kvRow("Exposure time", exifField(meta, "exif", "Exposure Time"));
+    camRows += kvRow("F-number", exifField(meta, "exif", "F-Number"));
+    camRows += kvRow("Focal length", exifField(meta, "exif", "Focal Length"));
+    camRows += kvRow("Focal length (35mm)", exifField(meta, "exif", "Focal Length (35mm)"));
+    camRows += kvRow("Flash", exifField(meta, "exif", "Flash"));
+    camRows += kvRow("Exposure program", exifField(meta, "exif", "Exposure Program"));
+    camRows += kvRow("Exposure bias", exifField(meta, "exif", "Exposure Bias"));
+    camRows += kvRow("Colour space", exifField(meta, "exif", "Colour Space"));
+    camRows += kvRow("Resolution", exifField(meta, "ifd0", "X Resolution"));
+    camRows += kvRow("Resolution unit", exifField(meta, "ifd0", "Resolution Unit"));
+    html += "<h3>Camera &amp; technical</h3><dl class=\"kv\">" + camRows + "</dl>";
+
+    if (meta.exif && meta.exif.gps && Object.keys(meta.exif.gps).length) {
+      var lat = gpsToDecimal(
+        meta.exif.gps["Latitude Ref"] ? formatExifValue("Latitude Ref", meta.exif.gps["Latitude Ref"].value) : null,
+        meta.exif.gps["Latitude"] ? meta.exif.gps["Latitude"].value : null);
+      var lon = gpsToDecimal(
+        meta.exif.gps["Longitude Ref"] ? formatExifValue("Longitude Ref", meta.exif.gps["Longitude Ref"].value) : null,
+        meta.exif.gps["Longitude"] ? meta.exif.gps["Longitude"].value : null);
+      html += "<h3>Location (GPS)</h3><dl class=\"kv\">" +
+        kvRow("Latitude", lat) + kvRow("Longitude", lon) +
+        kvRow("Altitude", exifField(meta, "gps", "Altitude")) +
+        kvRow("GPS date", exifField(meta, "gps", "GPS Date")) +
+        "</dl>" +
+        '<p class="chip-legend">⚠ GPS coordinates are embedded in this file — they reveal exactly where the photo was taken. Remove them before sharing if that matters to you.</p>';
+    }
+
+    if (meta.iptc) {
+      var iptcRows = "";
+      Object.keys(meta.iptc).forEach(function (k) {
+        if (k === "keywords") return;
+        iptcRows += kvRow(k, meta.iptc[k]);
+      });
+      if (iptcRows) html += "<h3>IPTC fields</h3><dl class=\"kv\">" + iptcRows + "</dl>";
+    }
+    if (meta.xmp && meta.xmp.other.length) {
+      var otherRows = meta.xmp.other.map(function (o) { return kvRow(o.name, o.value); }).join("");
+      html += "<h3>Other XMP fields</h3><dl class=\"kv\">" + otherRows + "</dl>";
+    }
+    if (meta.pngText && Object.keys(meta.pngText).length) {
+      var pngRows = Object.keys(meta.pngText).map(function (k) { return kvRow(k, meta.pngText[k]); }).join("");
+      html += "<h3>PNG text chunks</h3><dl class=\"kv\">" + pngRows + "</dl>";
+    }
+    if (meta.ihdr) {
+      html += "<h3>PNG details</h3><dl class=\"kv\">" +
+        kvRow("Bit depth", meta.ihdr.bitDepth) +
+        kvRow("Colour type", { 0: "Grayscale", 2: "RGB", 3: "Palette", 4: "Grayscale + alpha", 6: "RGBA" }[meta.ihdr.colorType] || meta.ihdr.colorType) +
+        (meta.phys ? kvRow("Print resolution", Math.round(meta.phys.x / (meta.phys.unit === 1 ? 39.3701 : 1)) + " dpi") : "") +
+        "</dl>";
+    }
+    document.getElementById("metaArea").innerHTML = html;
+  }
+
+  function renderQuality(file, width, height, meta, resolved, analysis) {
+    var checks = buildQualityChecks(file, width, height, meta, resolved, analysis);
+    var scored = checks.filter(function (c) { return c.scored; });
+    var points = 0;
+    scored.forEach(function (c) {
+      if (c.status === "pass") points += 1;
+      else if (c.status === "warn") points += 0.5;
+    });
+    var score = scored.length ? Math.round(points / scored.length * 100) : 0;
+    var fails = scored.filter(function (c) { return c.status === "fail"; }).length;
+    var verdict, verdictClass;
+    if (fails === 0 && score >= 90) {
+      verdict = "✓ Ready to submit — this image passes every scored check.";
+      verdictClass = "pass";
+    } else if (score >= 70) {
+      verdict = "△ Almost ready — fix the failed items above, then submit.";
+      verdictClass = "warn";
+    } else {
+      verdict = "✕ Not ready yet — several checks failed. Fix them before submitting.";
+      verdictClass = "fail";
+    }
+    var html = '<div class="score-line"><div class="score-num">' + score + '<span style="font-size:22px">/100</span></div>' +
+      '<div class="score-bar"><div style="width:' + score + '%"></div></div></div>' +
+      '<p class="chip-legend" style="margin-top:6px">' + scored.length + " scored checks · " +
+      scored.filter(function (c) { return c.status === "pass"; }).length + " passed · " +
+      scored.filter(function (c) { return c.status === "warn"; }).length + " warnings · " +
+      fails + " failed</p>" +
+      '<ul class="checklist">' + checks.map(function (c) {
+        var badge = c.status === "pass" ? "PASS" : c.status === "fail" ? "FAIL" : c.status === "warn" ? "WARN" : "INFO";
+        return '<li><span class="badge ' + c.status + '">' + badge + '</span><div class="text"><strong>' +
+          escapeHtml(c.title) + '</strong><span>' + escapeHtml(c.detail) + "</span></div></li>";
+      }).join("") + "</ul>" +
+      '<div class="verdict ' + verdictClass + '">' + verdict +
+      "<p>Sharpness and noise are measured estimates — they depend on the subject too (a smooth sky scores low by nature). This check does not guarantee acceptance: Adobe reviews content, releases and legality, which no browser tool can judge.</p></div>";
+    document.getElementById("qualityArea").innerHTML = html;
+    return { score: score, verdict: verdict, checks: checks };
+  }
+
+  function buildCopyText(file, width, height, meta, resolved, quality) {
+    var lines = [];
+    lines.push("Image: " + file.name);
+    lines.push("Type: " + file.type + " · " + width + " × " + height + " px · " + ((width * height) / 1000000).toFixed(2) + " MP · " + formatBytes(file.size));
+    lines.push("");
+    lines.push("Title: " + (resolved.title || "(none embedded)"));
+    lines.push("Description: " + (resolved.description || "(none embedded)"));
+    lines.push("Keywords (" + resolved.keywords.length + "): " + (resolved.keywords.join(", ") || "(none embedded)"));
+    lines.push("Creator: " + (resolved.creator || "(none embedded)"));
+    lines.push("Copyright: " + (resolved.copyright || "(none embedded)"));
+    lines.push("Created: " + (resolved.createDate || "(none embedded)"));
+    lines.push("Software: " + (resolved.software || "(none embedded)"));
+    lines.push("");
+    lines.push("Camera: " + (exifField(meta, "ifd0", "Camera Make") || "") + " " + (exifField(meta, "ifd0", "Camera Model") || "") + " (not embedded if blank)");
+    lines.push("ISO: " + (exifField(meta, "exif", "ISO Speed") || "(none)") +
+      " · Exposure: " + (exifField(meta, "exif", "Exposure Time") || "(none)") +
+      " · F-number: " + (exifField(meta, "exif", "F-Number") || "(none)") +
+      " · Focal length: " + (exifField(meta, "exif", "Focal Length") || "(none)"));
+    lines.push("");
+    lines.push("Quality score: " + quality.score + "/100 — " + quality.verdict);
+    quality.checks.forEach(function (c) {
+      lines.push("[" + c.status.toUpperCase() + "] " + c.title + " — " + c.detail);
+    });
+    return lines.join("\n");
+  }
+
+  /* ---------- file handling ---------- */
+
+  var dropzone = document.getElementById("dropzone");
+  var fileInput = document.getElementById("fileInput");
+  var browseBtn = document.getElementById("browseBtn");
+  var resultArea = document.getElementById("resultArea");
+  var metaSection = document.getElementById("metaSection");
+  var qualitySection = document.getElementById("qualitySection");
+  var copySection = document.getElementById("copySection");
+  var copyBox = document.getElementById("copyBox");
+  var copyNote = document.getElementById("copyNote");
+  var previewUrl = null;
+
+  function showError(message) {
+    resultArea.innerHTML =
+      '<div class="empty" style="border-color:#9B2C1E;color:#9B2C1E">' + escapeHtml(message) + "</div>";
+    metaSection.hidden = true;
+    qualitySection.hidden = true;
+    copySection.hidden = true;
+  }
+
+  function resetAll() {
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+    fileInput.value = "";
+    resultArea.innerHTML =
+      '<div class="empty" id="emptyState">No image loaded yet. Choose an image to see its embedded metadata and its microstock quality check.</div>';
+    document.getElementById("metaArea").innerHTML = "";
+    document.getElementById("qualityArea").innerHTML = "";
+    copyBox.value = "";
+    copyNote.hidden = true;
+    metaSection.hidden = true;
+    qualitySection.hidden = true;
+    copySection.hidden = true;
+    dropzone.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    var isImage = /^image\/(jpeg|png|webp|gif)$/.test(file.type) ||
+      /\.(jpe?g|png|webp|gif)$/i.test(file.name);
+    if (!isImage) {
+      showError("That file is not a JPG, PNG, WebP or GIF image. Please choose an image file.");
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+      var buffer = reader.result;
+      var meta;
+      try {
+        meta = parseImageMetadata(buffer, file.type);
+      } catch (e) {
+        showError("This file's metadata could not be read (" + e.message + "). The file may be damaged — try a different image.");
+        return;
+      }
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var width = img.naturalWidth, height = img.naturalHeight;
+        if (!width || !height) {
+          showError("The image could not be read — its dimensions are missing. Try a different file.");
+          return;
+        }
+        var resolved = resolveMeta(meta);
+        var analysis;
+        try {
+          analysis = analyzePixels(img);
+        } catch (e) {
+          analysis = { meanLum: 128, clippedBlackPct: 0, clippedWhitePct: 0, sharpness: 0, noise: 0, meanSat: 0 };
+        }
+        resultArea.innerHTML =
+          '<div class="preview-wrap">' +
+          '<img src="' + previewUrl + '" alt="Preview of the uploaded image">' +
+          '<div class="facts"><dl>' +
+          kvRow("File name", file.name) +
+          kvRow("File type", file.type) +
+          kvRow("Dimensions", width + " × " + height + " px") +
+          kvRow("Megapixels", ((width * height) / 1000000).toFixed(2) + " MP") +
+          kvRow("File size", formatBytes(file.size)) +
+          "</dl></div></div>";
+        renderMeta(file, width, height, meta, resolved);
+        var quality = renderQuality(file, width, height, meta, resolved, analysis);
+        copyBox.value = buildCopyText(file, width, height, meta, resolved, quality);
+        metaSection.hidden = false;
+        qualitySection.hidden = false;
+        copySection.hidden = false;
+        metaSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+      img.onerror = function () {
+        showError("That file could not be opened as an image. It may be damaged or in a format this browser cannot read. Try a different file.");
+      };
+      img.src = previewUrl;
+    };
+    reader.onerror = function () {
+      showError("The file could not be read. Try choosing it again.");
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  browseBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropzone.addEventListener("click", function (e) {
+    if (e.target !== browseBtn) fileInput.click();
+  });
+  dropzone.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); }
+  });
+  fileInput.addEventListener("change", function () {
+    if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+  ["dragenter", "dragover"].forEach(function (evt) {
+    dropzone.addEventListener(evt, function (e) { e.preventDefault(); dropzone.classList.add("drag"); });
+  });
+  ["dragleave", "drop"].forEach(function (evt) {
+    dropzone.addEventListener(evt, function (e) { e.preventDefault(); dropzone.classList.remove("drag"); });
+  });
+  dropzone.addEventListener("drop", function (e) {
+    var files = e.dataTransfer && e.dataTransfer.files;
+    if (files && files[0]) handleFile(files[0]);
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", resetAll);
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    copyBox.select();
+    var done = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyBox.value).then(function () {
+          copyNote.textContent = "✓ Copied to clipboard.";
+          copyNote.hidden = false;
+        }, function () {
+          copyNote.textContent = "Copy did not work automatically — the text is selected above; press Ctrl+C / Cmd+C.";
+          copyNote.hidden = false;
+        });
+        done = true;
+      }
+    } catch (e) { done = false; }
+    if (!done) {
+      try { document.execCommand("copy"); } catch (e) {}
+      copyNote.textContent = "Text selected — press Ctrl+C / Cmd+C to copy.";
+      copyNote.hidden = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
